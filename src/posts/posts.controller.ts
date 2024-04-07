@@ -15,7 +15,7 @@ type CreatePostInputType = {
   content: string;
 };
 
-@Controller('users')
+@Controller('posts')
 export class PostsController {
   constructor(protected postService: PostService) {}
   @Get()
