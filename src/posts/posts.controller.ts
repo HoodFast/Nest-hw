@@ -12,14 +12,24 @@ import { PostService } from './posts.service';
 
 type CreatePostInputType = {
   title: string;
+  shortDescription: string;
   content: string;
+  blogId: string;
+};
+export type PostTypeCreate = {
+  title: string;
+  shortDescription: string;
+  content: string;
+  blogId: string;
+  createdAt: string;
 };
 
 @Controller('posts')
 export class PostsController {
   constructor(protected postService: PostService) {}
   @Get()
-  getPosts(@Query() query: { term: string }) {
+  async getAllPosts(@Query() query: { term: string }) {
+    const posts = await this.postService.getAllPosts();
     return [{ title: 'yoyo' }].filter(
       (i) => !query || i.title.indexOf(query.term) > -1,
     );
@@ -27,11 +37,19 @@ export class PostsController {
 
   @Get(':id')
   getPostById(@Param('id') postId: string) {
-    return this.postService.findPost(postId);
+    return this.postService.findPostById(postId);
   }
   @Post()
-  createPost(@Body() inputModel: CreatePostInputType) {
-    return { id: 1, title: inputModel.title, content: inputModel.content };
+  async createPost(@Body() body: CreatePostInputType) {
+    const newPost: PostTypeCreate = {
+      title: body.title,
+      shortDescription: body.shortDescription,
+      content: body.content,
+      blogId: body.blogId,
+      createdAt: new Date().toISOString(),
+    };
+    await this.postService.createPost(newPost);
+    return {};
   }
   @Delete(':id')
   deletePost(@Param('id') postId: string) {
