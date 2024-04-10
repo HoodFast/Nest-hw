@@ -8,8 +8,8 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { BlogService } from './blogs.service';
-import { BlogsQueryRepository } from './blogs.query.repository';
+import { BlogService } from '../application/blogs.service';
+import { BlogsQueryRepository } from '../infrastructure/blogs.query.repository';
 
 enum sortDirection {
   asc = 'asc',

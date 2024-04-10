@@ -8,7 +8,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { PostService } from './posts.service';
+import { PostService } from '../application/posts.service';
 
 type CreatePostInputType = {
   title: string;
@@ -24,15 +24,35 @@ export type PostTypeCreate = {
   createdAt: string;
 };
 
+export type Pagination<I> = {
+  totalCount: number;
+  pagesCount: number;
+  page: number;
+  pageSize: number;
+  items: I[];
+};
+export type QueryPostInputModel = {
+  sortBy?: string;
+  sortDirection?: 'asc' | 'desc';
+  pageNumber?: number;
+  pageSize?: number;
+};
+
 @Controller('posts')
 export class PostsController {
   constructor(protected postService: PostService) {}
   @Get()
-  async getAllPosts(@Query() query: { term: string }) {
-    const posts = await this.postService.getAllPosts();
-    return [{ title: 'yoyo' }].filter(
-      (i) => !query || i.title.indexOf(query.term) > -1,
-    );
+  async getAllPosts(@Query() query: QueryPostInputModel) {
+    const sortData = {
+      sortBy: query.sortBy ?? 'createdAt',
+      sortDirection: query.sortDirection ?? 'desc',
+      pageNumber: query.pageNumber ? +query.pageNumber : 1,
+      pageSize: query.pageSize ? +query.pageSize : 10,
+    };
+    const userId = '';
+    const posts = await this.postService.getAllPosts(sortData, userId);
+
+    return posts;
   }
 
   @Get(':id')

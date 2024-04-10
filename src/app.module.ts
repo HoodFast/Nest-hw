@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PostsController } from './posts/posts.controller';
-import { PostService } from './posts/posts.service';
-import { PostsRepository } from './posts/posts.repository';
+import { PostsController } from './posts/api/posts.controller';
+import { PostService } from './posts/application/posts.service';
+import { PostsRepository } from './posts/infrastructure/posts.repository';
 import { MongooseModule } from '@nestjs/mongoose';
-import { BlogsController } from './blogs/blogs.controller';
-import { BlogsRepository } from './blogs/blogs.repository';
-import { Blog, BlogSchema } from './blogs/blog.schema';
-import { BlogsQueryRepository } from './blogs/blogs.query.repository';
-import { BlogService } from './blogs/blogs.service';
-import { Post, PostSchema } from './posts/post.schema';
+import { BlogsController } from './blogs/api/blogs.controller';
+import { BlogsRepository } from './blogs/infrastructure/blogs.repository';
+import { Blog, BlogSchema } from './blogs/domain/blog.schema';
+import { BlogsQueryRepository } from './blogs/infrastructure/blogs.query.repository';
+import { BlogService } from './blogs/application/blogs.service';
+import { Post, PostSchema } from './posts/domain/post.schema';
 
 @Module({
   imports: [

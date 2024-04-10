@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { createBlogInputType, createBlogType } from './blogs.controller';
+import { createBlogInputType, createBlogType } from '../api/blogs.controller';
 import { InjectModel } from '@nestjs/mongoose';
-import { Blog, BlogDocument } from './blog.schema';
+import { Blog, BlogDocument } from '../domain/blog.schema';
 import { Model } from 'mongoose';
 
 @Injectable()

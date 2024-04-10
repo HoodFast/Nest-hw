@@ -1,6 +1,6 @@
-import { BlogsRepository } from './blogs.repository';
+import { BlogsRepository } from '../infrastructure/blogs.repository';
 import { Injectable } from '@nestjs/common';
-import { createBlogInputType } from './blogs.controller';
+import { createBlogInputType } from '../api/blogs.controller';
 
 @Injectable()
 export class BlogService {

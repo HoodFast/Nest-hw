@@ -1,4 +1,32 @@
-import { PostDocument } from './post.schema';
+import { Likes, likesStatuses, PostDocument } from '../domain/post.schema';
+
+export class PostType {
+  id: string;
+  title: string;
+  shortDescription: string;
+  content: string;
+  blogId: string;
+  blogName: string;
+  createdAt: string;
+  extendedLikesInfo: {
+    likesCount: number;
+    dislikesCount: number;
+    myStatus: likesStatuses;
+    newestLikes: NewestLikes[];
+  };
+}
+export class NewestLikes {
+  addedAt: string;
+  userId: string;
+  login: string;
+}
+export const newestLikesMapper = (like: Likes): NewestLikes => {
+  return {
+    addedAt: like.updatedAt.toString(),
+    userId: like.userId,
+    login: like.login,
+  };
+};
 
 export const postMapper = (post: PostDocument, userId?: string): PostType => {
   const getNewestLikes = post.getNewestLikes();
