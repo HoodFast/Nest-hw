@@ -5,6 +5,7 @@ import { Post, PostDocument } from '../domain/post.schema';
 import { Pagination } from '../api/posts.controller';
 import { sortData } from '../application/posts.service';
 import { postMapper, PostType } from './post.mapper';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class PostsQueryRepository {
@@ -32,5 +33,8 @@ export class PostsQueryRepository {
       totalCount,
       items: posts.map((i) => postMapper(i, userId)),
     };
+  }
+  getPostById(id: string) {
+    return this.postModel.find({ _id: new ObjectId(id) });
   }
 }

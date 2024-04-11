@@ -13,11 +13,11 @@ export type sortData = {
 export class PostService {
   constructor(
     protected postsRepository: PostsRepository,
-    protected postQueryRepository: PostsQueryRepository,
+    protected postsQueryRepository: PostsQueryRepository,
   ) {}
 
   async getAllPosts(data: sortData, userId: string) {
-    return await this.postQueryRepository.getAllPosts(data, userId);
+    return await this.postsQueryRepository.getAllPosts(data, userId);
   }
 
   async createPost(data: PostTypeCreate) {
@@ -26,6 +26,6 @@ export class PostService {
   }
 
   async findPostById(id: string) {
-    return this.postsRepository.findPostById(id);
+    return this.postsQueryRepository.getPostById(id);
   }
 }
