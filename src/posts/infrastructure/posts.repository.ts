@@ -8,8 +8,8 @@ import { Model } from 'mongoose';
 export class PostsRepository {
   constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
 
-  async createPost(data: PostTypeCreate) {
-    const createdPost = new this.postModel(data);
+  async createPost(data: PostTypeCreate, blogName: string) {
+    const createdPost = new this.postModel({ ...data, blogName });
     return await createdPost.save();
   }
   findPostById(id: string) {
