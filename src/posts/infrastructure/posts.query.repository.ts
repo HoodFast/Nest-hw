@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Query } from 'mongoose';
 import { Post, PostDocument } from '../domain/post.schema';
 import { Pagination } from '../api/posts.controller';
 import { sortData } from '../application/posts.service';
@@ -34,7 +34,10 @@ export class PostsQueryRepository {
       items: posts.map((i) => postMapper(i, userId)),
     };
   }
-  getPostById(id: string) {
-    return this.postModel.find({ _id: new ObjectId(id) });
+  async getPostById(id: string) {
+    const res = await this.postModel.find({
+      _id: new ObjectId(id),
+    });
+    return postMapper(res[0]);
   }
 }
