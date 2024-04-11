@@ -11,10 +11,12 @@ import { Blog, BlogSchema } from './blogs/domain/blog.schema';
 import { BlogsQueryRepository } from './blogs/infrastructure/blogs.query.repository';
 import { BlogService } from './blogs/application/blogs.service';
 import { Post, PostSchema } from './posts/domain/post.schema';
+import { PostsQueryRepository } from './posts/infrastructure/posts.query.repository';
 
+const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/nest'),
+    MongooseModule.forRoot(MONGO_URL),
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
   ],
@@ -23,6 +25,7 @@ import { Post, PostSchema } from './posts/domain/post.schema';
     AppService,
     PostService,
     PostsRepository,
+    PostsQueryRepository,
     BlogService,
     BlogsRepository,
     BlogsQueryRepository,
