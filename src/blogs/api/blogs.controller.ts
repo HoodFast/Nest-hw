@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { BlogService } from '../application/blogs.service';
 import { BlogsQueryRepository } from '../infrastructure/blogs.query.repository';
+import { PostCreateData, PostInput } from '../../posts/api/PostCreate.dto';
+import { PostsRepository } from '../../posts/infrastructure/posts.repository';
 
 enum sortDirection {
   asc = 'asc',
@@ -34,6 +36,7 @@ export class BlogsController {
   constructor(
     protected blogService: BlogService,
     protected blogsQueryRepository: BlogsQueryRepository,
+    protected postRepository: PostsRepository,
   ) {}
 
   @Get()
@@ -60,7 +63,20 @@ export class BlogsController {
     return blog;
   }
   @Post(':id')
-  async createPostForBlog() {}
+  async createPostForBlog(
+    @Param('BlogId') blogId: string,
+    @Body() input: PostInput,
+  ) {
+    const postCreateData: PostCreateData = {
+      title: input.title,
+      content: input.content,
+      shortDescription: input.shortDescription,
+      blogId,
+      createdAt: new Date().toISOString(),
+    };
+    const userId = '';
+    return await this.postRepository.createPost(postCreateData, userId);
+  }
 
   @Put(':id')
   async updateBlog(

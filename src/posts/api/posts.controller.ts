@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { PostService } from '../application/posts.service';
 import { Response } from 'express';
-import { CreatePostInputType, PostTypeCreate } from './PostCreate.dto';
+import { InputPostCreate, PostCreateData } from './PostCreate.dto';
 import { QueryPostInputModel } from './postGetInput';
 
 @Controller('posts')
@@ -37,21 +37,22 @@ export class PostsController {
     return this.postService.getPostById(userId, postId);
   }
   @Post()
-  async createPost(@Body() body: CreatePostInputType) {
-    const newPost: PostTypeCreate = {
+  async createPost(@Body() body: InputPostCreate) {
+    const newPost: PostCreateData = {
       title: body.title,
       shortDescription: body.shortDescription,
       content: body.content,
       blogId: body.blogId,
       createdAt: new Date().toISOString(),
     };
-    await this.postService.createPost(newPost);
+    const userId = '';
+    await this.postService.createPost(newPost, userId);
     return {};
   }
   @Put(':id')
   async updatePost(
     @Param('id') postId,
-    @Body() model: CreatePostInputType,
+    @Body() model: InputPostCreate,
     @Res({ passthrough: true }) res: Response,
   ) {
     await this.postService.updatePost(postId, model);

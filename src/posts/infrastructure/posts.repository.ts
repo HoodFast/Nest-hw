@@ -4,22 +4,26 @@ import { Post, PostDocument } from '../domain/post.schema';
 import { Model } from 'mongoose';
 import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.query.repository';
 import { ObjectId } from 'mongodb';
-import { CreatePostInputType, PostTypeCreate } from '../api/PostCreate.dto';
+import { InputPostCreate, PostCreateData } from '../api/PostCreate.dto';
+import { PostsQueryRepository } from './posts.query.repository';
 
 @Injectable()
 export class PostsRepository {
   constructor(
     @InjectModel(Post.name) private postModel: Model<PostDocument>,
-    protected blogQueryRepository: BlogsQueryRepository,
+    protected blogsQueryRepository: BlogsQueryRepository,
+    protected postsQueryRepository: PostsQueryRepository,
   ) {}
 
-  async createPost(data: PostTypeCreate, blogName: string) {
-    const createdPost = new this.postModel({ ...data, blogName });
-    return await createdPost.save();
+  async createPost(data: PostCreateData, userId: string) {
+    const blog = await this.blogsQueryRepository.getBlogById(data.blogId);
+    const createdPost = new this.postModel({ ...data, blogName: blog.name });
+    await createdPost.save();
+    return await this.postsQueryRepository.getPostById(createdPost.id, userId);
   }
-  async updatePost(postId: string, data: CreatePostInputType) {
+  async updatePost(postId: string, data: InputPostCreate) {
     try {
-      const blog = await this.blogQueryRepository.getBlogById(data.blogId);
+      const blog = await this.blogsQueryRepository.getBlogById(data.blogId);
       console.log(blog);
       if (!blog[0]) {
         return false;
