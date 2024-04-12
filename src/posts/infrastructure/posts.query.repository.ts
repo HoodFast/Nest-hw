@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Query } from 'mongoose';
+import { Model } from 'mongoose';
 import { Post, PostDocument } from '../domain/post.schema';
-import { Pagination } from '../api/posts.controller';
-import { sortData } from '../application/posts.service';
+
 import { postMapper, PostType } from './post.mapper';
 import { ObjectId } from 'mongodb';
+import { Pagination } from '../../base/paginationInputDto/paginationOutput';
+import { SortData } from '../../base/sortData/sortData.model';
 
 @Injectable()
 export class PostsQueryRepository {
   constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
 
   async getAllPosts(
-    data: sortData,
+    data: SortData,
     userId: string,
   ): Promise<Pagination<PostType>> {
     const { sortBy, sortDirection, pageSize, pageNumber } = data;
@@ -34,10 +35,10 @@ export class PostsQueryRepository {
       items: posts.map((i) => postMapper(i, userId)),
     };
   }
-  async getPostById(id: string) {
+  async getPostById(userId: string, postId: string) {
     const res = await this.postModel.find({
-      _id: new ObjectId(id),
+      _id: new ObjectId(postId),
     });
-    return postMapper(res[0]);
+    return postMapper(res[0], userId);
   }
 }

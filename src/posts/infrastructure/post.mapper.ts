@@ -28,7 +28,7 @@ export const newestLikesMapper = (like: Likes): NewestLikes => {
   };
 };
 
-export const postMapper = (post: PostDocument, userId?: string): PostType => {
+export const postMapper = (post: PostDocument, userId: string): PostType => {
   const getNewestLikes = post.getNewestLikes();
   const newestLikes = getNewestLikes.map(newestLikesMapper);
   let myStatus = likesStatuses.none;

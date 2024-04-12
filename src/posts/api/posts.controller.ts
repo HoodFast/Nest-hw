@@ -7,36 +7,12 @@ import {
   Post,
   Put,
   Query,
+  Res,
 } from '@nestjs/common';
 import { PostService } from '../application/posts.service';
-
-type CreatePostInputType = {
-  title: string;
-  shortDescription: string;
-  content: string;
-  blogId: string;
-};
-export type PostTypeCreate = {
-  title: string;
-  shortDescription: string;
-  content: string;
-  blogId: string;
-  createdAt: string;
-};
-
-export type Pagination<I> = {
-  totalCount: number;
-  pagesCount: number;
-  page: number;
-  pageSize: number;
-  items: I[];
-};
-export type QueryPostInputModel = {
-  sortBy?: string;
-  sortDirection?: 'asc' | 'desc';
-  pageNumber?: number;
-  pageSize?: number;
-};
+import { Response } from 'express';
+import { CreatePostInputType, PostTypeCreate } from './PostCreate.dto';
+import { QueryPostInputModel } from './postGetInput';
 
 @Controller('posts')
 export class PostsController {
@@ -50,14 +26,15 @@ export class PostsController {
       pageSize: query.pageSize ? +query.pageSize : 10,
     };
     const userId = '';
-    const posts = await this.postService.getAllPosts(sortData, userId);
+    const posts = await this.postService.getAllPosts(userId, sortData);
 
     return posts;
   }
 
   @Get(':id')
   getPostById(@Param('id') postId: string) {
-    return this.postService.findPostById(postId);
+    const userId = '';
+    return this.postService.getPostById(userId, postId);
   }
   @Post()
   async createPost(@Body() body: CreatePostInputType) {
@@ -71,13 +48,18 @@ export class PostsController {
     await this.postService.createPost(newPost);
     return {};
   }
-  @Delete(':id')
-  deletePost(@Param('id') postId: string) {
-    return postId;
-  }
-
   @Put(':id')
-  updatePost(@Param('id') postId, @Body() model: CreatePostInputType) {
-    return { postId, model };
+  async updatePost(
+    @Param('id') postId,
+    @Body() model: CreatePostInputType,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    await this.postService.updatePost(postId, model);
+    return res.sendStatus(204);
+  }
+  @Delete(':id')
+  async deletePost(@Param('id') postId: string) {
+    await this.postService.deletePost(postId);
+    return;
   }
 }

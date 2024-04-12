@@ -16,13 +16,6 @@ enum sortDirection {
   desc = 'desc',
 }
 
-export type createBlogType = {
-  name: string;
-  description: string;
-  websiteUrl: string;
-  createdAt: string;
-  isMembership: boolean;
-};
 export type createBlogInputType = {
   name: string;
   description: string;
@@ -40,26 +33,25 @@ export type queryBlogsInputType = {
 export class BlogsController {
   constructor(
     protected blogService: BlogService,
-    protected blogQueryRepository: BlogsQueryRepository,
+    protected blogsQueryRepository: BlogsQueryRepository,
   ) {}
 
   @Get()
   async getAllBlogs(@Query() query: queryBlogsInputType) {
-    const sortData: queryBlogsInputType = {
-      searchNameTerm: query.searchNameTerm ?? undefined,
+    const sortData = {
+      searchNameTerm: query.searchNameTerm ?? null,
       sortBy: query.sortBy ?? 'createdAt',
       sortDirection: query.sortDirection ?? sortDirection.desc,
       pageNumber: query.pageNumber ? +query.pageNumber : 1,
       pageSize: query.pageSize ? +query.pageSize : 10,
     };
-    const blogs = await this.blogQueryRepository.getAllBlogs(sortData);
+    const blogs = await this.blogsQueryRepository.getAllBlogs(sortData);
     return blogs;
   }
 
   @Get(':id')
   async getBlogById(@Param('id') blogId: string) {
-    const blog = await this.blogService.findBlog(blogId);
-    return blog;
+    return await this.blogsQueryRepository.getBlogById(blogId);
   }
 
   @Post()
@@ -67,22 +59,25 @@ export class BlogsController {
     const blog = await this.blogService.createBlog(inputModel);
     return blog;
   }
+  @Post(':id')
+  async createPostForBlog() {}
 
   @Put(':id')
   async updateBlog(
     @Param('id') blogId: string,
     @Body() body: createBlogInputType,
   ) {
-    const updateBlogModel: createBlogInputType = {
+    const updateBlogData: createBlogInputType = {
       name: body.name,
       description: body.description,
       websiteUrl: body.websiteUrl,
     };
     const updatedBlog = await this.blogService.updateBlog(
       blogId,
-      updateBlogModel,
+      updateBlogData,
     );
-    return updatedBlog;
+    if (!updatedBlog) return;
+    return;
   }
   @Delete(':id')
   async deleteBlogById(@Param('id') blogId: string) {

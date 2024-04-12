@@ -1,15 +1,11 @@
 import { PostsRepository } from '../infrastructure/posts.repository';
 import { Injectable } from '@nestjs/common';
-import { PostTypeCreate, QueryPostInputModel } from '../api/posts.controller';
+
 import { PostsQueryRepository } from '../infrastructure/posts.query.repository';
 import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.query.repository';
+import { CreatePostInputType, PostTypeCreate } from '../api/PostCreate.dto';
+import { SortData } from '../../base/sortData/sortData.model';
 
-export type sortData = {
-  sortBy: string;
-  sortDirection: 'asc' | 'desc';
-  pageNumber: number;
-  pageSize: number;
-};
 @Injectable()
 export class PostService {
   constructor(
@@ -18,7 +14,7 @@ export class PostService {
     protected blogsQueryRepository: BlogsQueryRepository,
   ) {}
 
-  async getAllPosts(data: sortData, userId: string) {
+  async getAllPosts(userId: string, data: SortData) {
     return await this.postsQueryRepository.getAllPosts(data, userId);
   }
 
@@ -30,8 +26,17 @@ export class PostService {
     );
     return createdPost;
   }
+  async updatePost(
+    postId: string,
+    data: CreatePostInputType,
+  ): Promise<boolean> {
+    return await this.postsRepository.updatePost(postId, data);
+  }
 
-  async findPostById(id: string) {
-    return this.postsQueryRepository.getPostById(id);
+  async getPostById(userId: string, postId: string) {
+    return this.postsQueryRepository.getPostById(userId, postId);
+  }
+  async deletePost(postId: string): Promise<boolean> {
+    return await this.postsRepository.deletePost(postId);
   }
 }
