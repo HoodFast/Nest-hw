@@ -28,7 +28,7 @@ export class Likes {
   @Prop({ default: likesStatuses.none })
   likesStatus: likesStatuses;
 }
-const likesSchema = SchemaFactory.createForClass(Likes);
+// const likesSchema = SchemaFactory.createForClass(Likes);
 @Schema()
 export class Post {
   @Prop({ required: true })
@@ -49,7 +49,7 @@ export class Post {
   dislikesCount: number;
   @Prop({
     default: [],
-    type: [likesSchema],
+    type: [Likes],
   })
   likes: Likes[];
 

@@ -12,6 +12,7 @@ import { BlogsQueryRepository } from './blogs/infrastructure/blogs.query.reposit
 import { BlogService } from './blogs/application/blogs.service';
 import { Post, PostSchema } from './posts/domain/post.schema';
 import { PostsQueryRepository } from './posts/infrastructure/posts.query.repository';
+import { Comment, CommentSchema } from './comments/domain/comment.schema';
 
 const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
@@ -19,6 +20,7 @@ const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
     MongooseModule.forRoot(MONGO_URL),
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
+    MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
   ],
   controllers: [AppController, PostsController, BlogsController],
   providers: [
