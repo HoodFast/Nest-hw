@@ -4,7 +4,7 @@ import { Post, PostDocument } from '../domain/post.schema';
 import { Model } from 'mongoose';
 import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.query.repository';
 import { ObjectId } from 'mongodb';
-import { InputPostCreate, PostCreateData } from '../api/PostCreate.dto';
+import { InputPostCreate, PostCreateData } from '../api/input/PostsCreate.dto';
 import { PostsQueryRepository } from './posts.query.repository';
 
 @Injectable()

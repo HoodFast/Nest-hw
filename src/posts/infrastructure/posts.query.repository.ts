@@ -41,4 +41,28 @@ export class PostsQueryRepository {
     });
     return postMapper(res[0], userId);
   }
+  async getAllPostsForBlog(
+    userId: string,
+    blogId: string,
+    data: SortData,
+  ): Promise<Pagination<PostType>> {
+    const { sortBy, sortDirection, pageSize, pageNumber } = data;
+
+    const posts = await this.postModel
+      .find({ blogId: blogId })
+      .sort({ [sortBy]: sortDirection })
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize);
+
+    const totalCount = await this.postModel.countDocuments({});
+    const pagesCount = Math.ceil(totalCount / pageSize);
+
+    return {
+      pagesCount,
+      page: pageNumber,
+      pageSize,
+      totalCount,
+      items: posts.map((i) => postMapper(i, userId)),
+    };
+  }
 }

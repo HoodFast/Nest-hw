@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 
 import { PostsQueryRepository } from '../infrastructure/posts.query.repository';
 import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.query.repository';
-import { InputPostCreate, PostCreateData } from '../api/PostCreate.dto';
+import { InputPostCreate, PostCreateData } from '../api/input/PostsCreate.dto';
 import { SortData } from '../../base/sortData/sortData.model';
 
 @Injectable()

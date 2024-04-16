@@ -13,6 +13,14 @@ import { BlogService } from './blogs/application/blogs.service';
 import { Post, PostSchema } from './posts/domain/post.schema';
 import { PostsQueryRepository } from './posts/infrastructure/posts.query.repository';
 import { Comment, CommentSchema } from './comments/domain/comment.schema';
+import { User, UsersSchema } from './users/domain/user.schema';
+import { UsersService } from './users/application/users.service';
+import { UsersRepository } from './users/infrastructure/users.repository';
+import { UsersQueryRepository } from './users/infrastructure/users.query.repository';
+import { TestingQueryRepository } from './testing/infrastructure/testing.query.repository';
+import { UsersController } from './users/api/users.controller';
+import { TestingController } from './testing/api/testing.controller';
+import { CommentsQueryRepository } from './comments/infrastructure/comments.query.repository';
 
 const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
@@ -21,8 +29,15 @@ const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
     MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
+    MongooseModule.forFeature([{ name: User.name, schema: UsersSchema }]),
   ],
-  controllers: [AppController, PostsController, BlogsController],
+  controllers: [
+    AppController,
+    PostsController,
+    BlogsController,
+    UsersController,
+    TestingController,
+  ],
   providers: [
     AppService,
     PostService,
@@ -31,6 +46,11 @@ const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
     BlogService,
     BlogsRepository,
     BlogsQueryRepository,
+    UsersService,
+    UsersRepository,
+    UsersQueryRepository,
+    TestingQueryRepository,
+    CommentsQueryRepository,
   ],
 })
 export class AppModule {}

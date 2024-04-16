@@ -10,8 +10,12 @@ import {
 } from '@nestjs/common';
 import { BlogService } from '../application/blogs.service';
 import { BlogsQueryRepository } from '../infrastructure/blogs.query.repository';
-import { PostCreateData, PostInput } from '../../posts/api/PostCreate.dto';
+import {
+  PostCreateData,
+  PostInput,
+} from '../../posts/api/input/PostsCreate.dto';
 import { PostsRepository } from '../../posts/infrastructure/posts.repository';
+import { PostsQueryRepository } from '../../posts/infrastructure/posts.query.repository';
 
 enum sortDirection {
   asc = 'asc',
@@ -37,6 +41,7 @@ export class BlogsController {
     protected blogService: BlogService,
     protected blogsQueryRepository: BlogsQueryRepository,
     protected postRepository: PostsRepository,
+    protected postsQueryRepository: PostsQueryRepository,
   ) {}
 
   @Get()
@@ -55,6 +60,26 @@ export class BlogsController {
   @Get(':id')
   async getBlogById(@Param('id') blogId: string) {
     return await this.blogsQueryRepository.getBlogById(blogId);
+  }
+
+  @Get(':id/posts')
+  async getPostsForBlog(
+    @Param('id') blogId: string,
+    @Query() query: queryBlogsInputType,
+  ) {
+    const sortData = {
+      sortBy: query.sortBy ?? 'createdAt',
+      sortDirection: query.sortDirection ?? sortDirection.desc,
+      pageNumber: query.pageNumber ? +query.pageNumber : 1,
+      pageSize: query.pageSize ? +query.pageSize : 10,
+    };
+    const userId = '';
+    const posts = this.postsQueryRepository.getAllPostsForBlog(
+      userId,
+      blogId,
+      sortData,
+    );
+    return posts;
   }
 
   @Post()

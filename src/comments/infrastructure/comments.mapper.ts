@@ -3,8 +3,8 @@ import { likesStatuses } from '../../posts/domain/post.schema';
 import { CommentsOutputType } from '../api/model/output/comments.output';
 
 export const commentMapper = (
+  userId: string | null,
   comment: CommentDocument,
-  userId: string,
 ): CommentsOutputType => {
   let myStatus = likesStatuses.none;
   if (userId) {

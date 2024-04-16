@@ -8,3 +8,8 @@ export class SortData {
 export class BlogSortData extends SortData {
   searchNameTerm: string | null;
 }
+
+export class UsersSortData extends SortData {
+  searchLoginTerm?: string | null;
+  searchEmailTerm?: string | null;
+}
