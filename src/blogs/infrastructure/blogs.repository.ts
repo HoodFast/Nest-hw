@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Blog, BlogDocument } from '../domain/blog.schema';
 import { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
+import { blogMapper } from './blog.mapper';
 
 @Injectable()
 export class BlogsRepository {
@@ -11,7 +12,8 @@ export class BlogsRepository {
 
   async createBlog(data: createBlogInputType) {
     const create = new this.blogModel(data);
-    return create.save();
+    await create.save();
+    return blogMapper(create);
   }
   async updateBlog(blogId: string, updateDate: createBlogInputType) {
     const updatedBlog = await this.blogModel.updateOne(

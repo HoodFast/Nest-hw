@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  Res,
 } from '@nestjs/common';
 import { BlogService } from '../application/blogs.service';
 import { BlogsQueryRepository } from '../infrastructure/blogs.query.repository';
@@ -16,6 +17,7 @@ import {
 } from '../../posts/api/input/PostsCreate.dto';
 import { PostsRepository } from '../../posts/infrastructure/posts.repository';
 import { PostsQueryRepository } from '../../posts/infrastructure/posts.query.repository';
+import { Response } from 'express';
 
 enum sortDirection {
   asc = 'asc',
@@ -58,8 +60,13 @@ export class BlogsController {
   }
 
   @Get(':id')
-  async getBlogById(@Param('id') blogId: string) {
-    return await this.blogsQueryRepository.getBlogById(blogId);
+  async getBlogById(
+    @Param('id') blogId: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const blog = await this.blogsQueryRepository.getBlogById(blogId);
+    if (!blog) return res.sendStatus(404);
+    return blog;
   }
 
   @Get(':id/posts')
@@ -87,9 +94,9 @@ export class BlogsController {
     const blog = await this.blogService.createBlog(inputModel);
     return blog;
   }
-  @Post(':id')
+  @Post(':id/posts')
   async createPostForBlog(
-    @Param('BlogId') blogId: string,
+    @Param('id') blogId: string,
     @Body() input: PostInput,
   ) {
     const postCreateData: PostCreateData = {

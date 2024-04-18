@@ -32,6 +32,7 @@ export class BlogsQueryRepository {
   }
   async getBlogById(id: string) {
     const blog = await this.blogModel.find({ _id: new ObjectId(id) });
+    if (!blog[0]) return null;
     return blogMapper(blog[0]);
   }
 }
