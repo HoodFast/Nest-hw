@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Blog, BlogDocument } from '../domain/blog.schema';
 import { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
-import { blogMapper } from './blog.mapper';
+import { blogMapper } from '../domain/blog.mapper';
 
 @Injectable()
 export class BlogsRepository {

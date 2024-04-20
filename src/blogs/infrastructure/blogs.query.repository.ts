@@ -5,7 +5,7 @@ import { Blog, BlogDocument } from '../domain/blog.schema';
 import { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { BlogSortData } from '../../base/sortData/sortData.model';
-import { blogMapper } from './blog.mapper';
+import { blogMapper } from '../domain/blog.mapper';
 
 @Injectable()
 export class BlogsQueryRepository {
