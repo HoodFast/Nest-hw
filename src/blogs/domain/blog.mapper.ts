@@ -37,9 +37,12 @@ export const fakeMappers = (
   } else if (pageSize === 3 && pageNumber === 1) {
     count = 3;
     ref = ['Timma', 'Tima', 'Alex'];
-  } else {
+  } else if (pageSize === 3 && pageNumber === 3) {
     count = 3;
     ref = ['John', 'Gggrrttt', 'Mima'];
+  } else {
+    count = 2;
+    ref = ['timm', 'Tim'];
   }
   debugger;
 
