@@ -28,10 +28,10 @@ export class CommentsQueryRepository {
     const post = await this.postQueryRepository.getPostById(postId);
     if (!post) return null;
     const { sortBy, sortDirection, pageSize, pageNumber } = sortData;
-
+    const mySortDirection = sortDirection == 'asc' ? 1 : -1;
     const comments = await this.commentModel
       .find({ postId: postId })
-      .sort({ [sortBy]: sortDirection })
+      .sort({ [sortBy]: mySortDirection })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);
 

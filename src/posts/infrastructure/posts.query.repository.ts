@@ -21,10 +21,10 @@ export class PostsQueryRepository {
     userId: string,
   ): Promise<Pagination<PostType>> {
     const { sortBy, sortDirection, pageSize, pageNumber } = data;
-
+    const mySortDirection = sortDirection == 'asc' ? 1 : -1;
     const posts = await this.postModel
       .find({})
-      .sort({ [sortBy]: sortDirection })
+      .sort({ [sortBy]: mySortDirection })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);
 
@@ -57,9 +57,10 @@ export class PostsQueryRepository {
     const { sortBy, sortDirection, pageSize, pageNumber } = data;
     const blog = await this.blogsQueryRepository.getBlogById(blogId);
     if (!blog) return null;
+    const mySortDirection = sortDirection == 'asc' ? 1 : -1;
     const posts = await this.postModel
       .find({ blogId: blogId })
-      .sort({ [sortBy]: sortDirection })
+      .sort({ [sortBy]: mySortDirection })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);
 

@@ -37,10 +37,10 @@ export class UsersQueryRepository {
     const filter = {
       $or: [login, email],
     };
-
+    const mySortDirection = sortDirection == 'asc' ? 1 : -1;
     const users = await this.userModel
       .find(filter)
-      .sort({ [`accountData.${sortBy}`]: sortDirection })
+      .sort({ [`accountData.${sortBy}`]: mySortDirection })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);
     const totalCount = await this.userModel.countDocuments(filter);
