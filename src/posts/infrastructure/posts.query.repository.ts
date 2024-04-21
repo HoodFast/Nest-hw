@@ -35,11 +35,12 @@ export class PostsQueryRepository {
       items: posts.map((i) => postMapper(i, userId)),
     };
   }
-  async getPostById(postId: string, userId: string) {
+  async getPostById(postId: string, userId?: string) {
     const res = await this.postModel.find({
       _id: new ObjectId(postId),
     });
-    return postMapper(res[0], userId);
+    const id = userId ? userId : '';
+    return postMapper(res[0], id);
   }
   async getAllPostsForBlog(
     userId: string,

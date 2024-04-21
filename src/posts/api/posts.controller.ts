@@ -36,14 +36,18 @@ export class PostsController {
   }
 
   @Get(':id')
-  getPostById(@Param('id') postId: string) {
+  async getPostById(@Param('id') postId: string, @Res() res: Response) {
     const userId = '';
-    return this.postService.getPostById(userId, postId);
+    const post = await this.postService.getPostById(userId, postId);
+
+    if (!post) return res.sendStatus(404);
+    return post;
   }
   @Get(':id/comments')
   async getCommentsForPost(
     @Param('id') postId: string,
     @Query() query: QueryPostInputModel,
+    @Res() res: Response,
   ) {
     const sortData = {
       sortBy: query.sortBy ?? 'createdAt',
@@ -52,11 +56,12 @@ export class PostsController {
       pageSize: query.pageSize ? +query.pageSize : 10,
     };
     const userId = '';
-    const comments = this.commentsQueryRepository.getAllByPostId(
+    const comments = await this.commentsQueryRepository.getAllByPostId(
       userId,
       postId,
       sortData,
     );
+    if (!comments) return res.sendStatus(404);
     return comments;
   }
   @Post()
@@ -69,8 +74,8 @@ export class PostsController {
       createdAt: new Date().toISOString(),
     };
     const userId = '';
-    await this.postService.createPost(newPost, userId);
-    return {};
+    const post = await this.postService.createPost(newPost, userId);
+    return post;
   }
   @Put(':id')
   async updatePost(
@@ -78,12 +83,14 @@ export class PostsController {
     @Body() model: InputPostCreate,
     @Res({ passthrough: true }) res: Response,
   ) {
-    await this.postService.updatePost(postId, model);
+    const post = await this.postService.updatePost(postId, model);
+    if (!post) return res.sendStatus(404);
     return res.sendStatus(204);
   }
   @Delete(':id')
-  async deletePost(@Param('id') postId: string) {
-    await this.postService.deletePost(postId);
-    return;
+  async deletePost(@Param('id') postId: string, @Res() res: Response) {
+    const post = await this.postService.deletePost(postId);
+    if (!post) return res.sendStatus(404);
+    return res.sendStatus(204);
   }
 }

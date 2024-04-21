@@ -73,6 +73,7 @@ export class BlogsController {
   async getPostsForBlog(
     @Param('id') blogId: string,
     @Query() query: queryBlogsInputType,
+    @Res() res: Response,
   ) {
     const sortData = {
       sortBy: query.sortBy ?? 'createdAt',
@@ -86,6 +87,7 @@ export class BlogsController {
       blogId,
       sortData,
     );
+    if (!posts) return res.sendStatus(404);
     return posts;
   }
 
@@ -114,6 +116,7 @@ export class BlogsController {
   async updateBlog(
     @Param('id') blogId: string,
     @Body() body: createBlogInputType,
+    @Res() res: Response,
   ) {
     const updateBlogData: createBlogInputType = {
       name: body.name,
@@ -124,12 +127,13 @@ export class BlogsController {
       blogId,
       updateBlogData,
     );
-    if (!updatedBlog) return;
-    return;
+    if (!updatedBlog) return res.sendStatus(404);
+    return res.sendStatus(204);
   }
   @Delete(':id')
-  async deleteBlogById(@Param('id') blogId: string) {
+  async deleteBlogById(@Param('id') blogId: string, @Res() res: Response) {
     const deletedBlog = await this.blogService.deleteBlog(blogId);
-    return deletedBlog;
+    if (!deletedBlog) return res.sendStatus(404);
+    return res.sendStatus(204);
   }
 }

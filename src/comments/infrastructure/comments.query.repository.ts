@@ -6,10 +6,12 @@ import { commentMapper } from './comments.mapper';
 import { SortData } from '../../base/sortData/sortData.model';
 import { Pagination } from '../../base/paginationInputDto/paginationOutput';
 import { CommentsOutputType } from '../api/model/output/comments.output';
+import { PostsQueryRepository } from '../../posts/infrastructure/posts.query.repository';
 
 export class CommentsQueryRepository {
   constructor(
     @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
+    protected postQueryRepository: PostsQueryRepository,
   ) {}
   async getCommentById(commentsId: string) {
     const comment = await this.commentModel.find({
@@ -23,6 +25,8 @@ export class CommentsQueryRepository {
     postId: string,
     sortData: SortData,
   ): Promise<Pagination<CommentsOutputType> | null> {
+    const post = await this.postQueryRepository.getPostById(postId);
+    if (!post) return null;
     const { sortBy, sortDirection, pageSize, pageNumber } = sortData;
 
     const comments = await this.commentModel
