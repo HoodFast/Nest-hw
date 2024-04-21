@@ -20,6 +20,7 @@ export class PostsRepository {
     if (!blog) return null;
     const createdPost = new this.postModel({ ...data, blogName: blog.name });
     await createdPost.save();
+
     return await this.postsQueryRepository.getPostById(createdPost.id, userId);
   }
   async updatePost(postId: string, data: InputPostCreate) {

@@ -40,6 +40,7 @@ export class PostsQueryRepository {
       _id: new ObjectId(postId),
     });
     const id = userId ? userId : '';
+    debugger;
     return postMapper(res[0], id);
   }
   async getAllPostsForBlog(

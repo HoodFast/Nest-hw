@@ -26,7 +26,7 @@ export class UsersController {
       searchLoginTerm: input.searchLoginTerm ?? null,
       searchEmailTerm: input.searchEmailTerm ?? null,
       sortBy: input.sortBy ?? 'createdAt',
-      sortDirection: input.sortDirection ?? 'asc',
+      sortDirection: input.sortDirection ?? 'desc',
       pageNumber: input.pageNumber ? input.pageNumber : 1,
       pageSize: input.pageSize ? input.pageSize : 10,
     };
@@ -47,7 +47,10 @@ export class UsersController {
     return createdUser;
   }
   @Delete(':id')
-  async deleteUser(@Param('id') id: string, @Res() res: Response) {
+  async deleteUser(
+    @Param('id') id: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const deleteUser = this.userService.deleteUser(id);
     if (!deleteUser) return res.sendStatus(404);
     return res.sendStatus(204);

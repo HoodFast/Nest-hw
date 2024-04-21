@@ -36,7 +36,10 @@ export class PostsController {
   }
 
   @Get(':id')
-  async getPostById(@Param('id') postId: string, @Res() res: Response) {
+  async getPostById(
+    @Param('id') postId: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const userId = '';
     const post = await this.postService.getPostById(userId, postId);
 
@@ -47,7 +50,7 @@ export class PostsController {
   async getCommentsForPost(
     @Param('id') postId: string,
     @Query() query: QueryPostInputModel,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const sortData = {
       sortBy: query.sortBy ?? 'createdAt',
@@ -88,7 +91,10 @@ export class PostsController {
     return res.sendStatus(204);
   }
   @Delete(':id')
-  async deletePost(@Param('id') postId: string, @Res() res: Response) {
+  async deletePost(
+    @Param('id') postId: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const post = await this.postService.deletePost(postId);
     if (!post) return res.sendStatus(404);
     return res.sendStatus(204);

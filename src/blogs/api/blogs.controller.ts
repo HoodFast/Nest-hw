@@ -73,7 +73,7 @@ export class BlogsController {
   async getPostsForBlog(
     @Param('id') blogId: string,
     @Query() query: queryBlogsInputType,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const sortData = {
       sortBy: query.sortBy ?? 'createdAt',
@@ -100,6 +100,7 @@ export class BlogsController {
   async createPostForBlog(
     @Param('id') blogId: string,
     @Body() input: PostInput,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const postCreateData: PostCreateData = {
       title: input.title,
@@ -108,15 +109,19 @@ export class BlogsController {
       blogId,
       createdAt: new Date().toISOString(),
     };
+
     const userId = '';
-    return await this.postRepository.createPost(postCreateData, userId);
+    const post = await this.postRepository.createPost(postCreateData, userId);
+    debugger;
+    if (!post) return res.sendStatus(404);
+    return post;
   }
 
   @Put(':id')
   async updateBlog(
     @Param('id') blogId: string,
     @Body() body: createBlogInputType,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const updateBlogData: createBlogInputType = {
       name: body.name,
@@ -131,7 +136,10 @@ export class BlogsController {
     return res.sendStatus(204);
   }
   @Delete(':id')
-  async deleteBlogById(@Param('id') blogId: string, @Res() res: Response) {
+  async deleteBlogById(
+    @Param('id') blogId: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const deletedBlog = await this.blogService.deleteBlog(blogId);
     if (!deletedBlog) return res.sendStatus(404);
     return res.sendStatus(204);
