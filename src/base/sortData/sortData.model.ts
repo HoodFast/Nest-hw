@@ -1,6 +1,6 @@
 export class SortData {
   sortBy: string;
-  sortDirection: 'asc' | 'desc';
+  sortDirection: 'asc' | 'desc' | number;
   pageNumber: number;
   pageSize: number;
 }

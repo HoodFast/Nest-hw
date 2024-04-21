@@ -17,10 +17,10 @@ export class BlogsQueryRepository {
     if (searchNameTerm) {
       filter = { name: { $regex: searchNameTerm } };
     }
-
+    const mySortDirection = sortDirection == 'asc' ? 1 : -1;
     const blogs = await this.blogModel
       .find(filter)
-      .sort({ [`_doc.${sortBy}`]: sortDirection })
+      .sort({ [sortBy]: mySortDirection })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);
     const totalCount = await this.blogModel.countDocuments(filter);

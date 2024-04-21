@@ -51,7 +51,7 @@ export class BlogsController {
     const sortData = {
       searchNameTerm: query.searchNameTerm ?? null,
       sortBy: query.sortBy ?? 'createdAt',
-      sortDirection: query.sortDirection ?? sortDirection.desc,
+      sortDirection: query.sortDirection ?? -1,
       pageNumber: query.pageNumber ? +query.pageNumber : 1,
       pageSize: query.pageSize ? +query.pageSize : 10,
     };
