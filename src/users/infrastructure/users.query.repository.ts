@@ -40,7 +40,7 @@ export class UsersQueryRepository {
 
     const users = await this.userModel
       .find(filter)
-      .sort({ [sortBy]: sortDirection })
+      .sort({ [`accountData.${sortBy}`]: sortDirection })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);
     const totalCount = await this.userModel.countDocuments(filter);
