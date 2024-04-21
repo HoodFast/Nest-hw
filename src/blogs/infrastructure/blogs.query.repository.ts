@@ -20,7 +20,7 @@ export class BlogsQueryRepository {
     const mySortDirection = sortDirection == 'asc' ? -1 : 1;
     const blogs = await this.blogModel
       .find(filter)
-      .sort({ ['id']: 'asc' })
+
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);
     const totalCount = await this.blogModel.countDocuments(filter);
