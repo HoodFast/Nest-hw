@@ -56,7 +56,7 @@ export class PostsQueryRepository {
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);
 
-    const totalCount = await this.postModel.countDocuments({});
+    const totalCount = await this.postModel.countDocuments({ blogId: blogId });
     const pagesCount = Math.ceil(totalCount / pageSize);
 
     return {
