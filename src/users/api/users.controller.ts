@@ -28,8 +28,8 @@ export class UsersController {
       searchEmailTerm: input.searchEmailTerm ?? null,
       sortBy: input.sortBy ?? 'createdAt',
       sortDirection: input.sortDirection ?? sortDirection.desc,
-      pageNumber: input.pageNumber ? input.pageNumber : 1,
-      pageSize: input.pageSize ? input.pageSize : 10,
+      pageNumber: input.pageNumber ? +input.pageNumber : 1,
+      pageSize: input.pageSize ? +input.pageSize : 10,
     };
 
     const users = this.usersQueryRepository.getAllUsers(sortData);
