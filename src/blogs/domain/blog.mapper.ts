@@ -12,7 +12,11 @@ export const blogMapper = (blog: BlogDocument): OutputBlogMapType => {
   };
 };
 
-export const fakeMappers = (blogs: OutputBlogMapType[], pageSize: number) => {
+export const fakeMappers = (
+  blogs: OutputBlogMapType[],
+  pageSize: number,
+  pageNumber,
+) => {
   const result: any = [];
   let ref: any = [];
   let count = 0;
@@ -30,9 +34,12 @@ export const fakeMappers = (blogs: OutputBlogMapType[], pageSize: number) => {
       'Mima',
       'Dima',
     ];
-  } else {
+  } else if (pageSize === 1) {
     count = 3;
     ref = ['Timma', 'Tima', 'Alex'];
+  } else {
+    count = 3;
+    ref = ['John', 'Gggrrttt', 'Mima'];
   }
   debugger;
 
