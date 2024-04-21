@@ -26,7 +26,7 @@ export const fakeMapper = (blogs: OutputBlogMapType[]) => {
     'Mima',
     'Dima',
   ];
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 10; i++) {
     const res = blogs.find((b) => b.name === reference[i]);
 
     // @ts-ignore
