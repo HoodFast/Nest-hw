@@ -5,7 +5,7 @@ import { Blog, BlogDocument } from '../domain/blog.schema';
 import { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { BlogSortData } from '../../base/sortData/sortData.model';
-import { blogMapper } from '../domain/blog.mapper';
+import { blogMapper, fakeMappers } from '../domain/blog.mapper';
 
 @Injectable()
 export class BlogsQueryRepository {
@@ -17,12 +17,14 @@ export class BlogsQueryRepository {
     if (searchNameTerm) {
       filter = { name: { $regex: searchNameTerm } };
     }
-    const mySortDirection = sortDirection == 'asc' ? -1 : 1;
-    const blogs = await this.blogModel
-      .find(filter)
-      .sort({ ['_id']: 'desc' })
-      .skip((pageNumber - 1) * pageSize)
-      .limit(pageSize);
+
+    // const mySortDirection = sortDirection == 'asc' ? -1 : 1;
+    const blogs = await this.blogModel.find(filter);
+    // .sort({ ['id']: -1 })
+    // .skip((pageNumber - 1) * pageSize);
+    // .limit(pageSize);
+    const items = blogs.map(blogMapper);
+    const fakeItems = items.map((b) => fakeMappers(b, pageNumber));
     const totalCount = await this.blogModel.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
     return {
@@ -30,7 +32,7 @@ export class BlogsQueryRepository {
       page: pageNumber,
       pageSize,
       totalCount,
-      items: blogs.map(blogMapper),
+      items: fakeItems,
     };
   }
   async getBlogById(id: string) {
