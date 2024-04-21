@@ -14,6 +14,7 @@ import { Response } from 'express';
 import { InputPostCreate, PostCreateData } from './input/PostsCreate.dto';
 import { QueryPostInputModel } from './input/PostsGetInput';
 import { CommentsQueryRepository } from '../../comments/infrastructure/comments.query.repository';
+import { sortDirection } from '../../blogs/api/blogs.controller';
 
 @Controller('posts')
 export class PostsController {
@@ -25,7 +26,7 @@ export class PostsController {
   async getAllPosts(@Query() query: QueryPostInputModel) {
     const sortData = {
       sortBy: query.sortBy ?? 'createdAt',
-      sortDirection: query.sortDirection ?? 'desc',
+      sortDirection: query.sortDirection ?? sortDirection.desc,
       pageNumber: query.pageNumber ? +query.pageNumber : 1,
       pageSize: query.pageSize ? +query.pageSize : 10,
     };
@@ -54,7 +55,7 @@ export class PostsController {
   ) {
     const sortData = {
       sortBy: query.sortBy ?? 'createdAt',
-      sortDirection: query.sortDirection ?? 'desc',
+      sortDirection: query.sortDirection ?? sortDirection.desc,
       pageNumber: query.pageNumber ? +query.pageNumber : 1,
       pageSize: query.pageSize ? +query.pageSize : 10,
     };
@@ -87,9 +88,11 @@ export class PostsController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const post = await this.postService.updatePost(postId, model);
+
     if (!post) return res.sendStatus(404);
     return res.sendStatus(204);
   }
+
   @Delete(':id')
   async deletePost(
     @Param('id') postId: string,

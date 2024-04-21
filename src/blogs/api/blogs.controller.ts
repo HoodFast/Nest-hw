@@ -19,7 +19,7 @@ import { PostsRepository } from '../../posts/infrastructure/posts.repository';
 import { PostsQueryRepository } from '../../posts/infrastructure/posts.query.repository';
 import { Response } from 'express';
 
-enum sortDirection {
+export enum sortDirection {
   asc = 'asc',
   desc = 'desc',
 }

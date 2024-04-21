@@ -26,10 +26,9 @@ export class PostsRepository {
   async updatePost(postId: string, data: InputPostCreate) {
     try {
       const blog = await this.blogsQueryRepository.getBlogById(data.blogId);
+      debugger;
       if (!blog) return false;
-      if (!blog[0]) {
-        return false;
-      }
+
       const res = await this.postModel.updateOne(
         { _id: new ObjectId(postId) },
         {
@@ -51,6 +50,7 @@ export class PostsRepository {
   }
   async deletePost(postId: string): Promise<boolean> {
     const res = await this.postModel.deleteOne({ _id: new ObjectId(postId) });
+
     return !!res.deletedCount;
   }
 }

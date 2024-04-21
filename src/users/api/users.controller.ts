@@ -13,6 +13,7 @@ import { UsersService } from '../application/users.service';
 import { UsersSortData } from '../../base/sortData/sortData.model';
 import { UsersQueryRepository } from '../infrastructure/users.query.repository';
 import { Response } from 'express';
+import { sortDirection } from '../../blogs/api/blogs.controller';
 
 @Controller('users')
 export class UsersController {
@@ -26,7 +27,7 @@ export class UsersController {
       searchLoginTerm: input.searchLoginTerm ?? null,
       searchEmailTerm: input.searchEmailTerm ?? null,
       sortBy: input.sortBy ?? 'createdAt',
-      sortDirection: input.sortDirection ?? 'desc',
+      sortDirection: input.sortDirection ?? sortDirection.desc,
       pageNumber: input.pageNumber ? input.pageNumber : 1,
       pageSize: input.pageSize ? input.pageSize : 10,
     };
