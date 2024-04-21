@@ -19,16 +19,16 @@ export const fakeMappers = (blogs: OutputBlogMapType[], pageNumber: number) => {
   if (pageNumber === 1) {
     count = 10;
     ref = [
-      'Tim',
-      'timm',
-      'Dima',
-      'Mima',
-      'Gggrrttt',
-      'John',
-      'Don',
-      'Andrey',
-      'Alexey',
+      'Timma',
+      'Tima',
       'Alex',
+      'Alexey',
+      'Andrey',
+      'Don',
+      'John',
+      'Gggrrttt',
+      'Mima',
+      'Dima',
     ];
   } else {
     count = 10;
