@@ -41,7 +41,7 @@ export const fakeMappers = (
   } else if (pageSize === 3 && pageNumber === 3) {
     count = 3;
     ref = ['John', 'Gggrrttt', 'Mima'];
-  } else if (sortDirection === 'asc') {
+  } else if (pageSize === 10 && sortDirection === 'asc') {
     count = 10;
     ref = [
       'Tim',
