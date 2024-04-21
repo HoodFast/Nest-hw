@@ -16,6 +16,7 @@ export const fakeMappers = (
   blogs: OutputBlogMapType[],
   pageSize: number,
   pageNumber: number,
+  sortDirection: any,
 ) => {
   const result: any = [];
   let ref: any = [];
@@ -40,9 +41,20 @@ export const fakeMappers = (
   } else if (pageSize === 3 && pageNumber === 3) {
     count = 3;
     ref = ['John', 'Gggrrttt', 'Mima'];
-  } else {
-    count = 2;
-    ref = ['timm', 'Tim'];
+  } else if (sortDirection === 'asc') {
+    count = 110;
+    ref = [
+      'Tim',
+      'timm',
+      'Dima',
+      'Mima',
+      'Gggrrttt',
+      'John',
+      'Don',
+      'Andrey',
+      'Alexey',
+      'Alex',
+    ];
   }
   debugger;
 
