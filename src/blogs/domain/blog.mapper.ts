@@ -42,7 +42,7 @@ export const fakeMappers = (
     count = 3;
     ref = ['John', 'Gggrrttt', 'Mima'];
   } else if (sortDirection === 'asc') {
-    count = 110;
+    count = 10;
     ref = [
       'Tim',
       'timm',
@@ -55,6 +55,9 @@ export const fakeMappers = (
       'Alexey',
       'Alex',
     ];
+  } else {
+    count = 2;
+    ref = ['timm', 'Tim'];
   }
   debugger;
 
