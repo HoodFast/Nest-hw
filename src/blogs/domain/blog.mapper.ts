@@ -12,7 +12,7 @@ export const blogMapper = (blog: BlogDocument): OutputBlogMapType => {
   };
 };
 
-export const fakeMappers = (blogs: any, pageNumber: number) => {
+export const fakeMappers = (blogs: OutputBlogMapType[], pageNumber: number) => {
   const result: any = [];
   let ref: any = [];
   let count = 0;
@@ -45,6 +45,7 @@ export const fakeMappers = (blogs: any, pageNumber: number) => {
       'Alex',
     ];
   }
+  debugger;
 
   for (let i = 0; i < count; i++) {
     const res = blogs.find((b) => b.name === ref[i]);
