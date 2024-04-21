@@ -7,10 +7,14 @@ import { postMapper, PostType } from './post.mapper';
 import { ObjectId } from 'mongodb';
 import { Pagination } from '../../base/paginationInputDto/paginationOutput';
 import { SortData } from '../../base/sortData/sortData.model';
+import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.query.repository';
 
 @Injectable()
 export class PostsQueryRepository {
-  constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
+  constructor(
+    @InjectModel(Post.name) private postModel: Model<PostDocument>,
+    protected blogsQueryRepository: BlogsQueryRepository,
+  ) {}
 
   async getAllPosts(
     data: SortData,
@@ -47,9 +51,10 @@ export class PostsQueryRepository {
     userId: string,
     blogId: string,
     data: SortData,
-  ): Promise<Pagination<PostType>> {
+  ): Promise<Pagination<PostType> | null> {
     const { sortBy, sortDirection, pageSize, pageNumber } = data;
-
+    const blog = await this.blogsQueryRepository.getBlogById(blogId);
+    if (!blog) return null;
     const posts = await this.postModel
       .find({ blogId: blogId })
       .sort({ [sortBy]: sortDirection })

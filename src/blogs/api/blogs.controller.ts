@@ -82,7 +82,7 @@ export class BlogsController {
       pageSize: query.pageSize ? +query.pageSize : 10,
     };
     const userId = '';
-    const posts = this.postsQueryRepository.getAllPostsForBlog(
+    const posts = await this.postsQueryRepository.getAllPostsForBlog(
       userId,
       blogId,
       sortData,
