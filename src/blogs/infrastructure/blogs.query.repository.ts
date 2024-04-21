@@ -24,7 +24,7 @@ export class BlogsQueryRepository {
     // .skip((pageNumber - 1) * pageSize);
     // .limit(pageSize);
     const items = blogs.map(blogMapper);
-    const fakeItems = fakeMappers(items, pageSize);
+    const fakeItems = fakeMappers(items, pageSize, pageNumber);
     const totalCount = await this.blogModel.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
     return {
