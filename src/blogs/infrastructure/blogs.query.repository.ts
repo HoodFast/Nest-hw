@@ -13,10 +13,14 @@ export class BlogsQueryRepository {
   async getAllBlogs(sortData: BlogSortData) {
     const { sortBy, sortDirection, searchNameTerm, pageSize, pageNumber } =
       sortData;
-    const filter = { name: { $regex: searchNameTerm || '' } };
+    let filter = {};
+    if (searchNameTerm) {
+      filter = { name: { $regex: searchNameTerm } };
+    }
+
     const blogs = await this.blogModel
       .find(filter)
-      .sort({ [sortBy]: sortDirection })
+      .sort({ [`_doc.${sortBy}`]: sortDirection })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);
     const totalCount = await this.blogModel.countDocuments(filter);
