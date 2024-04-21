@@ -21,7 +21,7 @@ export const fakeMappers = (
   const result: any = [];
   let ref: any = [];
   let count = 0;
-  if (pageSize === 10) {
+  if (pageSize === 10 && sortDirection === 'desc') {
     count = 10;
     ref = [
       'Timma',
