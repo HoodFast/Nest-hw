@@ -55,7 +55,7 @@ export class UsersService {
     return createdUser;
   }
   async deleteUser(userId: string) {
-    const deleteUser = this.userRepository.deleteUser(userId);
+    const deleteUser = await this.userRepository.deleteUser(userId);
     return deleteUser;
   }
 }

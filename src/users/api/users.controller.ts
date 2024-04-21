@@ -52,7 +52,7 @@ export class UsersController {
     @Param('id') id: string,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const deleteUser = this.userService.deleteUser(id);
+    const deleteUser = await this.userService.deleteUser(id);
     if (!deleteUser) return res.sendStatus(404);
     return res.sendStatus(204);
   }

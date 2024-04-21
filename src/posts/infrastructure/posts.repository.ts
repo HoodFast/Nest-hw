@@ -37,7 +37,7 @@ export class PostsRepository {
             shortDescription: data.shortDescription,
             content: data.content,
             blogId: data.blogId,
-            blogName: blog[0].name,
+            blogName: blog.name,
           },
         },
       );
