@@ -55,6 +55,19 @@ export const fakeMappers = (
       'Alexey',
       'Alex',
     ];
+  } else if (pageSize === 9) {
+    count = 9;
+    ref = [
+      'Alex',
+      'Alexey',
+      'Andrey',
+      'Dima',
+      'Don',
+      'Gggrrttt',
+      'John',
+      'Mima',
+      'Tim',
+    ];
   } else {
     count = 2;
     ref = ['timm', 'Tim'];
