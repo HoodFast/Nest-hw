@@ -31,8 +31,9 @@ export class BlogsQueryRepository {
       sortDirection,
       searchNameTerm,
     );
-    const totalCount = await this.blogModel.countDocuments({ filter });
+    const totalCount = await this.blogModel.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
+    debugger;
     return {
       pagesCount,
       page: pageNumber,
