@@ -17,6 +17,7 @@ export const fakeMappers = (
   pageSize: number,
   pageNumber: number,
   sortDirection: any,
+  searchNameTerm: string | null,
 ) => {
   const result: any = [];
   let ref: any = [];
@@ -71,6 +72,9 @@ export const fakeMappers = (
   } else if (pageSize === 5 && pageNumber === 3) {
     count = 2;
     ref = ['timm', 'Tim'];
+  } else if (pageSize === 5 && searchNameTerm === 'Tim') {
+    count = 4;
+    ref = ['Tim', 'Tima', 'Timma', 'timm'];
   } else if (pageSize === 5) {
     count = 4;
     ref = ['Tim', 'Tima', 'Timma', 'timm'];
