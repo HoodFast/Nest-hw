@@ -15,7 +15,7 @@ export class BlogsQueryRepository {
       sortData;
     let filter = {};
     if (searchNameTerm) {
-      filter = { name: { $regex: searchNameTerm } };
+      filter = { name: { $regex: searchNameTerm, $options: 'i' } };
     }
 
     // const mySortDirection = sortDirection == 'asc' ? -1 : 1;
