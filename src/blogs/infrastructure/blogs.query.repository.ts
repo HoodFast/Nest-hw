@@ -13,13 +13,13 @@ export class BlogsQueryRepository {
   async getAllBlogs(sortData: BlogSortData) {
     const { sortBy, sortDirection, searchNameTerm, pageSize, pageNumber } =
       sortData;
-    let filter = {};
-    if (searchNameTerm) {
-      filter = { name: { $regex: searchNameTerm } };
-    }
+    // let filter = {};
+    // if (searchNameTerm) {
+    //   filter = { name: { $regex: searchNameTerm } };
+    // }
 
     // const mySortDirection = sortDirection == 'asc' ? -1 : 1;
-    const blogs = await this.blogModel.find(filter);
+    const blogs = await this.blogModel.find({});
     // .sort({ ['id']: -1 })
     // .skip((pageNumber - 1) * pageSize);
     // .limit(pageSize);
