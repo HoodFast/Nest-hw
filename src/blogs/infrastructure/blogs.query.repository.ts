@@ -13,10 +13,10 @@ export class BlogsQueryRepository {
   async getAllBlogs(sortData: BlogSortData) {
     const { sortBy, sortDirection, searchNameTerm, pageSize, pageNumber } =
       sortData;
-    // let filter = {};
-    // if (searchNameTerm) {
-    //   filter = { name: { $regex: searchNameTerm } };
-    // }
+    let filter = {};
+    if (searchNameTerm) {
+      filter = { name: { $regex: searchNameTerm } };
+    }
 
     // const mySortDirection = sortDirection == 'asc' ? -1 : 1;
     const blogs = await this.blogModel.find({});
@@ -31,7 +31,7 @@ export class BlogsQueryRepository {
       sortDirection,
       searchNameTerm,
     );
-    const totalCount = await this.blogModel.countDocuments({});
+    const totalCount = await this.blogModel.countDocuments({ filter });
     const pagesCount = Math.ceil(totalCount / pageSize);
     return {
       pagesCount,
