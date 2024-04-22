@@ -68,6 +68,9 @@ export const fakeMappers = (
       'Mima',
       'Tim',
     ];
+  } else if (pageSize === 5) {
+    count = 4;
+    ref = ['Tim', 'Tima', 'Timma', 'timm'];
   } else {
     count = 2;
     ref = ['timm', 'Tim'];
