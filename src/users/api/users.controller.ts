@@ -47,6 +47,7 @@ export class UsersController {
     );
     return createdUser;
   }
+
   @Delete(':id')
   async deleteUser(
     @Param('id') id: string,

@@ -5,7 +5,7 @@ import { Blog, BlogDocument } from '../domain/blog.schema';
 import { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { BlogSortData } from '../../base/sortData/sortData.model';
-import { blogMapper, fakeMappers } from '../domain/blog.mapper';
+import { blogMapper } from '../domain/blog.mapper';
 
 @Injectable()
 export class BlogsQueryRepository {
@@ -18,28 +18,28 @@ export class BlogsQueryRepository {
       filter = { name: { $regex: searchNameTerm, $options: 'i' } };
     }
 
-    // const mySortDirection = sortDirection == 'asc' ? -1 : 1;
-    const blogs = await this.blogModel.find({});
-    // .sort({ ['id']: -1 })
-    // .skip((pageNumber - 1) * pageSize);
-    // .limit(pageSize);
-    const items = blogs.map(blogMapper);
-    const fakeItems = fakeMappers(
-      items,
-      pageSize,
-      pageNumber,
-      sortDirection,
-      searchNameTerm,
-    );
+    const blogs = await this.blogModel
+      .find(filter)
+      .sort({ [sortBy]: sortDirection })
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize);
+    // const items = blogs.map(blogMapper);
+    // const fakeItems = fakeMappers(
+    //   items,
+    //   pageSize,
+    //   pageNumber,
+    //   sortDirection,
+    //   searchNameTerm,
+    // );
     const totalCount = await this.blogModel.countDocuments(filter);
     const pagesCount = Math.ceil(totalCount / pageSize);
-    debugger;
+
     return {
       pagesCount,
       page: pageNumber,
       pageSize,
       totalCount,
-      items: fakeItems,
+      items: blogs.map(blogMapper),
     };
   }
   async getBlogById(id: string) {
