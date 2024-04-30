@@ -8,6 +8,7 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(
     new ValidationPipe({
+      transform: true,
       stopAtFirstError: true,
       exceptionFactory: (errors) => {
         const errorsForResponce: { message: string; field: string }[] = [];

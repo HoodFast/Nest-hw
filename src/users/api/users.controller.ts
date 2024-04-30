@@ -7,6 +7,7 @@ import {
   Post,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { UserInputDto } from './input/userInput.dto';
 import { UsersService } from '../application/users.service';
@@ -14,7 +15,20 @@ import { UsersSortData } from '../../base/sortData/sortData.model';
 import { UsersQueryRepository } from '../infrastructure/users.query.repository';
 import { Response } from 'express';
 import { sortDirection } from '../../blogs/api/blogs.controller';
+import { validateOrReject } from 'class-validator';
+import { AuthGuard } from '../../guards/auth.guard';
 
+const validateOrRejectModel = async (model: any, ctor: { new (): any }) => {
+  if (!(model instanceof ctor)) {
+    throw new Error('incorrect input data');
+  }
+  try {
+    await validateOrReject(model);
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+@UseGuards(AuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(
@@ -37,8 +51,8 @@ export class UsersController {
   }
   @Post()
   async createUser(@Body() input: UserInputDto) {
+    await validateOrRejectModel(input, UserInputDto);
     const { login, email, password } = input;
-
     const createdUser = await this.userService.createUser(
       login,
       email,
