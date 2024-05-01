@@ -24,6 +24,7 @@ export class UsersRepository {
 
     return userMapper(user);
   }
+
   async deleteUser(userId: string) {
     const deleted = await this.userModel.deleteOne({
       _id: new ObjectId(userId),

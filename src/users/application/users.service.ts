@@ -5,19 +5,26 @@ import { User } from '../domain/user.schema';
 import { add } from 'date-fns/add';
 import { UsersRepository } from '../infrastructure/users.repository';
 import { Injectable } from '@nestjs/common';
+import { UsersQueryRepository } from '../infrastructure/users.query.repository';
 
 const saltRounds = 10;
 @Injectable()
 export class UsersService {
-  constructor(protected userRepository: UsersRepository) {}
-
+  constructor(
+    protected usersRepository: UsersRepository,
+    protected usersQueryRepository: UsersQueryRepository,
+  ) {}
+  async findUser(loginOrEmail: string) {
+    const user = await this.usersQueryRepository.findUser(loginOrEmail);
+    return user;
+  }
   async createUser(
     login: string,
     email: string,
     password: string,
     isConfirmed?: boolean,
   ): Promise<OutputUsersType | null> {
-    const user = await this.userRepository.doesExistByLoginOrEmail(
+    const user = await this.usersRepository.doesExistByLoginOrEmail(
       login,
       email,
     );
@@ -40,7 +47,7 @@ export class UsersService {
       },
       tokensBlackList: [],
     };
-    const createdUser = await this.userRepository.createUser(userData);
+    const createdUser = await this.usersRepository.createUser(userData);
     if (!createdUser) {
       return null;
     }
@@ -55,7 +62,7 @@ export class UsersService {
     return createdUser;
   }
   async deleteUser(userId: string) {
-    const deleteUser = await this.userRepository.deleteUser(userId);
+    const deleteUser = await this.usersRepository.deleteUser(userId);
     return deleteUser;
   }
 }
