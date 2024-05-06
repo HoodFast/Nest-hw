@@ -24,7 +24,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       if (typeof responceBody.message === 'string') {
         return response.sendStatus(status);
       } else {
-        debugger;
         responceBody.message.forEach((m: { message: string; field: string }) =>
           errorResponce.errors.push(m),
         );

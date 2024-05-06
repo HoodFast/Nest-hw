@@ -59,6 +59,7 @@ export class UsersController {
       password,
       true,
     );
+
     return createdUser;
   }
 

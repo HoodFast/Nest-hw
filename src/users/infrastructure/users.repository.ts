@@ -19,6 +19,7 @@ export class UsersRepository {
   async createUser(userData: User): Promise<OutputUsersType | null> {
     const newUser = new this.userModel(userData);
     await newUser.save();
+
     const user = await this.userModel.findOne({ _id: newUser.id });
     if (!user) return null;
 
