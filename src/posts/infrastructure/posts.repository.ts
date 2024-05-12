@@ -44,7 +44,6 @@ export class PostsRepository {
 
       return !!res.matchedCount;
     } catch (e) {
-      console.log(e);
       return false;
     }
   }

@@ -7,7 +7,6 @@ import { UsersService } from '../../src/users/application/users.service';
 import { UsersServiceEmailMock } from './mock/email.mock.class';
 import { UserInputDto } from '../../src/users/api/input/userInput.dto';
 import { UserTestManager } from './user.test.manager';
-import { response } from 'express';
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication;

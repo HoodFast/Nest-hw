@@ -21,6 +21,11 @@ import { TestingQueryRepository } from './testing/infrastructure/testing.query.r
 import { UsersController } from './users/api/users.controller';
 import { TestingController } from './testing/api/testing.controller';
 import { CommentsQueryRepository } from './comments/infrastructure/comments.query.repository';
+import { AuthService } from './auth/application/auth.service';
+import { JwtService } from './auth/infrastructure/jwt.service';
+import { SessionRepository } from './auth/infrastructure/session.repository';
+import { AuthController } from './auth/api/auth.controller';
+import { Session, SessionSchema } from './sessions/domain/session.schema';
 
 const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
@@ -30,6 +35,7 @@ const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
     MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
     MongooseModule.forFeature([{ name: User.name, schema: UsersSchema }]),
+    MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
   ],
   controllers: [
     AppController,
@@ -37,6 +43,7 @@ const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
     BlogsController,
     UsersController,
     TestingController,
+    AuthController,
   ],
   providers: [
     AppService,
@@ -51,6 +58,9 @@ const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
     UsersQueryRepository,
     TestingQueryRepository,
     CommentsQueryRepository,
+    AuthService,
+    JwtService,
+    SessionRepository,
   ],
 })
 export class AppModule {}

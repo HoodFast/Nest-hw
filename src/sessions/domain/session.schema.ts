@@ -4,8 +4,9 @@ import { HydratedDocument } from 'mongoose';
 
 @Schema()
 export class Session {
+  // issuedAt- дата "выпуска"
   @Prop()
-  iat;
+  iat: Date;
   @Prop()
   expireDate: Date;
   @Prop()
@@ -19,4 +20,4 @@ export class Session {
 }
 
 export const SessionSchema = SchemaFactory.createForClass(Session);
-export type PostDocument = HydratedDocument<Session>;
+export type SessionDocument = HydratedDocument<Session>;

@@ -1,11 +1,12 @@
 import { OutputUsersType } from '../api/output/users.output.dto';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
-import { User } from '../domain/user.schema';
+import { User, UserDocument } from '../domain/user.schema';
 import { add } from 'date-fns/add';
 import { UsersRepository } from '../infrastructure/users.repository';
 import { Injectable } from '@nestjs/common';
 import { UsersQueryRepository } from '../infrastructure/users.query.repository';
+import { ObjectId } from 'mongodb';
 
 const saltRounds = 10;
 @Injectable()
@@ -60,6 +61,21 @@ export class UsersService {
     // }
 
     return createdUser;
+  }
+
+  async checkCredentials(
+    loginOrEmail: string,
+    password: string,
+  ): Promise<ObjectId | null> {
+    const user = await this.usersQueryRepository.findUser(loginOrEmail);
+    if (!user) return null;
+    if (!user.emailConfirmation.isConfirmed) return null;
+    const res = await bcrypt.compare(password, user.accountData._passwordHash);
+    if (!res) {
+      return null;
+    } else {
+      return user._id;
+    }
   }
   async deleteUser(userId: string) {
     const deleteUser = await this.usersRepository.deleteUser(userId);
