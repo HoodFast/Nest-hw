@@ -1,12 +1,13 @@
 import { OutputUsersType } from '../api/output/users.output.dto';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
-import { User, UserDocument } from '../domain/user.schema';
+import { User } from '../domain/user.schema';
 import { add } from 'date-fns/add';
 import { UsersRepository } from '../infrastructure/users.repository';
 import { Injectable } from '@nestjs/common';
 import { UsersQueryRepository } from '../infrastructure/users.query.repository';
 import { ObjectId } from 'mongodb';
+import { EmailService } from '../../auth/infrastructure/email.service';
 
 const saltRounds = 10;
 @Injectable()
@@ -14,6 +15,7 @@ export class UsersService {
   constructor(
     protected usersRepository: UsersRepository,
     protected usersQueryRepository: UsersQueryRepository,
+    protected emailService: EmailService,
   ) {}
   async findUser(loginOrEmail: string) {
     const user = await this.usersQueryRepository.findUser(loginOrEmail);
@@ -52,17 +54,28 @@ export class UsersService {
     if (!createdUser) {
       return null;
     }
-    // try {
-    //   if (!isConfirmed) {
-    //     await AuthService.sendConfirmCode(createdUser.email);
-    //   }
-    // } catch (e) {
-    //   return null;
-    // }
+    try {
+      if (!isConfirmed) {
+        await this.sendConfirmCode(createdUser.email);
+      }
+    } catch (e) {
+      return null;
+    }
 
     return createdUser;
   }
-
+  async sendConfirmCode(email: string) {
+    const user = await this.usersQueryRepository.findUser(email);
+    if (!user) return false;
+    const subject = 'Email Confirmation';
+    const message = `<h1>Thank for your registration</h1>
+        <p>To finish registration please follow the link below:
+            <a href='https://somesite.com/confirm-email?code=${user.emailConfirmation.confirmationCode}'>complete registration</a>
+        </p>`;
+    const send = await this.emailService.sendEmail(email, subject, message);
+    debugger;
+    return send;
+  }
   async checkCredentials(
     loginOrEmail: string,
     password: string,

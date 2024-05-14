@@ -26,6 +26,7 @@ import { JwtService } from './auth/infrastructure/jwt.service';
 import { SessionRepository } from './auth/infrastructure/session.repository';
 import { AuthController } from './auth/api/auth.controller';
 import { Session, SessionSchema } from './sessions/domain/session.schema';
+import { EmailService } from './auth/infrastructure/email.service';
 
 const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
@@ -61,6 +62,9 @@ const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
     AuthService,
     JwtService,
     SessionRepository,
+    AuthService,
+    EmailService,
+    UsersService,
   ],
 })
 export class AppModule {}

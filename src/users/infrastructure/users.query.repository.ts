@@ -7,7 +7,6 @@ import { UsersSortData } from '../../base/sortData/sortData.model';
 import { Pagination } from '../../base/paginationInputDto/paginationOutput';
 import { userMapper } from './users.mapper';
 import { OutputUsersType } from '../api/output/users.output.dto';
-import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UsersQueryRepository {

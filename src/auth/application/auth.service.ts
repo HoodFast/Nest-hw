@@ -4,7 +4,6 @@ import { UsersService } from '../../users/application/users.service';
 import { Injectable } from '@nestjs/common';
 import { Session } from '../../sessions/domain/session.schema';
 import { randomUUID } from 'crypto';
-import { RegistrationUserDto } from '../api/input/registration.user.input';
 const jwt = require('jsonwebtoken');
 @Injectable()
 export class AuthService {
@@ -59,5 +58,4 @@ export class AuthService {
     if (!setTokenMetaData) return null;
     return { accessToken, refreshToken };
   }
-  async registration(data: RegistrationUserDto) {}
 }
