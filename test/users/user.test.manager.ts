@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { UserInputDto } from '../../src/users/api/input/userInput.dto';
+import { Response } from 'express';
 
 export class UserTestManager {
   constructor(protected readonly app: INestApplication) {}
@@ -13,13 +14,16 @@ export class UserTestManager {
       .auth('admin', 'qwerty')
       .expect(204);
   }
-  async createUser(createUserData: UserInputDto) {
-    const responce = await request(this.app.getHttpServer())
+  async deleteAll() {
+    await request(this.app.getHttpServer()).delete(`/testing/all-data`);
+  }
+  async createUser(createUserData: UserInputDto, expectStatus: number) {
+    const response = await request(this.app.getHttpServer())
       .post('/users')
       .auth('admin', 'qwerty')
       .send(createUserData)
-      .expect(201);
-    return responce;
+      .expect(expectStatus);
+    return response;
   }
   async login(
     login: string,
@@ -35,5 +39,15 @@ export class UserTestManager {
         .split('=')[1]
         .split(';')[0],
     };
+  }
+  checkValidateErrors(response: any) {
+    const result = response.body;
+
+    expect(result).toEqual({
+      errors: [
+        { message: expect.any(String), field: expect.any(String) },
+        { message: expect.any(String), field: expect.any(String) },
+      ],
+    });
   }
 }

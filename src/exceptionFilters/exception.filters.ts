@@ -8,6 +8,7 @@ import { Request, Response } from 'express';
 import * as process from 'process';
 
 const errorsCode = [400, 401, 403, 404];
+
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
@@ -15,14 +16,17 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
-
+    if (status === 429) {
+      return response.sendStatus(429);
+    }
     if (errorsCode.includes(status)) {
       const errorResponce: { errors: { message: string; field: string }[] } = {
         errors: [],
       };
       const responceBody: any = exception.getResponse();
+
       if (typeof responceBody.message === 'string') {
-        return response.sendStatus(status);
+        return response.status(status).send({ errors: [responceBody] });
       } else {
         responceBody.message.forEach((m: { message: string; field: string }) =>
           errorResponce.errors.push(m),

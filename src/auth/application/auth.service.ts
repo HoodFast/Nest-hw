@@ -1,9 +1,12 @@
 import { SessionRepository } from '../infrastructure/session.repository';
 import { JwtService } from '../infrastructure/jwt.service';
 import { UsersService } from '../../users/application/users.service';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Session } from '../../sessions/domain/session.schema';
 import { randomUUID } from 'crypto';
+import { UsersQueryRepository } from '../../users/infrastructure/users.query.repository';
+import { UsersRepository } from '../../users/infrastructure/users.repository';
+import { EmailService } from '../infrastructure/email.service';
 const jwt = require('jsonwebtoken');
 @Injectable()
 export class AuthService {
@@ -11,7 +14,37 @@ export class AuthService {
     protected usersService: UsersService,
     protected sessionRepository: SessionRepository,
     protected jwtService: JwtService,
+    protected usersQueryRepository: UsersQueryRepository,
+    protected usersRepository: UsersRepository,
+    protected emailService: EmailService,
   ) {}
+  async confirmEmail(code: string) {
+    const user = await this.usersQueryRepository.getUserByCode(code);
+    if (!user) return null;
+    if (user?.emailConfirmation.isConfirmed) return null;
+    if (user?.emailConfirmation.expirationDate < new Date()) {
+      throw new BadRequestException({
+        message: 'expired',
+        field: 'expirationDate',
+      });
+    }
+    const confirmEmail = await this.usersRepository.confirmEmail(user._id);
+    return confirmEmail;
+  }
+  async sendRecovery(email: string) {
+    const subject = 'Password recovery';
+    const recoveryCode = this.jwtService.createRecoveryCode(email);
+    const message = `<h1>Password recovery</h1>
+        <p>To finish password recovery please follow the link below:
+          <a href='https://somesite.com/password-recovery?recoveryCode=${recoveryCode}'>recovery password</a>
+      </p>`;
+    try {
+      await this.emailService.sendEmail(email, subject, message);
+    } catch (e) {
+      return;
+    }
+    return;
+  }
 
   async loginTokensPair(
     loginOrEmail: string,

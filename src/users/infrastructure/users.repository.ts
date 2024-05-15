@@ -32,4 +32,15 @@ export class UsersRepository {
     });
     return !!deleted.deletedCount;
   }
+  async confirmEmail(userId: ObjectId) {
+    const confirm = await this.userModel.updateOne(
+      { _id: userId },
+      {
+        $set: {
+          'emailConfirmation.isConfirmed': true,
+        },
+      },
+    );
+    return confirm.modifiedCount === 1;
+  }
 }

@@ -63,4 +63,12 @@ export class UsersQueryRepository {
       items: users.map(userMapper),
     };
   }
+
+  async getUserByCode(code: string): Promise<UserDocument | null> {
+    const user = await this.userModel.findOne({
+      'emailConfirmation.confirmationCode': code,
+    });
+    if (!user) return null;
+    return user;
+  }
 }

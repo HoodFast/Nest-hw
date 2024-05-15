@@ -4,11 +4,15 @@ import { Injectable } from '@nestjs/common';
 
 import { randomUUID } from 'crypto';
 import { SessionRepository } from './session.repository';
+import { UsersQueryRepository } from '../../users/infrastructure/users.query.repository';
 const jwt = require('jsonwebtoken');
 
 @Injectable()
 export class JwtService {
-  constructor(private sessionRepository: SessionRepository) {}
+  constructor(
+    private sessionRepository: SessionRepository,
+    private usersQueryRepository: UsersQueryRepository,
+  ) {}
   async createJWT(userId: ObjectId): Promise<string> {
     const token = jwt.sign({ userId }, appConfig.AC_SECRET, {
       expiresIn: appConfig.AC_TIME,
@@ -43,5 +47,14 @@ export class JwtService {
     const decoded = await jwt.decode(refreshToken, { complete: true });
     const iat = new Date(decoded.payload.iat * 1000);
     return iat;
+  }
+  async createRecoveryCode(email: string) {
+    try {
+      const user = await this.usersQueryRepository.findUser(email);
+      const token = jwt.sign({ userId: user?._id }, appConfig.RECOVERY_SECRET, {
+        expiresIn: appConfig.RECOVERY_TIME,
+      });
+      return token;
+    } catch (e) {}
   }
 }

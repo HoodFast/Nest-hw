@@ -43,13 +43,13 @@ export class UsersService {
       emailConfirmation: {
         confirmationCode: uuidv4(),
         expirationDate: add(new Date(), {
-          hours: 1,
-          minutes: 30,
+          minutes: 15,
         }),
         isConfirmed: isConfirmed ? isConfirmed : false,
       },
       tokensBlackList: [],
     };
+    console.log(userData.emailConfirmation.confirmationCode);
     const createdUser = await this.usersRepository.createUser(userData);
     if (!createdUser) {
       return null;
@@ -73,7 +73,6 @@ export class UsersService {
             <a href='https://somesite.com/confirm-email?code=${user.emailConfirmation.confirmationCode}'>complete registration</a>
         </p>`;
     const send = await this.emailService.sendEmail(email, subject, message);
-    debugger;
     return send;
   }
   async checkCredentials(

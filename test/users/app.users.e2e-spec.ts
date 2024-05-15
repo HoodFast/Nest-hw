@@ -5,8 +5,8 @@ import { AppModule } from '../../src/app.module';
 import { appSettings } from '../../src/settings/app.settings';
 import { UsersService } from '../../src/users/application/users.service';
 import { UsersServiceEmailMock } from './mock/email.mock.class';
-import { UserInputDto } from '../../src/users/api/input/userInput.dto';
 import { UserTestManager } from './user.test.manager';
+import request from 'supertest';
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication;
@@ -24,15 +24,26 @@ describe('UsersController (e2e)', () => {
     await app.init();
     httpServer = app.getHttpServer();
   });
-
-  it('create user this correct data', async () => {
+  afterAll(async () => {
     const userTestManager = new UserTestManager(app);
-    const createUserData: UserInputDto = {
+    await userTestManager.deleteAll();
+  });
+  expect.setState({
+    createUserData: {
       login: 'Fj5ll0T',
       password: 'string',
       email: '6Ya0V21@raLn.Je',
-    };
-    const response = await userTestManager.createUser(createUserData);
+    },
+    createWrongUserData: {
+      login: 'Fj',
+      password: 'string',
+      email: '6Ya0V21raLn.Je',
+    },
+  });
+  it('create user this correct data', async () => {
+    const userTestManager = new UserTestManager(app);
+    const { createUserData } = expect.getState();
+    const response = await userTestManager.createUser(createUserData, 201);
 
     expect(response.body).toEqual({
       login: createUserData.login,
@@ -40,6 +51,23 @@ describe('UsersController (e2e)', () => {
       id: expect.any(String),
       createdAt: expect.any(String),
     });
-    await userTestManager.deleteUser(response.body.id);
+  });
+  it('user don`t create, validation error status 400', async () => {
+    const userTestManager = new UserTestManager(app);
+    const { createWrongUserData } = expect.getState();
+    const badResponse = await userTestManager.createUser(
+      createWrongUserData,
+      400,
+    );
+    userTestManager.checkValidateErrors(badResponse);
+  });
+
+  it('user don`t create because unauthorised, status 401', async () => {
+    const { createUserData } = expect.getState();
+    const response = await request(httpServer)
+      .post('/users')
+      .send(createUserData)
+      .expect(401);
+    return response;
   });
 });
