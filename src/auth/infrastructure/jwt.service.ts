@@ -57,4 +57,8 @@ export class JwtService {
       return token;
     } catch (e) {}
   }
+  async getUserIdByRecoveryCode(code: string): Promise<string> {
+    const decoded = await jwt.decode(code, { complete: true });
+    return decoded.payload.userId;
+  }
 }

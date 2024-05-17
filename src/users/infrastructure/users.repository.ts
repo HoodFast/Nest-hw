@@ -43,4 +43,13 @@ export class UsersRepository {
     );
     return confirm.modifiedCount === 1;
   }
+  async changePass(userId: string, hash: string): Promise<boolean> {
+    const res = await this.userModel.updateOne(
+      { _id: new ObjectId(userId) },
+      {
+        $set: { 'accountData._passwordHash': hash },
+      },
+    );
+    return res.modifiedCount === 1;
+  }
 }

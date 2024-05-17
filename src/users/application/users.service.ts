@@ -8,6 +8,8 @@ import { Injectable } from '@nestjs/common';
 import { UsersQueryRepository } from '../infrastructure/users.query.repository';
 import { ObjectId } from 'mongodb';
 import { EmailService } from '../../auth/infrastructure/email.service';
+import { recoveryPassInputDto } from '../../auth/api/input/new.password.input';
+import { JwtService } from '../../auth/infrastructure/jwt.service';
 
 const saltRounds = 10;
 @Injectable()
@@ -16,6 +18,7 @@ export class UsersService {
     protected usersRepository: UsersRepository,
     protected usersQueryRepository: UsersQueryRepository,
     protected emailService: EmailService,
+    protected jwtService: JwtService,
   ) {}
   async findUser(loginOrEmail: string) {
     const user = await this.usersQueryRepository.findUser(loginOrEmail);
@@ -92,5 +95,14 @@ export class UsersService {
   async deleteUser(userId: string) {
     const deleteUser = await this.usersRepository.deleteUser(userId);
     return deleteUser;
+  }
+  async changePass(data: recoveryPassInputDto) {
+    const userId = await this.jwtService.getUserIdByRecoveryCode(
+      data.recoveryCode,
+    );
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const hash = bcrypt.hashSync(data.newPassword, salt);
+    const changePassword = await this.usersRepository.changePass(userId, hash);
+    return changePassword;
   }
 }

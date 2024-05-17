@@ -14,6 +14,7 @@ import { RegistrationUserDto } from './input/registration.user.input';
 import { UsersService } from '../../users/application/users.service';
 import { Limiter } from '../../guards/limitter.guard';
 import { recoveryPass } from './input/recovery.password.input';
+import { recoveryPassInputDto } from './input/new.password.input';
 
 @Controller('auth')
 export class AuthController {
@@ -65,5 +66,11 @@ export class AuthController {
     const email = data.email;
     await this.authService.sendRecovery(email);
     return;
+  }
+  @HttpCode(204)
+  @Post('new-password')
+  async newPassword(@Body() data: recoveryPassInputDto) {
+    const changePass = await this.usersService.changePass(data);
+    return changePass;
   }
 }
