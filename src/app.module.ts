@@ -23,7 +23,7 @@ import { TestingController } from './testing/api/testing.controller';
 import { CommentsQueryRepository } from './comments/infrastructure/comments.query.repository';
 import { AuthService } from './auth/application/auth.service';
 import { JwtService } from './auth/infrastructure/jwt.service';
-import { SessionRepository } from './auth/infrastructure/session.repository';
+import { SessionRepository } from './sessions/infrastructure/session.repository';
 import { AuthController } from './auth/api/auth.controller';
 import { Session, SessionSchema } from './sessions/domain/session.schema';
 import { EmailService } from './auth/infrastructure/email.service';

@@ -1,12 +1,17 @@
-import { SessionRepository } from '../infrastructure/session.repository';
+import { SessionRepository } from '../../sessions/infrastructure/session.repository';
 import { JwtService } from '../infrastructure/jwt.service';
 import { UsersService } from '../../users/application/users.service';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Session } from '../../sessions/domain/session.schema';
 import { randomUUID } from 'crypto';
 import { UsersQueryRepository } from '../../users/infrastructure/users.query.repository';
 import { UsersRepository } from '../../users/infrastructure/users.repository';
 import { EmailService } from '../infrastructure/email.service';
+import { UserDocument } from '../../users/domain/user.schema';
 const jwt = require('jsonwebtoken');
 @Injectable()
 export class AuthService {
@@ -72,8 +77,8 @@ export class AuthService {
     const refreshToken = await this.jwtService.createRefreshJWT(
       userId,
       deviceId,
-      // ip,
-      // title,
+      ip,
+      title,
     );
     if (!refreshToken) return null;
     const decoded = jwt.decode(refreshToken, { complete: true });
@@ -90,5 +95,51 @@ export class AuthService {
       await this.sessionRepository.createNewSession(tokenMetaData);
     if (!setTokenMetaData) return null;
     return { accessToken, refreshToken };
+  }
+
+  async refreshTokensPair(
+    user: UserDocument,
+    ip: string,
+    title: string,
+    token: string,
+  ) {
+    const session = await this.jwtService.getSessionDataByToken(token);
+    if (!session) throw new UnauthorizedException();
+    const oldSession =
+      await this.sessionRepository.getSessionForRefreshDecodeToken(
+        session.iat,
+        session.deviceId,
+      );
+    const deviceId = oldSession?.deviceId;
+    if (oldSession) {
+      await this.sessionRepository.deleteById(oldSession._id);
+    } else {
+      throw new UnauthorizedException();
+    }
+    const accessToken = await this.jwtService.createJWT(user._id);
+    const refreshToken = await this.jwtService.createRefreshJWT(
+      user._id,
+      deviceId,
+      ip,
+      title,
+    );
+    return { accessToken, refreshToken };
+  }
+  async resendConfirmationCode(email: string) {
+    const user = await this.usersQueryRepository.findUser(email);
+    if (!user) throw new UnauthorizedException();
+    const newConfirmCode = randomUUID();
+    const updateConfirmCode = await this.usersRepository.updateNewConfirmCode(
+      user?._id,
+      newConfirmCode,
+    );
+    if (!updateConfirmCode) return false;
+    const subject = 'Email Confirmation';
+    const message = `<h1>Thank for your registration</h1>
+        <p>To finish registration please follow the link below:
+            <a href='https://somesite.com/confirm-email?code=${newConfirmCode}'>complete registration</a>
+        </p>`;
+    const sendMail = await this.emailService.sendEmail(email, subject, message);
+    return sendMail;
   }
 }

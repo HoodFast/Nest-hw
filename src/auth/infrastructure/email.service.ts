@@ -3,7 +3,11 @@ import { Injectable } from '@nestjs/common';
 const nodemailer = require('nodemailer');
 @Injectable()
 export class EmailService {
-  async sendEmail(email: string, subject: string, message: string) {
+  async sendEmail(
+    email: string,
+    subject: string,
+    message: string,
+  ): Promise<boolean> {
     try {
       const transporter = nodemailer.createTransport({
         host: 'smtp.mail.ru',

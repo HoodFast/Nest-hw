@@ -52,4 +52,26 @@ export class UsersRepository {
     );
     return res.modifiedCount === 1;
   }
+  async getUserById(id: string): Promise<UserDocument | null> {
+    const res = await this.userModel.findOne({ _id: new ObjectId(id) });
+    if (!res) return null;
+    return res;
+  }
+  async blackListCheck(userId: string, token: string): Promise<boolean> {
+    const res = await this.userModel.findOne({ _id: new ObjectId(userId) });
+    if (!res) return false;
+    const blackList = res.tokensBlackList;
+    return blackList?.includes(token);
+  }
+  async updateNewConfirmCode(userId: ObjectId, code: string): Promise<boolean> {
+    const res = await this.userModel.updateOne(
+      { _id: userId },
+      {
+        $set: {
+          'emailConfirmation.confirmationCode': code,
+        },
+      },
+    );
+    return res.modifiedCount === 1;
+  }
 }

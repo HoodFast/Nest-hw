@@ -5,22 +5,25 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { LoginDto } from './input/login.dto';
-import e, { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from '../application/auth.service';
 import { RegistrationUserDto } from './input/registration.user.input';
 import { UsersService } from '../../users/application/users.service';
 import { Limiter } from '../../guards/limitter.guard';
 import { recoveryPass } from './input/recovery.password.input';
 import { recoveryPassInputDto } from './input/new.password.input';
+import { JwtService } from '../infrastructure/jwt.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private usersService: UsersService,
+    private jwtService: JwtService,
   ) {}
   @UseGuards(Limiter)
   @Post('login')
@@ -46,6 +49,7 @@ export class AuthController {
     });
     return { accessToken };
   }
+  @UseGuards(Limiter)
   @HttpCode(204)
   @Post('registration')
   async registration(@Body() data: RegistrationUserDto) {
@@ -67,10 +71,39 @@ export class AuthController {
     await this.authService.sendRecovery(email);
     return;
   }
+  @UseGuards(Limiter)
   @HttpCode(204)
   @Post('new-password')
   async newPassword(@Body() data: recoveryPassInputDto) {
     const changePass = await this.usersService.changePass(data);
     return changePass;
+  }
+  @Post('refresh-token')
+  async refreshToken(@Req() req: Request, @Res() res: Response) {
+    const title = req.headers['user-agent'] || 'none title';
+    const ip = req.ip || 'none ip';
+    const token = req.cookies.refreshToken;
+    const user = await this.jwtService.checkRefreshToken(token);
+    if (!user) throw new UnauthorizedException();
+
+    const tokens = await this.authService.refreshTokensPair(
+      user,
+      ip,
+      title,
+      token,
+    );
+    const { accessToken, refreshToken } = tokens;
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
+    return { accessToken };
+  }
+  @UseGuards(Limiter)
+  @HttpCode(204)
+  @Post('registration-email-resending')
+  async registrationEmailResending(@Body() email: string) {
+    await this.authService.resendConfirmationCode(email);
+    return;
   }
 }

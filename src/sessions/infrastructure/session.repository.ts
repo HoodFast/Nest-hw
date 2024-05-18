@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Session, SessionDocument } from '../../sessions/domain/session.schema';
+import { Session, SessionDocument } from '../domain/session.schema';
 import { Injectable } from '@nestjs/common';
 @Injectable()
 export class SessionRepository {
@@ -26,5 +26,10 @@ export class SessionRepository {
   async deleteById(_id: ObjectId): Promise<boolean> {
     const res = await this.sessionModel.deleteOne({ _id });
     return !!res.deletedCount;
+  }
+  async getSessionForRefreshDecodeToken(iat: Date, deviceId: string) {
+    const meta = await this.sessionModel.findOne({ iat, deviceId });
+
+    return meta;
   }
 }
