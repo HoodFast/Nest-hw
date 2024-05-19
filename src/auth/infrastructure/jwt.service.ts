@@ -92,4 +92,17 @@ export class JwtService {
       return null;
     }
   }
+  async getUserIdByToken(token: string): Promise<string | null> {
+    try {
+      const result = jwt.verify(token, appConfig.AC_SECRET);
+      const blackListCheck = await this.usersRepository.blackListCheck(
+        result.userId,
+        token,
+      );
+      if (blackListCheck) return null;
+      return result.userId;
+    } catch (err) {
+      return null;
+    }
+  }
 }

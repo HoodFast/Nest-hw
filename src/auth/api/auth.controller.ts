@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   Post,
   Req,
@@ -17,6 +18,9 @@ import { Limiter } from '../../guards/limitter.guard';
 import { recoveryPass } from './input/recovery.password.input';
 import { recoveryPassInputDto } from './input/new.password.input';
 import { JwtService } from '../infrastructure/jwt.service';
+import { AccessTokenAuthGuard } from '../../guards/access.token.auth.guard';
+import { UserId } from '../../decorators/userId';
+import { UsersQueryRepository } from '../../users/infrastructure/users.query.repository';
 
 @Controller('auth')
 export class AuthController {
@@ -24,6 +28,7 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
     private jwtService: JwtService,
+    private usersQueryRepository: UsersQueryRepository,
   ) {}
   @UseGuards(Limiter)
   @Post('login')
@@ -105,5 +110,16 @@ export class AuthController {
   async registrationEmailResending(@Body() email: string) {
     await this.authService.resendConfirmationCode(email);
     return;
+  }
+  @UseGuards(AccessTokenAuthGuard)
+  @Get('me')
+  async getMe(@UserId() userId: string) {
+    const me = await this.usersQueryRepository.getMe(userId);
+    if (!me) throw new UnauthorizedException();
+    return {
+      userId: me._id,
+      login: me.accountData.login,
+      email: me.accountData.email,
+    };
   }
 }

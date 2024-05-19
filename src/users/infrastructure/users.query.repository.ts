@@ -7,6 +7,7 @@ import { UsersSortData } from '../../base/sortData/sortData.model';
 import { Pagination } from '../../base/paginationInputDto/paginationOutput';
 import { userMapper } from './users.mapper';
 import { OutputUsersType } from '../api/output/users.output.dto';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UsersQueryRepository {
@@ -68,6 +69,11 @@ export class UsersQueryRepository {
     const user = await this.userModel.findOne({
       'emailConfirmation.confirmationCode': code,
     });
+    if (!user) return null;
+    return user;
+  }
+  async getMe(userId: string): Promise<UserDocument | null> {
+    const user = await this.userModel.findOne({ _id: new ObjectId(userId) });
     if (!user) return null;
     return user;
   }
