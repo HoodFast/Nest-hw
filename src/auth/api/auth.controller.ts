@@ -54,6 +54,16 @@ export class AuthController {
     });
     return { accessToken };
   }
+  @UseGuards(AccessTokenAuthGuard)
+  @HttpCode(204)
+  @Post('logout')
+  async logout(@Req() req:Request){
+    const token = req.cookies.refreshToken
+    const deleteSession = await this.authService.deleteSession(token)
+    if(!deleteSession) throw new UnauthorizedException()
+    return
+  }
+
   @UseGuards(Limiter)
   @HttpCode(204)
   @Post('registration')

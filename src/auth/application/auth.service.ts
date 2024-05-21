@@ -142,4 +142,13 @@ export class AuthService {
     const sendMail = await this.emailService.sendEmail(email, subject, message);
     return sendMail;
   }
+  async deleteSession(token:string):Promise<boolean>{
+    const dataSession = await this.jwtService.getSessionDataByToken(token)
+    if(!dataSession)return false
+    const oldSession = await this.sessionRepository.getSessionForRefreshDecodeToken(dataSession.iat,dataSession.deviceId)
+    if(oldSession){
+      await this.sessionRepository.deleteById(oldSession._id)
+    }else{return false}
+    return true
+  }
 }
