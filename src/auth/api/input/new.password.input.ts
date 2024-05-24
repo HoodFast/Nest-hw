@@ -5,5 +5,6 @@ export class recoveryPassInputDto {
   @Length(6, 20)
   newPassword: string;
   @IsString()
+  @Length(10)
   recoveryCode: string;
 }

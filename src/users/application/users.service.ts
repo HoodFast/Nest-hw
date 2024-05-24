@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import { User } from '../domain/user.schema';
 import { add } from 'date-fns/add';
 import { UsersRepository } from '../infrastructure/users.repository';
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { UsersQueryRepository } from '../infrastructure/users.query.repository';
 import { ObjectId } from 'mongodb';
 import { EmailService } from '../../auth/infrastructure/email.service';
@@ -97,12 +97,19 @@ export class UsersService {
     return deleteUser;
   }
   async changePass(data: recoveryPassInputDto) {
-    const userId = await this.jwtService.getUserIdByRecoveryCode(
-      data.recoveryCode,
-    );
-    const salt = bcrypt.genSaltSync(saltRounds);
-    const hash = bcrypt.hashSync(data.newPassword, salt);
-    const changePassword = await this.usersRepository.changePass(userId, hash);
-    return changePassword;
+    try {
+      const userId = await this.jwtService.getUserIdByRecoveryCode(
+        data.recoveryCode,
+      );
+      const salt = bcrypt.genSaltSync(saltRounds);
+      const hash = bcrypt.hashSync(data.newPassword, salt);
+      const changePassword = await this.usersRepository.changePass(
+        userId,
+        hash,
+      );
+      return changePassword;
+    } catch (e) {
+      throw new HttpException({ message: 'Bad request' }, 400);
+    }
   }
 }
