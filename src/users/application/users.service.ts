@@ -52,7 +52,7 @@ export class UsersService {
       },
       tokensBlackList: [],
     };
-    console.log(userData.emailConfirmation.confirmationCode);
+
     const createdUser = await this.usersRepository.createUser(userData);
     if (!createdUser) {
       return null;

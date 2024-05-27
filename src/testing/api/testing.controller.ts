@@ -1,13 +1,13 @@
-import { Controller, Delete, Res } from '@nestjs/common';
+import { Controller, Delete, HttpCode } from '@nestjs/common';
 import { TestingQueryRepository } from '../infrastructure/testing.query.repository';
-import { Response } from 'express';
 
 @Controller('testing/all-data')
 export class TestingController {
   constructor(private testingQueryRepository: TestingQueryRepository) {}
+  @HttpCode(204)
   @Delete()
-  async deleteAll(@Res({ passthrough: true }) res: Response) {
+  async deleteAll() {
     await this.testingQueryRepository.deleteAll();
-    return res.sendStatus(204);
+    return;
   }
 }

@@ -30,6 +30,7 @@ export class AuthController {
     private jwtService: JwtService,
     private usersQueryRepository: UsersQueryRepository,
   ) {}
+  @HttpCode(200)
   @UseGuards(Limiter)
   @Post('login')
   async login(
@@ -46,7 +47,7 @@ export class AuthController {
       ip,
       title,
     );
-    if (!tokens) return null;
+    if (!tokens) throw new UnauthorizedException();
     const { accessToken, refreshToken } = tokens;
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
@@ -57,11 +58,11 @@ export class AuthController {
   @UseGuards(AccessTokenAuthGuard)
   @HttpCode(204)
   @Post('logout')
-  async logout(@Req() req:Request){
-    const token = req.cookies.refreshToken
-    const deleteSession = await this.authService.deleteSession(token)
-    if(!deleteSession) throw new UnauthorizedException()
-    return
+  async logout(@Req() req: Request) {
+    const token = req.cookies.refreshToken;
+    const deleteSession = await this.authService.deleteSession(token);
+    if (!deleteSession) throw new UnauthorizedException();
+    return;
   }
 
   @UseGuards(Limiter)
@@ -97,6 +98,7 @@ export class AuthController {
   async refreshToken(@Req() req: Request, @Res() res: Response) {
     const title = req.headers['user-agent'] || 'none title';
     const ip = req.ip || 'none ip';
+    debugger;
     const token = req.cookies.refreshToken;
     const user = await this.jwtService.checkRefreshToken(token);
     if (!user) throw new UnauthorizedException();

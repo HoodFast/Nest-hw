@@ -7,6 +7,7 @@ import { UsersService } from '../../src/users/application/users.service';
 import { UsersServiceEmailMock } from './mock/email.mock.class';
 import { UserTestManager } from './user.test.manager';
 import request from 'supertest';
+import { usersDto } from './test.dto';
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication;
@@ -29,16 +30,8 @@ describe('UsersController (e2e)', () => {
     await userTestManager.deleteAll();
   });
   expect.setState({
-    createUserData: {
-      login: 'Fj5ll0T',
-      password: 'string',
-      email: '6Ya0V21@raLn.Je',
-    },
-    createWrongUserData: {
-      login: 'Fj',
-      password: 'string',
-      email: '6Ya0V21raLn.Je',
-    },
+    createUserData: usersDto.createUserData,
+    createWrongUserData: usersDto.createWrongUserData,
   });
   it('create user this correct data', async () => {
     const userTestManager = new UserTestManager(app);
