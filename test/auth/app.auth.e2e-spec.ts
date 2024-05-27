@@ -33,6 +33,7 @@ describe('UsersController (e2e)', () => {
   expect.setState({
     createUserData: usersDto.createUserData,
     createWrongUserData: usersDto.createWrongUserData,
+    emailResendingWrong: usersDto.emailResendingWrong,
   });
   it('-password-recovery incorrect email', async () => {
     await request(httpServer)
@@ -97,5 +98,55 @@ describe('UsersController (e2e)', () => {
       .post('/auth/refresh-token')
       .auth('Cookie', `refreshToken =${'123123'}`)
       .expect(401);
+  });
+  it('registration-confirmation wrong code', async () => {
+    const result = await request(httpServer)
+      .post('/auth/registration-confirmation')
+      .send({ code: 1234 })
+      .expect(400);
+    const equalMessage = typeof errors;
+    expect(typeof result.body).toEqual(equalMessage);
+  });
+  it('registration users', async () => {
+    const { createUserData } = expect.getState();
+    await request(httpServer)
+      .post('/auth/registration')
+      .send({ ...createUserData })
+      .expect(204);
+  });
+  it('-registration users this wrong data', async () => {
+    const { createWrongUserData } = expect.getState();
+    await request(httpServer)
+      .post('/auth/registration')
+      .send({ ...createWrongUserData })
+      .expect(400);
+  });
+  it('-registration email resending this wrong data', async () => {
+    const { emailResendingWrong } = expect.getState();
+    await request(httpServer)
+      .post('/auth/registration-email-resending')
+      .send(emailResendingWrong)
+      .expect(400);
+  });
+  it('logout without token', async () => {
+    await request(httpServer).post('/auth/logout').send().expect(401);
+  });
+  it('get me without token', async () => {
+    await request(httpServer).get('/auth/me').send().expect(401);
+  });
+  it('get me', async () => {
+    const { createUserData } = expect.getState();
+    const userTestManager = new UserTestManager(app);
+    await userTestManager.createUser(createUserData, 201);
+    const loginResponse = await request(httpServer).post('/auth/login').send({
+      loginOrEmail: createUserData.login,
+      password: createUserData.password,
+    });
+    const token = loginResponse.body.accessToken;
+
+    await request(httpServer)
+      .get('/auth/me')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
   });
 });

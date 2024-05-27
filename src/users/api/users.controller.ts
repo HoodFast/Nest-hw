@@ -49,6 +49,7 @@ export class UsersController {
     const users = this.usersQueryRepository.getAllUsers(sortData);
     return users;
   }
+  @UseGuards(AuthGuard)
   @Post()
   async createUser(@Body() input: UserInputDto) {
     // await validateOrRejectModel(input, UserInputDto);
@@ -62,7 +63,7 @@ export class UsersController {
 
     return createdUser;
   }
-
+  @UseGuards(AuthGuard)
   @Delete(':id')
   async deleteUser(
     @Param('id') id: string,

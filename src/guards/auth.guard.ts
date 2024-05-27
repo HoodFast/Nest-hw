@@ -18,6 +18,10 @@ export class AuthGuard implements CanActivate {
     if (!request.headers.authorization) {
       throw new UnauthorizedException();
     }
+    const auth = request.headers.authorization;
+    const authPayload = auth.split(' ')[1];
+    const decodePayload = Buffer.from(authPayload, 'base64').toString();
+    if (decodePayload !== 'admin:qwerty') throw new UnauthorizedException();
     return true;
   }
 }

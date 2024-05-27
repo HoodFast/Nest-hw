@@ -9,6 +9,7 @@ export const usersDto = {
     password: 'string',
     email: '6Ya0V21raLn.Je',
   },
+  emailResendingWrong: '1234',
 };
 
 export const errors = {

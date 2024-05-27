@@ -4,7 +4,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { HttpExceptionFilter } from '../exceptionFilters/exception.filters';
-
+const cookieParser = require('cookie-parser');
 export const appSettings = (app: INestApplication) => {
   app.enableCors();
   app.useGlobalPipes(
@@ -30,4 +30,5 @@ export const appSettings = (app: INestApplication) => {
     }),
   );
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.use(cookieParser('secret key'));
 };

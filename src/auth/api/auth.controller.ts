@@ -12,7 +12,6 @@ import {
 import { LoginDto } from './input/login.dto';
 import { Request, Response } from 'express';
 import { AuthService } from '../application/auth.service';
-import { RegistrationUserDto } from './input/registration.user.input';
 import { UsersService } from '../../users/application/users.service';
 import { Limiter } from '../../guards/limitter.guard';
 import { recoveryPass } from './input/recovery.password.input';
@@ -21,6 +20,9 @@ import { JwtService } from '../infrastructure/jwt.service';
 import { AccessTokenAuthGuard } from '../../guards/access.token.auth.guard';
 import { UserId } from '../../decorators/userId';
 import { UsersQueryRepository } from '../../users/infrastructure/users.query.repository';
+import { confirmDto } from '../../users/api/input/conf.code.dto';
+import { UserInputDto } from '../../users/api/input/userInput.dto';
+import { emailResendingDto } from './input/email.resending.input';
 
 @Controller('auth')
 export class AuthController {
@@ -68,14 +70,16 @@ export class AuthController {
   @UseGuards(Limiter)
   @HttpCode(204)
   @Post('registration')
-  async registration(@Body() data: RegistrationUserDto) {
+  async registration(@Body() data: UserInputDto) {
     const { login, email, password } = data;
-    return this.usersService.createUser(login, email, password);
+    const res = await this.usersService.createUser(login, email, password);
+    if (!res) throw new UnauthorizedException();
+    return;
   }
   @UseGuards(Limiter)
   @HttpCode(204)
   @Post('registration-confirmation')
-  async emailConfirmation(@Body() data: { code: string }) {
+  async emailConfirmation(@Body() data: confirmDto) {
     await this.authService.confirmEmail(data.code);
     return;
   }
@@ -95,10 +99,13 @@ export class AuthController {
     return changePass;
   }
   @Post('refresh-token')
-  async refreshToken(@Req() req: Request, @Res() res: Response) {
+  async refreshToken(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const title = req.headers['user-agent'] || 'none title';
     const ip = req.ip || 'none ip';
-    debugger;
+
     const token = req.cookies.refreshToken;
     const user = await this.jwtService.checkRefreshToken(token);
     if (!user) throw new UnauthorizedException();
@@ -119,8 +126,8 @@ export class AuthController {
   @UseGuards(Limiter)
   @HttpCode(204)
   @Post('registration-email-resending')
-  async registrationEmailResending(@Body() email: string) {
-    await this.authService.resendConfirmationCode(email);
+  async registrationEmailResending(@Body() data: emailResendingDto) {
+    await this.authService.resendConfirmationCode(data.email);
     return;
   }
   @UseGuards(AccessTokenAuthGuard)
