@@ -30,6 +30,10 @@ describe('UsersController (e2e)', () => {
     const userTestManager = new UserTestManager(app);
     await userTestManager.deleteAll();
   });
+  afterEach(async () => {
+    const userTestManager = new UserTestManager(app);
+    await userTestManager.deleteAll();
+  });
   expect.setState({
     createUserData: usersDto.createUserData,
     createWrongUserData: usersDto.createWrongUserData,
@@ -111,6 +115,7 @@ describe('UsersController (e2e)', () => {
     const { createUserData } = expect.getState();
     await request(httpServer)
       .post('/auth/registration')
+      .auth('admin', 'qwerty')
       .send({ ...createUserData })
       .expect(204);
   });
