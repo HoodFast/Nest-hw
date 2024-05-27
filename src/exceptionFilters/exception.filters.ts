@@ -20,8 +20,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       return response.sendStatus(429);
     }
     if (errorsCode.includes(status)) {
-      const errorResponce: { errors: { message: string; field: string }[] } = {
-        errors: [],
+      const errorResponce: {
+        errorsMessages: { message: string; field: string }[];
+      } = {
+        errorsMessages: [],
       };
       const responceBody: any = exception.getResponse();
 
@@ -29,7 +31,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         return response.status(status).send({ errors: [responceBody] });
       } else {
         responceBody.message.forEach((m: { message: string; field: string }) =>
-          errorResponce.errors.push(m),
+          errorResponce.errorsMessages.push(m),
         );
       }
 
