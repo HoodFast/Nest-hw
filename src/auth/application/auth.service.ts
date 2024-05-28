@@ -27,7 +27,7 @@ export class AuthService {
     const user = await this.usersQueryRepository.getUserByCode(code);
     if (!user) throw new BadRequestException('invalid code', 'code');
     if (user?.emailConfirmation.isConfirmed)
-      throw new BadRequestException('code is already confirm', 'email');
+      throw new BadRequestException('code is already confirm', 'code');
     if (user?.emailConfirmation.expirationDate < new Date()) {
       throw new BadRequestException({
         message: 'expired',
@@ -130,7 +130,7 @@ export class AuthService {
     const user = await this.usersQueryRepository.findUser(email);
     if (!user) throw new BadRequestException('mail doesnt exist', 'email');
     if (user?.emailConfirmation.isConfirmed)
-      throw new BadRequestException('code is already confirm', 'code');
+      throw new BadRequestException('code is already confirm', 'email');
     const newConfirmCode = randomUUID();
     const updateConfirmCode = await this.usersRepository.updateNewConfirmCode(
       user?._id,
