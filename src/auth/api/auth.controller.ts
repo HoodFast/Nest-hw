@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  Ip,
   Post,
   Req,
   Res,
@@ -38,11 +39,11 @@ export class AuthController {
   @Post('login')
   async login(
     @Body() body: LoginDto,
+    @Ip() ip: string,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const title = req.headers['user-agent'] || 'none title';
-    const ip = req.ip || 'none ip';
+    const title = req.get('User-Agent') || 'none title';
 
     const tokens = await this.authService.loginTokensPair(
       body.loginOrEmail,
