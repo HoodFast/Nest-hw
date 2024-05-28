@@ -26,7 +26,8 @@ export class AuthService {
   async confirmEmail(code: string) {
     const user = await this.usersQueryRepository.getUserByCode(code);
     if (!user) return null;
-    if (user?.emailConfirmation.isConfirmed) return null;
+    if (user?.emailConfirmation.isConfirmed)
+      throw new BadRequestException('code is already confirm', 'code');
     if (user?.emailConfirmation.expirationDate < new Date()) {
       throw new BadRequestException({
         message: 'expired',
@@ -127,7 +128,9 @@ export class AuthService {
   }
   async resendConfirmationCode(email: string) {
     const user = await this.usersQueryRepository.findUser(email);
-    if (!user) throw new UnauthorizedException();
+    if (!user) throw new BadRequestException('mail doesnt exist', 'email');
+    if (user?.emailConfirmation.isConfirmed)
+      throw new BadRequestException('code is already confirm', 'code');
     const newConfirmCode = randomUUID();
     const updateConfirmCode = await this.usersRepository.updateNewConfirmCode(
       user?._id,
@@ -142,13 +145,19 @@ export class AuthService {
     const sendMail = await this.emailService.sendEmail(email, subject, message);
     return sendMail;
   }
-  async deleteSession(token:string):Promise<boolean>{
-    const dataSession = await this.jwtService.getSessionDataByToken(token)
-    if(!dataSession)return false
-    const oldSession = await this.sessionRepository.getSessionForRefreshDecodeToken(dataSession.iat,dataSession.deviceId)
-    if(oldSession){
-      await this.sessionRepository.deleteById(oldSession._id)
-    }else{return false}
-    return true
+  async deleteSession(token: string): Promise<boolean> {
+    const dataSession = await this.jwtService.getSessionDataByToken(token);
+    if (!dataSession) return false;
+    const oldSession =
+      await this.sessionRepository.getSessionForRefreshDecodeToken(
+        dataSession.iat,
+        dataSession.deviceId,
+      );
+    if (oldSession) {
+      await this.sessionRepository.deleteById(oldSession._id);
+    } else {
+      return false;
+    }
+    return true;
   }
 }

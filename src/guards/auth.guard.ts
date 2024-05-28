@@ -19,6 +19,8 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     const auth = request.headers.authorization;
+    const type = auth.split(' ')[0];
+    if (type !== 'Basic') throw new UnauthorizedException();
     const authPayload = auth.split(' ')[1];
     const decodePayload = Buffer.from(authPayload, 'base64').toString();
     debugger;

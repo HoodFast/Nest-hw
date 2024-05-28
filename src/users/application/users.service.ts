@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import { User } from '../domain/user.schema';
 import { add } from 'date-fns/add';
 import { UsersRepository } from '../infrastructure/users.repository';
-import { HttpException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { UsersQueryRepository } from '../infrastructure/users.query.repository';
 import { ObjectId } from 'mongodb';
 import { EmailService } from '../../auth/infrastructure/email.service';
@@ -30,12 +30,16 @@ export class UsersService {
     password: string,
     isConfirmed?: boolean,
   ): Promise<OutputUsersType | null> {
-    const user = await this.usersRepository.doesExistByLoginOrEmail(
+    const checkUserExist = await this.usersRepository.doesExistByLoginOrEmail(
       login,
       email,
     );
 
-    if (user) return null;
+    if (checkUserExist)
+      throw new BadRequestException(
+        'user is already exist',
+        `${checkUserExist}`,
+      );
     const createdAt = new Date();
 
     const salt = bcrypt.genSaltSync(saltRounds);

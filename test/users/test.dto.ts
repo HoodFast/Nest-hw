@@ -1,7 +1,7 @@
 export const usersDto = {
   createUserData: {
-    login: 'Fj5ll0T',
-    password: 'string',
+    login: 'lg-332252',
+    password: '"qwerty1"',
     email: '6Ya0V21@raLn.Je',
   },
   createWrongUserData: {

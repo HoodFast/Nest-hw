@@ -11,9 +11,22 @@ import { ObjectId } from 'mongodb';
 export class UsersRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
   async doesExistByLoginOrEmail(login: string, email: string) {
-    const user = await this.userModel.findOne({
-      $or: [{ 'accountData.email': email }, { 'accountData.login': login }],
+    const emailCheck = await this.userModel.findOne({
+      'accountData.email': email,
     });
+    if (emailCheck) return 'email';
+    const loginCheck = await this.userModel.findOne({
+      'accountData.login': login,
+    });
+    if (loginCheck) return 'login';
+    return null;
+  }
+  async doesExistEmail(login: string, email: string) {
+    const user = await this.userModel.findOne({ 'accountData.email': email });
+    return !!user;
+  }
+  async doesExistLogin(login: string, email: string) {
+    const user = await this.userModel.findOne({ 'accountData.email': email });
     return !!user;
   }
   async createUser(userData: User): Promise<OutputUsersType | null> {

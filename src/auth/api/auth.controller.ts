@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -80,6 +81,7 @@ export class AuthController {
   @HttpCode(204)
   @Post('registration-confirmation')
   async emailConfirmation(@Body() data: confirmDto) {
+    if (!data.code) throw new BadRequestException('error code', 'code');
     await this.authService.confirmEmail(data.code);
     return;
   }
