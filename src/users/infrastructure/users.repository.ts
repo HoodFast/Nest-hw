@@ -21,14 +21,7 @@ export class UsersRepository {
     if (loginCheck) return 'login';
     return null;
   }
-  async doesExistEmail(login: string, email: string) {
-    const user = await this.userModel.findOne({ 'accountData.email': email });
-    return !!user;
-  }
-  async doesExistLogin(login: string, email: string) {
-    const user = await this.userModel.findOne({ 'accountData.email': email });
-    return !!user;
-  }
+
   async createUser(userData: User): Promise<OutputUsersType | null> {
     const newUser = new this.userModel(userData);
     await newUser.save();

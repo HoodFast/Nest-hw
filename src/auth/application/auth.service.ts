@@ -25,7 +25,7 @@ export class AuthService {
   ) {}
   async confirmEmail(code: string) {
     const user = await this.usersQueryRepository.getUserByCode(code);
-    if (!user) return null;
+    if (!user) throw new BadRequestException('invalid code', 'code');
     if (user?.emailConfirmation.isConfirmed)
       throw new BadRequestException('code is already confirm', 'code');
     if (user?.emailConfirmation.expirationDate < new Date()) {

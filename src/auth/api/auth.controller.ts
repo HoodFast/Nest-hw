@@ -84,7 +84,7 @@ export class AuthController {
   async emailConfirmation(@Body() data: confirmDto) {
     if (!data.code) throw new BadRequestException('error code', 'code');
     await this.authService.confirmEmail(data.code);
-    return;
+    return {};
   }
   @UseGuards(Limiter)
   @HttpCode(204)
@@ -131,7 +131,7 @@ export class AuthController {
   @Post('registration-email-resending')
   async registrationEmailResending(@Body() data: emailResendingDto) {
     await this.authService.resendConfirmationCode(data.email);
-    return;
+    return {};
   }
   @UseGuards(AccessTokenAuthGuard)
   @Get('me')
