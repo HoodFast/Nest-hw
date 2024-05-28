@@ -27,7 +27,7 @@ export class AuthService {
     const user = await this.usersQueryRepository.getUserByCode(code);
     if (!user) throw new BadRequestException('invalid code', 'code');
     if (user?.emailConfirmation.isConfirmed)
-      throw new BadRequestException('code is already confirm', 'code');
+      throw new BadRequestException('code is already confirm', 'email');
     if (user?.emailConfirmation.expirationDate < new Date()) {
       throw new BadRequestException({
         message: 'expired',
