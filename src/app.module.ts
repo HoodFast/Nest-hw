@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostsController } from './posts/api/posts.controller';
@@ -27,10 +28,14 @@ import { SessionRepository } from './sessions/infrastructure/session.repository'
 import { AuthController } from './auth/api/auth.controller';
 import { Session, SessionSchema } from './sessions/domain/session.schema';
 import { EmailService } from './auth/infrastructure/email.service';
+import { ConfigModule } from '@nestjs/config';
 
 const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     MongooseModule.forRoot(MONGO_URL),
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
