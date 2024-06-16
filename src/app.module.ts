@@ -29,12 +29,20 @@ import { AuthController } from './auth/api/auth.controller';
 import { Session, SessionSchema } from './sessions/domain/session.schema';
 import { EmailService } from './auth/infrastructure/email.service';
 import { ConfigModule } from '@nestjs/config';
+import * as process from 'process';
+import { Environments } from './settings/environmentSettings/environment-settings';
+import configuration from './settings/configuration';
 
 const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [configuration],
+      ignoreEnvFile:
+        process.env.ENV !== Environments.DEVELOPMENT &&
+        process.env.ENV !== Environments.TEST,
+      envFilePath: ['.env'],
     }),
     MongooseModule.forRoot(MONGO_URL),
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
