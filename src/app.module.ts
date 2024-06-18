@@ -30,7 +30,10 @@ import { Session, SessionSchema } from './sessions/domain/session.schema';
 import { EmailService } from './auth/infrastructure/email.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as process from 'process';
-import configuration, { ConfigServiceType } from './settings/configuration';
+import configuration, {
+  ConfigServiceType,
+  validate,
+} from './settings/configuration';
 
 // const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
@@ -38,6 +41,7 @@ import configuration, { ConfigServiceType } from './settings/configuration';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
+      validate: validate,
       // ignoreEnvFile:
       //   process.env.ENV !== Environments.DEVELOPMENT &&
       //   process.env.ENV !== Environments.TEST,
