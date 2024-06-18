@@ -23,7 +23,6 @@ export class AuthGuard implements CanActivate {
     if (type !== 'Basic') throw new UnauthorizedException();
     const authPayload = auth.split(' ')[1];
     const decodePayload = Buffer.from(authPayload, 'base64').toString();
-    debugger;
     if (decodePayload !== 'admin:qwerty') throw new UnauthorizedException();
     return true;
   }

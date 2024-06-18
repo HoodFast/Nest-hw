@@ -28,23 +28,39 @@ import { SessionRepository } from './sessions/infrastructure/session.repository'
 import { AuthController } from './auth/api/auth.controller';
 import { Session, SessionSchema } from './sessions/domain/session.schema';
 import { EmailService } from './auth/infrastructure/email.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as process from 'process';
-import { Environments } from './settings/environmentSettings/environment-settings';
-import configuration from './settings/configuration';
+import configuration, { ConfigServiceType } from './settings/configuration';
 
-const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
+// const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
-      ignoreEnvFile:
-        process.env.ENV !== Environments.DEVELOPMENT &&
-        process.env.ENV !== Environments.TEST,
+      // ignoreEnvFile:
+      //   process.env.ENV !== Environments.DEVELOPMENT &&
+      //   process.env.ENV !== Environments.TEST,
       envFilePath: ['.env'],
     }),
-    MongooseModule.forRoot(MONGO_URL),
+    MongooseModule.forRootAsync({
+      useFactory: (configService: ConfigServiceType) => {
+        const databaseSettings = configService.get('databaseSettings', {
+          infer: true,
+        });
+        const environmentSettings = configService.get('environmentSettings', {
+          infer: true,
+        });
+        const uri = environmentSettings?.isTesting
+          ? databaseSettings?.MONGO_CONNECTION_URI_FOR_TESTS
+          : databaseSettings?.MONGO_CONNECTION_URI;
+        console.log(databaseSettings?.MONGO_CONNECTION_URI);
+        console.log(process.env.ENV);
+        return { uri: uri };
+      },
+
+      inject: [ConfigService],
+    }),
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
     MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
@@ -78,6 +94,7 @@ const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
     AuthService,
     EmailService,
     UsersService,
+    ConfigService,
   ],
 })
 export class AppModule {}

@@ -44,7 +44,7 @@ export class UserTestManager {
     const result = response.body;
 
     expect(result).toEqual({
-      errors: [
+      errorsMessages: [
         { message: expect.any(String), field: expect.any(String) },
         { message: expect.any(String), field: expect.any(String) },
       ],
