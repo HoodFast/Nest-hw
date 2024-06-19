@@ -18,6 +18,12 @@ import {
 import { PostsRepository } from '../../posts/infrastructure/posts.repository';
 import { PostsQueryRepository } from '../../posts/infrastructure/posts.query.repository';
 import { Response } from 'express';
+import { CommandBus } from '@nestjs/cqrs';
+import {
+  CommandCreateBlogData,
+  CreateBlogCommand,
+} from './useCases/create-blog.usecase';
+import { InterlayerNotice } from '../../base/models/Interlayer';
 
 export enum sortDirection {
   asc = 'asc',
@@ -44,6 +50,7 @@ export class BlogsController {
     protected blogsQueryRepository: BlogsQueryRepository,
     protected postRepository: PostsRepository,
     protected postsQueryRepository: PostsQueryRepository,
+    private readonly commandBus: CommandBus,
   ) {}
 
   @Get()
@@ -93,7 +100,18 @@ export class BlogsController {
 
   @Post()
   async createBlog(@Body() inputModel: createBlogInputType) {
-    const blog = await this.blogService.createBlog(inputModel);
+    const command = new CreateBlogCommand(
+      inputModel.name,
+      inputModel.description,
+      inputModel.websiteUrl,
+    );
+    const creatingBlog = await this.commandBus.execute<
+      CreateBlogCommand,
+      InterlayerNotice<CommandCreateBlogData>
+    >(command);
+    const blog = await this.blogsQueryRepository.getBlogById(
+      creatingBlog.data!.blogId,
+    );
     return blog;
   }
   @Post(':id/posts')

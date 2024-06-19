@@ -34,10 +34,13 @@ import configuration, {
   ConfigServiceType,
   validate,
 } from './settings/configuration';
+import { CqrsModule } from '@nestjs/cqrs';
+import { CreateBlogUseCase } from './blogs/api/useCases/create-blog.usecase';
 
 // const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
   imports: [
+    CqrsModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
@@ -99,6 +102,7 @@ import configuration, {
     EmailService,
     UsersService,
     ConfigService,
+    CreateBlogUseCase,
   ],
 })
 export class AppModule {}

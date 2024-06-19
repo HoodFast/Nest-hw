@@ -1,7 +1,7 @@
 import { BlogDocument } from '../domain/blog.schema';
-import { OutputBlogMapType } from '../api/model/output/outputBlog.model';
+import { OutputBlogMapData } from '../api/model/output/outputBlog.model';
 
-export const blogMapper = (blog: BlogDocument): OutputBlogMapType => {
+export const blogMapper = (blog: BlogDocument): OutputBlogMapData => {
   return {
     id: blog._id.toString(),
     name: blog.name,
@@ -13,7 +13,7 @@ export const blogMapper = (blog: BlogDocument): OutputBlogMapType => {
 };
 
 // export const fakeMappers = (
-//   blogs: OutputBlogMapType[],
+//   blogs: OutputBlogMapData[],
 //   pageSize: number,
 //   pageNumber: number,
 //   sortDirection: any,
