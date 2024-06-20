@@ -15,7 +15,7 @@ export class PostsRepository {
     protected postsQueryRepository: PostsQueryRepository,
   ) {}
 
-  async createPost(data: PostCreateData, userId: string) {
+  async createPost(data: PostCreateData, userId?: string) {
     const blog = await this.blogsQueryRepository.getBlogById(data.blogId);
     if (!blog) return null;
     const createdPost = new this.postModel({ ...data, blogName: blog.name });

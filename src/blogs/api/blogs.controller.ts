@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -11,19 +12,20 @@ import {
 } from '@nestjs/common';
 import { BlogService } from '../application/blogs.service';
 import { BlogsQueryRepository } from '../infrastructure/blogs.query.repository';
-import {
-  PostCreateData,
-  PostInput,
-} from '../../posts/api/input/PostsCreate.dto';
-import { PostsRepository } from '../../posts/infrastructure/posts.repository';
+import { PostInput } from '../../posts/api/input/PostsCreate.dto';
+
 import { PostsQueryRepository } from '../../posts/infrastructure/posts.query.repository';
 import { Response } from 'express';
 import { CommandBus } from '@nestjs/cqrs';
 import {
   CommandCreateBlogData,
   CreateBlogCommand,
-} from './useCases/create-blog.usecase';
+} from './use-cases/create-blog.usecase';
 import { InterlayerNotice } from '../../base/models/Interlayer';
+import {
+  CommandCreatePostForBlogOutput,
+  CreatePostForBlogCommand,
+} from './use-cases/create-post-for-blog.usecase';
 
 export enum sortDirection {
   asc = 'asc',
@@ -48,7 +50,7 @@ export class BlogsController {
   constructor(
     protected blogService: BlogService,
     protected blogsQueryRepository: BlogsQueryRepository,
-    protected postRepository: PostsRepository,
+    // protected postRepository: PostsRepository,
     protected postsQueryRepository: PostsQueryRepository,
     private readonly commandBus: CommandBus,
   ) {}
@@ -118,20 +120,24 @@ export class BlogsController {
   async createPostForBlog(
     @Param('id') blogId: string,
     @Body() input: PostInput,
-    @Res({ passthrough: true }) res: Response,
   ) {
-    const postCreateData: PostCreateData = {
-      title: input.title,
-      content: input.content,
-      shortDescription: input.shortDescription,
+    const command = new CreatePostForBlogCommand(
+      input.title,
+      input.content,
+      input.shortDescription,
       blogId,
-      createdAt: new Date().toISOString(),
-    };
+    );
 
-    const userId = '';
-    const post = await this.postRepository.createPost(postCreateData, userId);
-    debugger;
-    if (!post) return res.sendStatus(404);
+    const creatingPost = await this.commandBus.execute<
+      CreatePostForBlogCommand,
+      InterlayerNotice<CommandCreatePostForBlogOutput>
+    >(command);
+
+    if (creatingPost.hasError())
+      throw new NotFoundException(creatingPost.extensions[0].message);
+    const post = await this.postsQueryRepository.getPostById(
+      creatingPost.data!.postId,
+    );
     return post;
   }
 
