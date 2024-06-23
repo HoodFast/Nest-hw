@@ -8,8 +8,4 @@ export class BlogService {
     protected blogsRepository: BlogsRepository,
     protected blogsQueryRepository: BlogsQueryRepository,
   ) {}
-
-  async deleteBlog(id: string) {
-    return await this.blogsRepository.deleteBlog(id);
-  }
 }

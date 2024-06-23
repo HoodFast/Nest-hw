@@ -37,8 +37,15 @@ import configuration, {
 import { CqrsModule } from '@nestjs/cqrs';
 import { CreateBlogUseCase } from './blogs/api/use-cases/create-blog.usecase';
 import { CreatePostForBlogUseCase } from './blogs/api/use-cases/create-post-for-blog.usecase';
+import { UpdateBlogUseCase } from './blogs/api/use-cases/update-blog.usecase';
+import { DeleteBlogUseCase } from './blogs/api/use-cases/delete-blog.usecase';
 
-const useCases = [CreateBlogUseCase, CreatePostForBlogUseCase];
+const useCases = [
+  CreateBlogUseCase,
+  CreatePostForBlogUseCase,
+  UpdateBlogUseCase,
+  DeleteBlogUseCase,
+];
 // const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
   imports: [

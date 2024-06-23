@@ -105,4 +105,21 @@ describe('UsersController (e2e)', () => {
       .send(createPostData)
       .expect(401);
   });
+  it('update blog ', async () => {
+    const { createBlogData } = expect.getState();
+    const createBlog = await blogTestManager.createBlog(createBlogData, 201);
+    const updateBlogData = {
+      name: 'new name',
+      description: 'new description',
+      websiteUrl: 'https://new-website.url',
+    };
+
+    await blogTestManager.updateBlog(updateBlogData, createBlog.body.id, 204);
+
+    const updatedBlog = await request(httpServer).get(
+      `/blogs/${createBlog.body.id}`,
+    );
+    debugger;
+    expect(updatedBlog.body.name).toBe(updateBlogData.name);
+  });
 });

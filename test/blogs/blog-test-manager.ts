@@ -37,4 +37,16 @@ export class BlogTestManager {
       ],
     });
   }
+  async updateBlog(
+    updateBlogData: createBlogInputDto,
+    blogId: string,
+    expectStatus: number,
+  ) {
+    const response = await request(this.app.getHttpServer())
+      .put(`/blogs/${blogId}`)
+      .auth('admin', 'qwerty')
+      .send(updateBlogData)
+      .expect(expectStatus);
+    return response;
+  }
 }

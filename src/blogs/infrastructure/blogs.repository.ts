@@ -26,10 +26,11 @@ export class BlogsRepository {
         },
       },
     );
+
     return !!updatedBlog.matchedCount;
   }
-  async deleteBlog(id: string) {
-    const deleted = await this.blogModel.deleteOne({ _id: new ObjectId(id) });
+  async deleteBlog(id: ObjectId) {
+    const deleted = await this.blogModel.deleteOne({ _id: id });
     return !!deleted.deletedCount;
   }
 }

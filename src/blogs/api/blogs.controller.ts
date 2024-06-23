@@ -35,6 +35,10 @@ import {
   UpdateBlogCommand,
 } from './use-cases/update-blog.usecase';
 import { ObjectId } from 'mongodb';
+import {
+  CommandDeleteBlogOutputData,
+  DeleteBlogCommand,
+} from './use-cases/delete-blog.usecase';
 
 export enum sortDirection {
   asc = 'asc',
@@ -158,7 +162,6 @@ export class BlogsController {
       body.websiteUrl,
       id,
     );
-
     const updatedBlog = await this.commandBus.execute<
       UpdateBlogCommand,
       InterlayerNotice<CommandUpdateBlogData>
@@ -170,7 +173,11 @@ export class BlogsController {
   @UseGuards(AuthGuard)
   @Delete(':id')
   async deleteBlogById(@Param('id') blogId: string) {
-    const deletedBlog = await this.blogService.deleteBlog(blogId);
+    const command = new DeleteBlogCommand(new ObjectId(blogId));
+    const deletedBlog = await this.commandBus.execute<
+      DeleteBlogCommand,
+      InterlayerNotice<CommandDeleteBlogOutputData>
+    >(command);
     if (!deletedBlog) throw new NotFoundException();
     return;
   }
