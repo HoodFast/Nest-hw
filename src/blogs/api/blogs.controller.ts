@@ -3,12 +3,14 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   NotFoundException,
   Param,
   Post,
   Put,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { BlogService } from '../application/blogs.service';
 import { BlogsQueryRepository } from '../infrastructure/blogs.query.repository';
@@ -26,17 +28,19 @@ import {
   CommandCreatePostForBlogOutput,
   CreatePostForBlogCommand,
 } from './use-cases/create-post-for-blog.usecase';
+import { AuthGuard } from '../../guards/auth.guard';
+import { createBlogInputDto } from './model/input/create-blog-input-dto';
+import {
+  CommandUpdateBlogData,
+  UpdateBlogCommand,
+} from './use-cases/update-blog.usecase';
+import { ObjectId } from 'mongodb';
 
 export enum sortDirection {
   asc = 'asc',
   desc = 'desc',
 }
 
-export type createBlogInputType = {
-  name: string;
-  description: string;
-  websiteUrl: string;
-};
 export type queryBlogsInputType = {
   searchNameTerm?: string;
   sortBy?: string;
@@ -50,7 +54,6 @@ export class BlogsController {
   constructor(
     protected blogService: BlogService,
     protected blogsQueryRepository: BlogsQueryRepository,
-    // protected postRepository: PostsRepository,
     protected postsQueryRepository: PostsQueryRepository,
     private readonly commandBus: CommandBus,
   ) {}
@@ -99,9 +102,9 @@ export class BlogsController {
     if (!posts) return res.sendStatus(404);
     return posts;
   }
-
+  @UseGuards(AuthGuard)
   @Post()
-  async createBlog(@Body() inputModel: createBlogInputType) {
+  async createBlog(@Body() inputModel: createBlogInputDto) {
     const command = new CreateBlogCommand(
       inputModel.name,
       inputModel.description,
@@ -116,6 +119,7 @@ export class BlogsController {
     );
     return blog;
   }
+  @UseGuards(AuthGuard)
   @Post(':id/posts')
   async createPostForBlog(
     @Param('id') blogId: string,
@@ -140,32 +144,34 @@ export class BlogsController {
     );
     return post;
   }
-
+  @HttpCode(204)
+  @UseGuards(AuthGuard)
   @Put(':id')
   async updateBlog(
     @Param('id') blogId: string,
-    @Body() body: createBlogInputType,
-    @Res({ passthrough: true }) res: Response,
+    @Body() body: createBlogInputDto,
   ) {
-    const updateBlogData: createBlogInputType = {
-      name: body.name,
-      description: body.description,
-      websiteUrl: body.websiteUrl,
-    };
-    const updatedBlog = await this.blogService.updateBlog(
-      blogId,
-      updateBlogData,
+    const id = new ObjectId(blogId);
+    const command = new UpdateBlogCommand(
+      body.name,
+      body.description,
+      body.websiteUrl,
+      id,
     );
-    if (!updatedBlog) return res.sendStatus(404);
-    return res.sendStatus(204);
+
+    const updatedBlog = await this.commandBus.execute<
+      UpdateBlogCommand,
+      InterlayerNotice<CommandUpdateBlogData>
+    >(command);
+    if (!updatedBlog.data) throw new NotFoundException();
+    return;
   }
+  @HttpCode(204)
+  @UseGuards(AuthGuard)
   @Delete(':id')
-  async deleteBlogById(
-    @Param('id') blogId: string,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async deleteBlogById(@Param('id') blogId: string) {
     const deletedBlog = await this.blogService.deleteBlog(blogId);
-    if (!deletedBlog) return res.sendStatus(404);
-    return res.sendStatus(204);
+    if (!deletedBlog) throw new NotFoundException();
+    return;
   }
 }

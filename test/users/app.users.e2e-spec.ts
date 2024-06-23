@@ -7,7 +7,7 @@ import { UsersService } from '../../src/users/application/users.service';
 import { UsersServiceEmailMock } from './mock/email.mock.class';
 import { UserTestManager } from './user.test.manager';
 import request from 'supertest';
-import { usersDto } from './test.dto';
+import { usersDto } from '../dtos/test.dto';
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication;

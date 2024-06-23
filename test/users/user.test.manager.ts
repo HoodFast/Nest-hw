@@ -1,7 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { UserInputDto } from '../../src/users/api/input/userInput.dto';
-import { Response } from 'express';
 
 export class UserTestManager {
   constructor(protected readonly app: INestApplication) {}
