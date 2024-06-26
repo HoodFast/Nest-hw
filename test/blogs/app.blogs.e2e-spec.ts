@@ -7,7 +7,7 @@ import { appSettings } from '../../src/settings/app.settings';
 import { BlogTestManager } from './blog-test-manager';
 import request from 'supertest';
 
-describe('UsersController (e2e)', () => {
+describe('BlogsController (e2e)', () => {
   let app: INestApplication;
   let httpServer;
   let blogTestManager;
@@ -35,7 +35,7 @@ describe('UsersController (e2e)', () => {
   it('create blog this correct data', async () => {
     const { createBlogData } = expect.getState();
     const response = await blogTestManager.createBlog(createBlogData, 201);
-
+    debugger;
     expect(response.body).toEqual({
       id: expect.any(String),
       name: createBlogData.name,
@@ -145,5 +145,13 @@ describe('UsersController (e2e)', () => {
       .get(`/blogs/${createBlog.body.id}`)
       .expect(200);
     await blogTestManager.checkBlogBody(res);
+  });
+  it('get all blogs by id', async () => {
+    const { createBlogData } = expect.getState();
+    for (let i = 0; i < 4; i++) {
+      await blogTestManager.createBlog(createBlogData, 201);
+    }
+    const res = await request(httpServer).get(`/blogs`).expect(200);
+    await blogTestManager.checkAllBlogsBody(res);
   });
 });

@@ -47,6 +47,10 @@ export class PostsRepository {
       return false;
     }
   }
+  async getPostById(id: string) {
+    const post = await this.postModel.findOne({ _id: id });
+    return post;
+  }
   async deletePost(postId: string): Promise<boolean> {
     const res = await this.postModel.deleteOne({ _id: new ObjectId(postId) });
 

@@ -3,25 +3,66 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  NotFoundException,
   Param,
   Post,
   Put,
   Query,
+  Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { PostService } from '../application/posts.service';
 import { Response } from 'express';
-import { InputPostCreate, PostCreateData } from './input/PostsCreate.dto';
+import { InputPostCreate } from './input/PostsCreate.dto';
 import { QueryPostInputModel } from './input/PostsGetInput';
 import { CommentsQueryRepository } from '../../comments/infrastructure/comments.query.repository';
 import { sortDirection } from '../../blogs/api/blogs.controller';
+import { AuthGuard } from '../../guards/auth.guard';
+import {
+  CommandCreatePostForBlogOutput,
+  CreatePostForBlogCommand,
+} from '../../blogs/api/use-cases/create-post-for-blog.usecase';
+import { CommandBus } from '@nestjs/cqrs';
+import { InterlayerNotice } from '../../base/models/Interlayer';
+import { PostsQueryRepository } from '../infrastructure/posts.query.repository';
+import {
+  CommandUpdatePostOutputData,
+  UpdatePostCommand,
+} from './use-cases/update-post.usecase';
+import { likesStatuses } from './input/likesDtos';
+import { AccessTokenAuthGuard } from '../../guards/access.token.auth.guard';
+import { UpdateLikesCommand } from './use-cases/update-likes.usecase';
+import { UpdateOutputData } from '../../base/models/updateOutput';
 
 @Controller('posts')
 export class PostsController {
   constructor(
     protected postService: PostService,
+    protected postsQueryRepository: PostsQueryRepository,
     protected commentsQueryRepository: CommentsQueryRepository,
+    protected commandBus: CommandBus,
   ) {}
+  @HttpCode(204)
+  @UseGuards(AccessTokenAuthGuard)
+  @Put(':id/like-status')
+  async updateLikes(
+    @Body() body: { likeStatus: likesStatuses },
+    @Param('id') postId: string,
+    @Req() req: Request,
+  ) {
+    // @ts-ignore
+    const userId = req.userId;
+    const command = new UpdateLikesCommand(body.likeStatus, postId, userId);
+    const updateLikes = await this.commandBus.execute<
+      UpdateLikesCommand,
+      InterlayerNotice<UpdateOutputData>
+    >(command);
+    if (updateLikes.hasError()) throw new NotFoundException();
+    return;
+  }
+
   @Get()
   async getAllPosts(@Query() query: QueryPostInputModel) {
     const sortData = {
@@ -69,37 +110,51 @@ export class PostsController {
     return comments;
   }
   @Post()
+  @UseGuards(AuthGuard)
   async createPost(@Body() body: InputPostCreate) {
-    const newPost: PostCreateData = {
-      title: body.title,
-      shortDescription: body.shortDescription,
-      content: body.content,
-      blogId: body.blogId,
-      createdAt: new Date().toISOString(),
-    };
-    const userId = '';
-    const post = await this.postService.createPost(newPost, userId);
+    const command = new CreatePostForBlogCommand(
+      body.title,
+      body.shortDescription,
+      body.content,
+      body.blogId,
+    );
+
+    // const userId = '';
+    const creatingPost = await this.commandBus.execute<
+      CreatePostForBlogCommand,
+      InterlayerNotice<CommandCreatePostForBlogOutput>
+    >(command);
+    if (creatingPost.hasError())
+      throw new NotFoundException(creatingPost.extensions[0].message);
+    const post = await this.postsQueryRepository.getPostById(
+      creatingPost.data!.postId,
+    );
+    if (!post) throw new NotFoundException();
     return post;
   }
+  @HttpCode(204)
   @Put(':id')
-  async updatePost(
-    @Param('id') postId,
-    @Body() model: InputPostCreate,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    const post = await this.postService.updatePost(postId, model);
+  async updatePost(@Param('id') postId, @Body() model: InputPostCreate) {
+    const command = new UpdatePostCommand(
+      postId,
+      model.title,
+      model.shortDescription,
+      model.content,
+      model.blogId,
+    );
+    const post = await this.commandBus.execute<
+      UpdatePostCommand,
+      InterlayerNotice<CommandUpdatePostOutputData>
+    >(command);
 
-    if (!post) return res.sendStatus(404);
-    return res.sendStatus(204);
+    if (post.hasError()) throw new NotFoundException();
+    return;
   }
-
+  @HttpCode(204)
   @Delete(':id')
-  async deletePost(
-    @Param('id') postId: string,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async deletePost(@Param('id') postId: string) {
     const post = await this.postService.deletePost(postId);
-    if (!post) return res.sendStatus(404);
-    return res.sendStatus(204);
+    if (!post) throw new NotFoundException();
+    return;
   }
 }

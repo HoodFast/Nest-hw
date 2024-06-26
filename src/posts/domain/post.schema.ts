@@ -7,14 +7,6 @@ export enum likesStatuses {
   dislike = 'Dislike',
 }
 
-// export type postLikesType = {
-//   createdAt: Date;
-//   updatedAt: Date;
-//   login: string;
-//   userId: string;
-//   likesStatus: likesStatuses;
-// };
-
 @Schema()
 export class Likes {
   @Prop({ default: new Date() })

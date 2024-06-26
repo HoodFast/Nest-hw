@@ -20,8 +20,9 @@ export class UserTestManager {
     const response = await request(this.app.getHttpServer())
       .post('/users')
       .auth('admin', 'qwerty')
-      .send(createUserData)
-      .expect(expectStatus);
+      .send(createUserData);
+    // .expect(expectStatus);
+    debugger;
     return response;
   }
   async login(

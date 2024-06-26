@@ -56,6 +56,16 @@ export class BlogTestManager {
       isMembership: expect.any(Boolean),
     });
   }
+  checkAllBlogsBody(response: any) {
+    const blogs = response.body;
+    expect(blogs).toEqual({
+      pagesCount: 1,
+      page: 1,
+      pageSize: 10,
+      totalCount: 4,
+      items: expect.any(Array),
+    });
+  }
   checkValidateErrors(response: any) {
     const result = response.body;
 

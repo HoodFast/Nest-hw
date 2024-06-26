@@ -23,5 +23,7 @@ export class InputPostCreate extends PostInput {
 }
 
 export class PostCreateData extends InputPostCreate {
+  @Trim()
+  @IsString()
   createdAt: string;
 }

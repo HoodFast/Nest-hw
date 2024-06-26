@@ -8,6 +8,8 @@ export class TestManager {
   }
 
   async deleteAll() {
-    await request(this.app.getHttpServer()).delete(`/testing/all-data`);
+    await request(this.app.getHttpServer())
+      .delete(`/testing/all-data`)
+      .expect(204);
   }
 }
