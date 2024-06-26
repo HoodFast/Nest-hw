@@ -26,17 +26,6 @@ export class BlogTestManager {
       .expect(expectStatus);
     return response;
   }
-  checkValidateErrors(response: any) {
-    const result = response.body;
-
-    expect(result).toEqual({
-      errorsMessages: [
-        { message: expect.any(String), field: expect.any(String) },
-        { message: expect.any(String), field: expect.any(String) },
-        { message: expect.any(String), field: expect.any(String) },
-      ],
-    });
-  }
   async updateBlog(
     updateBlogData: createBlogInputDto,
     blogId: string,
@@ -48,5 +37,34 @@ export class BlogTestManager {
       .send(updateBlogData)
       .expect(expectStatus);
     return response;
+  }
+  async deleteBlog(id: string) {
+    await request(this.app.getHttpServer())
+      .delete(id)
+      .auth('admin', 'qwerty')
+      .expect(204);
+    return;
+  }
+  checkBlogBody(response: any) {
+    const blog = response.body;
+    expect(blog).toEqual({
+      id: expect.any(String),
+      name: expect.any(String),
+      description: expect.any(String),
+      websiteUrl: expect.any(String),
+      createdAt: expect.any(String),
+      isMembership: expect.any(Boolean),
+    });
+  }
+  checkValidateErrors(response: any) {
+    const result = response.body;
+
+    expect(result).toEqual({
+      errorsMessages: [
+        { message: expect.any(String), field: expect.any(String) },
+        { message: expect.any(String), field: expect.any(String) },
+        { message: expect.any(String), field: expect.any(String) },
+      ],
+    });
   }
 }

@@ -70,8 +70,6 @@ const useCases = [
         const uri = environmentSettings?.isTesting
           ? databaseSettings?.MONGO_CONNECTION_URI_FOR_TESTS
           : databaseSettings?.MONGO_CONNECTION_URI;
-        console.log(databaseSettings?.MONGO_CONNECTION_URI);
-        console.log(process.env.ENV);
         return { uri: uri };
       },
 

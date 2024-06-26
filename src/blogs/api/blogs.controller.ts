@@ -76,12 +76,9 @@ export class BlogsController {
   }
 
   @Get(':id')
-  async getBlogById(
-    @Param('id') blogId: string,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async getBlogById(@Param('id') blogId: string) {
     const blog = await this.blogsQueryRepository.getBlogById(blogId);
-    if (!blog) return res.sendStatus(404);
+    if (!blog) throw new NotFoundException();
     return blog;
   }
 
@@ -169,16 +166,17 @@ export class BlogsController {
     if (!updatedBlog.data) throw new NotFoundException();
     return;
   }
-  @HttpCode(204)
+
   @UseGuards(AuthGuard)
   @Delete(':id')
+  @HttpCode(204)
   async deleteBlogById(@Param('id') blogId: string) {
     const command = new DeleteBlogCommand(new ObjectId(blogId));
     const deletedBlog = await this.commandBus.execute<
       DeleteBlogCommand,
       InterlayerNotice<CommandDeleteBlogOutputData>
     >(command);
-    if (!deletedBlog) throw new NotFoundException();
+    if (!deletedBlog.data) throw new NotFoundException();
     return;
   }
 }

@@ -33,7 +33,6 @@ describe('UsersController (e2e)', () => {
     createWrongPostData: postsDto.createWrongPostData,
   });
   it('create blog this correct data', async () => {
-    // const blogTestManager = new BlogTestManager(app);
     const { createBlogData } = expect.getState();
     const response = await blogTestManager.createBlog(createBlogData, 201);
 
@@ -47,7 +46,6 @@ describe('UsersController (e2e)', () => {
     });
   });
   it('blog don`t create, validation error status 400', async () => {
-    // const blogTestManager = new BlogTestManager(app);
     const { createWrongBlogData } = expect.getState();
     const badResponse = await blogTestManager.createBlog(
       createWrongBlogData,
@@ -119,7 +117,33 @@ describe('UsersController (e2e)', () => {
     const updatedBlog = await request(httpServer).get(
       `/blogs/${createBlog.body.id}`,
     );
-    debugger;
     expect(updatedBlog.body.name).toBe(updateBlogData.name);
+  });
+  it('delete blog ', async () => {
+    const { createBlogData } = expect.getState();
+    const createBlog = await blogTestManager.createBlog(createBlogData, 201);
+
+    await blogTestManager.deleteBlog(`/blogs/${createBlog.body.id}`);
+    const deletedBlog = await request(httpServer).get(
+      `/blogs/${createBlog.body.id}`,
+    );
+    expect(deletedBlog.statusCode).toBe(404);
+  });
+  it('don`t delete blog because Unauthorized', async () => {
+    const { createBlogData } = expect.getState();
+    const createBlog = await blogTestManager.createBlog(createBlogData, 201);
+
+    await request(httpServer)
+      .delete(`/blogs/${createBlog.body.id}`)
+      .expect(401);
+  });
+  it('get blog by id', async () => {
+    const { createBlogData } = expect.getState();
+    const createBlog = await blogTestManager.createBlog(createBlogData, 201);
+
+    const res = await request(httpServer)
+      .get(`/blogs/${createBlog.body.id}`)
+      .expect(200);
+    await blogTestManager.checkBlogBody(res);
   });
 });

@@ -98,7 +98,6 @@ export class JwtService {
       const deviceId = result.deviceId;
       return { iat, deviceId, userId };
     } catch (e) {
-      console.log(e);
       return null;
     }
   }
