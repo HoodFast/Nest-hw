@@ -26,7 +26,7 @@ export class PostsRepository {
   async updatePost(postId: string, data: InputPostCreate) {
     try {
       const blog = await this.blogsQueryRepository.getBlogById(data.blogId);
-      debugger;
+
       if (!blog) return false;
 
       const res = await this.postModel.updateOne(

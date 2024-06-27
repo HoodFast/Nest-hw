@@ -39,6 +39,8 @@ import { CreateBlogUseCase } from './blogs/api/use-cases/create-blog.usecase';
 import { CreatePostForBlogUseCase } from './blogs/api/use-cases/create-post-for-blog.usecase';
 import { UpdateBlogUseCase } from './blogs/api/use-cases/update-blog.usecase';
 import { DeleteBlogUseCase } from './blogs/api/use-cases/delete-blog.usecase';
+import { UpdatePostUseCase } from './posts/api/use-cases/update-post.usecase';
+import { UpdateLikesUseCase } from './posts/api/use-cases/update-likes.usecase';
 
 const useCases = [
   CreateBlogUseCase,
@@ -46,6 +48,8 @@ const useCases = [
   UpdateBlogUseCase,
   DeleteBlogUseCase,
   UpdateBlogUseCase,
+  UpdatePostUseCase,
+  UpdateLikesUseCase,
 ];
 // const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({

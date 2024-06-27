@@ -10,11 +10,10 @@ import {
   Put,
   Query,
   Req,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { PostService } from '../application/posts.service';
-import { Response } from 'express';
+
 import { InputPostCreate } from './input/PostsCreate.dto';
 import { QueryPostInputModel } from './input/PostsGetInput';
 import { CommentsQueryRepository } from '../../comments/infrastructure/comments.query.repository';
@@ -35,6 +34,7 @@ import { likesStatuses } from './input/likesDtos';
 import { AccessTokenAuthGuard } from '../../guards/access.token.auth.guard';
 import { UpdateLikesCommand } from './use-cases/update-likes.usecase';
 import { UpdateOutputData } from '../../base/models/updateOutput';
+import { accessTokenGetId } from '../../guards/access.token.get.id';
 
 @Controller('posts')
 export class PostsController {
@@ -76,23 +76,20 @@ export class PostsController {
 
     return posts;
   }
-
+  @UseGuards(accessTokenGetId)
   @Get(':id')
-  async getPostById(
-    @Param('id') postId: string,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    const userId = '';
-    const post = await this.postService.getPostById(userId, postId);
+  async getPostById(@Param('id') postId: string, @Req() req: Request) {
+    // @ts-ignore
+    const userId = req.userId ? req.userId : null;
+    const post = await this.postService.getPostById(postId, userId);
 
-    if (!post) return res.sendStatus(404);
+    if (!post) throw new NotFoundException();
     return post;
   }
   @Get(':id/comments')
   async getCommentsForPost(
     @Param('id') postId: string,
     @Query() query: QueryPostInputModel,
-    @Res({ passthrough: true }) res: Response,
   ) {
     const sortData = {
       sortBy: query.sortBy ?? 'createdAt',
@@ -106,7 +103,7 @@ export class PostsController {
       postId,
       sortData,
     );
-    if (!comments) return res.sendStatus(404);
+    if (!comments) throw new NotFoundException();
     return comments;
   }
   @Post()
@@ -150,6 +147,7 @@ export class PostsController {
     if (post.hasError()) throw new NotFoundException();
     return;
   }
+  @UseGuards(AuthGuard)
   @HttpCode(204)
   @Delete(':id')
   async deletePost(@Param('id') postId: string) {

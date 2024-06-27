@@ -32,6 +32,11 @@ export const postsDto = {
     content: 'test',
     title: 'test',
   },
+  updatePostData: {
+    shortDescription: 'new name',
+    content: 'new content',
+    title: 'new test test',
+  },
   createWrongPostData: {
     shortDescription:
       'test11111111111111111111111111111111111111111111111111' +

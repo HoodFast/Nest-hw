@@ -1,10 +1,10 @@
-import { blogsDto, postsDto } from '../dtos/test.dto';
-import { TestManager } from '../testManager';
+import { appSettings } from '../../src/settings/app.settings';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
-import { appSettings } from '../../src/settings/app.settings';
 import { BlogTestManager } from './blog-test-manager';
+import { TestManager } from '../testManager';
+import { blogsDto, postsDto } from '../dtos/test.dto';
 import request from 'supertest';
 
 describe('BlogsController (e2e)', () => {
@@ -26,6 +26,10 @@ describe('BlogsController (e2e)', () => {
     const testManager = new TestManager(app);
     await testManager.deleteAll();
   });
+  afterEach(async () => {
+    const testManager = new TestManager(app);
+    await testManager.deleteAll();
+  });
   expect.setState({
     createBlogData: blogsDto.createBlogData,
     createWrongBlogData: blogsDto.createWrongBlogData,
@@ -34,8 +38,8 @@ describe('BlogsController (e2e)', () => {
   });
   it('create blog this correct data', async () => {
     const { createBlogData } = expect.getState();
+
     const response = await blogTestManager.createBlog(createBlogData, 201);
-    debugger;
     expect(response.body).toEqual({
       id: expect.any(String),
       name: createBlogData.name,
@@ -146,7 +150,7 @@ describe('BlogsController (e2e)', () => {
       .expect(200);
     await blogTestManager.checkBlogBody(res);
   });
-  it('get all blogs by id', async () => {
+  it('get all posts by id', async () => {
     const { createBlogData } = expect.getState();
     for (let i = 0; i < 4; i++) {
       await blogTestManager.createBlog(createBlogData, 201);

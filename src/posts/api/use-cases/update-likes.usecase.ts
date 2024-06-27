@@ -14,7 +14,7 @@ export class UpdateLikesCommand {
 }
 
 @CommandHandler(UpdateLikesCommand)
-export class CreateBlogUseCase
+export class UpdateLikesUseCase
   implements
     ICommandHandler<UpdateLikesCommand, InterlayerNotice<UpdateOutputData>>
 {
@@ -33,13 +33,14 @@ export class CreateBlogUseCase
       notice.addError('post not found');
       return notice;
     }
+
     const user = await this.usersRepository.getUserById(command.userId);
     if (!user) {
       notice.addError('user not found');
       return notice;
     }
     post.addLike(command.userId, command.likesStatuses, user.accountData.login);
-
+    post.save();
     notice.addData({ updated: true });
     return notice;
   }

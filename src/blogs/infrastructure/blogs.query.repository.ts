@@ -23,7 +23,7 @@ export class BlogsQueryRepository {
       .sort({ [sortBy]: sortDirection })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);
-    // const items = blogs.map(blogMapper);
+    // const items = posts.map(blogMapper);
     // const fakeItems = fakeMappers(
     //   items,
     //   pageSize,

@@ -16,7 +16,7 @@ export class UpdatePostCommand {
 }
 
 @CommandHandler(UpdatePostCommand)
-export class CreateBlogUseCase
+export class UpdatePostUseCase
   implements
     ICommandHandler<
       UpdatePostCommand,

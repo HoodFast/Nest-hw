@@ -13,7 +13,7 @@ export const blogMapper = (blog: BlogDocument): OutputBlogMapData => {
 };
 
 // export const fakeMappers = (
-//   blogs: OutputBlogMapData[],
+//   posts: OutputBlogMapData[],
 //   pageSize: number,
 //   pageNumber: number,
 //   sortDirection: any,
@@ -81,7 +81,7 @@ export const blogMapper = (blog: BlogDocument): OutputBlogMapData => {
 //   }
 //
 //   for (let i = 0; i < count; i++) {
-//     const res = blogs.find((b) => b.name === ref[i]);
+//     const res = posts.find((b) => b.name === ref[i]);
 //     result.push(res);
 //   }
 //   return result;

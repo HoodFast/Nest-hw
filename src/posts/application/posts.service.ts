@@ -26,7 +26,7 @@ export class PostService {
     return await this.postsRepository.updatePost(postId, data);
   }
 
-  async getPostById(userId: string, postId: string) {
+  async getPostById(postId: string, userId?: string) {
     return this.postsQueryRepository.getPostById(postId, userId);
   }
   async deletePost(postId: string): Promise<boolean> {

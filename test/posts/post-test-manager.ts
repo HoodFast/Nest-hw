@@ -1,62 +1,61 @@
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { createBlogInputDto } from '../../src/blogs/api/model/input/create-blog-input-dto';
-import { PostInput } from '../../src/posts/api/input/PostsCreate.dto';
+import { InputPostCreate } from '../../src/posts/api/input/PostsCreate.dto';
 
-export class BlogTestManager {
+export class PostTestManager {
   constructor(protected readonly app: INestApplication) {}
-
-  async createBlog(createBlogData: createBlogInputDto, expectStatus: number) {
+  async createPost(createPostData: InputPostCreate, expectStatus: number) {
     const response = await request(this.app.getHttpServer())
-      .post('/blogs')
-      .auth('admin', 'qwerty')
-      .send(createBlogData)
-      .expect(expectStatus);
-    return response;
-  }
-  async createPostForBlog(
-    createPostData: PostInput,
-    blogId: string,
-    expectStatus: number,
-  ) {
-    const response = await request(this.app.getHttpServer())
-      .post(`/blogs/${blogId}/posts`)
+      .post(`/posts`)
       .auth('admin', 'qwerty')
       .send(createPostData)
       .expect(expectStatus);
     return response;
   }
-  async updateBlog(
-    updateBlogData: createBlogInputDto,
-    blogId: string,
+  async updatePost(
+    updatePostData: InputPostCreate,
+    postId: string,
     expectStatus: number,
   ) {
     const response = await request(this.app.getHttpServer())
-      .put(`/blogs/${blogId}`)
+      .put(`/posts/${postId}`)
       .auth('admin', 'qwerty')
-      .send(updateBlogData)
+      .send(updatePostData)
       .expect(expectStatus);
     return response;
   }
-  async deleteBlog(uri: string) {
+  async deletePost(id: string) {
     await request(this.app.getHttpServer())
-      .delete(uri)
+      .delete(`/posts/${id}`)
       .auth('admin', 'qwerty')
       .expect(204);
     return;
   }
-  checkBlogBody(response: any) {
-    const blog = response.body;
-    expect(blog).toEqual({
+  checkPostBody(response: any) {
+    const post = response.body;
+    expect(post).toEqual({
       id: expect.any(String),
-      name: expect.any(String),
-      description: expect.any(String),
-      websiteUrl: expect.any(String),
+      title: expect.any(String),
+      shortDescription: expect.any(String),
+      content: expect.any(String),
+      blogId: expect.any(String),
+      blogName: expect.any(String),
       createdAt: expect.any(String),
-      isMembership: expect.any(Boolean),
+      extendedLikesInfo: {
+        likesCount: expect.any(Number),
+        dislikesCount: expect.any(Number),
+        myStatus: expect.any(String),
+        newestLikes: [
+          {
+            addedAt: expect.any(String),
+            userId: expect.any(String),
+            login: expect.any(String),
+          },
+        ],
+      },
     });
   }
-  checkAllBlogsBody(response: any) {
+  checkAllPostsBody(response: any) {
     const blogs = response.body;
     expect(blogs).toEqual({
       pagesCount: 1,
