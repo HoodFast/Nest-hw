@@ -1,7 +1,6 @@
 import { IQueryHandler } from '@nestjs/cqrs';
 import { InterlayerNotice } from '../../../base/models/Interlayer';
 import { CommentsOutputType } from '../model/output/comments.output';
-import { CommandCreateBlogData } from '../../../blogs/api/use-cases/create-blog.usecase';
 import { CommentsQueryRepository } from '../../infrastructure/comments.query.repository';
 
 export class GetCommentCommand {

@@ -13,11 +13,11 @@ export class CommentsQueryRepository {
     @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
     protected postQueryRepository: PostsQueryRepository,
   ) {}
-  async getCommentById(commentsId: string) {
+  async getCommentById(commentsId: string, userId: string = '') {
     const comment = await this.commentModel.find({
       _id: new ObjectId(commentsId),
     });
-    const userId = null;
+
     return commentMapper(userId, comment[0]);
   }
   async getAllByPostId(

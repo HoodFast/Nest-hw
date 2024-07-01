@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InterlayerNotice } from '../../../base/models/Interlayer';
 
-import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
+import { PostsRepository } from '../../infrastructure/posts.repository';
 
 export class CommandCreatePostForBlogData {
   title: string;

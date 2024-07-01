@@ -22,7 +22,7 @@ import { AuthGuard } from '../../guards/auth.guard';
 import {
   CommandCreatePostForBlogOutput,
   CreatePostForBlogCommand,
-} from '../../blogs/api/use-cases/create-post-for-blog.usecase';
+} from './use-cases/create-post-for-blog.usecase';
 import { CommandBus } from '@nestjs/cqrs';
 import { InterlayerNotice } from '../../base/models/Interlayer';
 import { PostsQueryRepository } from '../infrastructure/posts.query.repository';
@@ -35,6 +35,10 @@ import { AccessTokenAuthGuard } from '../../guards/access.token.auth.guard';
 import { UpdateLikesCommand } from './use-cases/update-likes.usecase';
 import { UpdateOutputData } from '../../base/models/updateOutput';
 import { accessTokenGetId } from '../../guards/access.token.get.id';
+import {
+  CommandCreateCommentForPostOutput,
+  CreateCommentForPostCommand,
+} from './use-cases/create-comment-for-post.usecase';
 
 @Controller('posts')
 export class PostsController {
@@ -154,5 +158,27 @@ export class PostsController {
     const post = await this.postService.deletePost(postId);
     if (!post) throw new NotFoundException();
     return;
+  }
+  @UseGuards(AccessTokenAuthGuard)
+  @HttpCode(201)
+  @Post('/:id/comments')
+  async createCommentForPost(
+    @Param('id') postId: string,
+    @Body() data: { content: string },
+    @Req() req: Request,
+  ) {
+    // @ts-ignore
+    const userId = req.userId ? req.userId : null;
+    const command = new CreateCommentForPostCommand(
+      postId,
+      data.content,
+      userId,
+    );
+    const createComment = await this.commandBus.execute<
+      CreateCommentForPostCommand,
+      InterlayerNotice<CommandCreateCommentForPostOutput>
+    >(command);
+    if (createComment.hasError()) throw new NotFoundException();
+    return createComment.data;
   }
 }

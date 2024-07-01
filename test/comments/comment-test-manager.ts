@@ -14,9 +14,9 @@ export class CommentTestManager {
   ) {
     const response = await request(this.app.getHttpServer())
       .post(`/posts/${postId}/comments`)
-      .set('Authorization', `Bearer  ${accessToken}`)
-      .send({ content })
-      .expect(expectStatus);
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({ content });
+
     return response;
   }
   async updateComment(

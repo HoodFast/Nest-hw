@@ -27,7 +27,7 @@ import { InterlayerNotice } from '../../base/models/Interlayer';
 import {
   CommandCreatePostForBlogOutput,
   CreatePostForBlogCommand,
-} from './use-cases/create-post-for-blog.usecase';
+} from '../../posts/api/use-cases/create-post-for-blog.usecase';
 import { AuthGuard } from '../../guards/auth.guard';
 import { createBlogInputDto } from './model/input/create-blog-input-dto';
 import {

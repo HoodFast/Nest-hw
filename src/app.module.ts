@@ -36,12 +36,14 @@ import configuration, {
 } from './settings/configuration';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CreateBlogUseCase } from './blogs/api/use-cases/create-blog.usecase';
-import { CreatePostForBlogUseCase } from './blogs/api/use-cases/create-post-for-blog.usecase';
+import { CreatePostForBlogUseCase } from './posts/api/use-cases/create-post-for-blog.usecase';
 import { UpdateBlogUseCase } from './blogs/api/use-cases/update-blog.usecase';
 import { DeleteBlogUseCase } from './blogs/api/use-cases/delete-blog.usecase';
 import { UpdatePostUseCase } from './posts/api/use-cases/update-post.usecase';
 import { UpdateLikesUseCase } from './posts/api/use-cases/update-likes.usecase';
 import { GetCommentUseCase } from './comments/api/use-cases/get-comment-by-id.usecase';
+import { CreateCommentForPostUseCase } from './posts/api/use-cases/create-comment-for-post.usecase';
+import { CommentsRepository } from './comments/infrastructure/comments.repository';
 
 const useCases = [
   CreateBlogUseCase,
@@ -52,6 +54,7 @@ const useCases = [
   UpdatePostUseCase,
   UpdateLikesUseCase,
   GetCommentUseCase,
+  CreateCommentForPostUseCase,
 ];
 // const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
@@ -109,6 +112,7 @@ const useCases = [
     UsersQueryRepository,
     TestingQueryRepository,
     CommentsQueryRepository,
+    CommentsRepository,
     AuthService,
     JwtService,
     SessionRepository,

@@ -1,7 +1,6 @@
 import { Likes, likesStatuses } from '../../posts/domain/post.schema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-
 export class likesType {
   createdAt: Date;
   updatedAt: Date;
@@ -15,6 +14,21 @@ export class CommentatorInfo {
   userId: string;
   @Prop()
   userLogin: string;
+}
+export class CommentDbType {
+  content: string;
+
+  postId: string;
+
+  commentatorInfo: CommentatorInfo;
+
+  createdAt: string;
+
+  likesCount: number;
+
+  dislikesCount: number;
+
+  likes: Likes[];
 }
 
 @Schema()

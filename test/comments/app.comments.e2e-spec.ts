@@ -36,6 +36,7 @@ describe('CommentsController (e2e)', () => {
     testManager = new TestManager(app);
   });
   beforeEach(async () => {
+    accessToken = await testManager.createAccessToken();
     createdBlogRes = await blogTestManager.createBlog(
       blogsDto.createBlogData,
       201,
@@ -53,7 +54,6 @@ describe('CommentsController (e2e)', () => {
       accessToken,
       201,
     );
-    accessToken = await testManager.createAccessToken();
   });
 
   afterEach(async () => {

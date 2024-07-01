@@ -19,7 +19,7 @@ export class AccessTokenAuthGuard implements CanActivate {
     if (authType !== 'Bearer') throw new UnauthorizedException();
     const token = request.headers.authorization.split(' ')[1];
     const userId = await this.jwtService.getUserIdByToken(token);
-    if (!userId) throw new UnauthorizedException();
+    if (!userId) throw new UnauthorizedException('token guard');
     request.userId = userId;
     return true;
   }
