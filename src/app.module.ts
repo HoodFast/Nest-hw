@@ -44,6 +44,11 @@ import { UpdateLikesUseCase } from './posts/api/use-cases/update-likes.usecase';
 import { GetCommentUseCase } from './comments/api/use-cases/get-comment-by-id.usecase';
 import { CreateCommentForPostUseCase } from './posts/api/use-cases/create-comment-for-post.usecase';
 import { CommentsRepository } from './comments/infrastructure/comments.repository';
+import {
+  UpdateCommentLikesCommand,
+  UpdateCommentLikesUseCase,
+} from './comments/api/use-cases/update-comment-like-status.usecase';
+import { CommentsController } from './comments/api/comments.controller';
 
 const useCases = [
   CreateBlogUseCase,
@@ -55,6 +60,7 @@ const useCases = [
   UpdateLikesUseCase,
   GetCommentUseCase,
   CreateCommentForPostUseCase,
+  UpdateCommentLikesUseCase,
 ];
 // const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
@@ -98,6 +104,7 @@ const useCases = [
     UsersController,
     TestingController,
     AuthController,
+    CommentsController,
   ],
   providers: [
     AppService,

@@ -74,12 +74,13 @@ describe('CommentsController (e2e)', () => {
       accessToken,
       201,
     );
+
     await commentTestManager.addLikeForComment(
-      createComment.body.id,
+      createComment.body.commentId,
       accessToken,
     );
     const likesComment = await commentTestManager.getComment(
-      createComment.body.id,
+      createComment.body.commentId,
     );
     commentTestManager.checkCommentBody(likesComment);
   });

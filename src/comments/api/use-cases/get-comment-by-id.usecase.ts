@@ -1,4 +1,4 @@
-import { IQueryHandler } from '@nestjs/cqrs';
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { InterlayerNotice } from '../../../base/models/Interlayer';
 import { CommentsOutputType } from '../model/output/comments.output';
 import { CommentsQueryRepository } from '../../infrastructure/comments.query.repository';
@@ -6,7 +6,7 @@ import { CommentsQueryRepository } from '../../infrastructure/comments.query.rep
 export class GetCommentCommand {
   constructor(public id: string) {}
 }
-
+@QueryHandler(GetCommentCommand)
 export class GetCommentUseCase
   implements
     IQueryHandler<GetCommentCommand, InterlayerNotice<CommentsOutputType>>

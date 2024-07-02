@@ -40,7 +40,7 @@ export class UpdateLikesUseCase
       return notice;
     }
     post.addLike(command.userId, command.likesStatuses, user.accountData.login);
-    post.save();
+    await post.save();
     notice.addData({ updated: true });
     return notice;
   }
