@@ -1,9 +1,10 @@
 import { Trim } from '../../../../base/validate/trim';
-import { IsString, Matches, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsString, Matches, MaxLength } from 'class-validator';
 
 export class createBlogInputDto {
   @Trim()
   @IsString()
+  @IsNotEmpty()
   @MaxLength(15)
   name: string;
   @Trim()
