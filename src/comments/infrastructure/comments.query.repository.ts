@@ -18,6 +18,7 @@ export class CommentsQueryRepository {
       _id: new ObjectId(commentsId),
     });
 
+    if (comment.length === 0) return null;
     return commentMapper(userId, comment[0]);
   }
   async getDBCommentById(commentsId: string) {

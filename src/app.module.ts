@@ -29,7 +29,6 @@ import { AuthController } from './auth/api/auth.controller';
 import { Session, SessionSchema } from './sessions/domain/session.schema';
 import { EmailService } from './auth/infrastructure/email.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import * as process from 'process';
 import configuration, {
   ConfigServiceType,
   validate,
@@ -44,11 +43,10 @@ import { UpdateLikesUseCase } from './posts/api/use-cases/update-likes.usecase';
 import { GetCommentUseCase } from './comments/api/use-cases/get-comment-by-id.usecase';
 import { CreateCommentForPostUseCase } from './posts/api/use-cases/create-comment-for-post.usecase';
 import { CommentsRepository } from './comments/infrastructure/comments.repository';
-import {
-  UpdateCommentLikesCommand,
-  UpdateCommentLikesUseCase,
-} from './comments/api/use-cases/update-comment-like-status.usecase';
+import { UpdateCommentLikesUseCase } from './comments/api/use-cases/update-comment-like-status.usecase';
 import { CommentsController } from './comments/api/comments.controller';
+import { UpdateCommentBodyUseCase } from './comments/api/use-cases/update-comment-body.usecase';
+import { DeleteCommentUseCase } from './comments/api/use-cases/delete-comment.usecase';
 
 const useCases = [
   CreateBlogUseCase,
@@ -61,6 +59,8 @@ const useCases = [
   GetCommentUseCase,
   CreateCommentForPostUseCase,
   UpdateCommentLikesUseCase,
+  UpdateCommentBodyUseCase,
+  DeleteCommentUseCase,
 ];
 // const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({

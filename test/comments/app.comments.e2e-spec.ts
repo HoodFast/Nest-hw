@@ -34,8 +34,6 @@ describe('CommentsController (e2e)', () => {
     postTestManager = new PostTestManager(app);
     commentTestManager = new CommentTestManager(app);
     testManager = new TestManager(app);
-  });
-  beforeEach(async () => {
     accessToken = await testManager.createAccessToken();
     createdBlogRes = await blogTestManager.createBlog(
       blogsDto.createBlogData,
@@ -48,6 +46,7 @@ describe('CommentsController (e2e)', () => {
       },
       201,
     );
+
     createComment = await commentTestManager.createComment(
       'comment content',
       createdPostRes.body.id,
@@ -55,8 +54,9 @@ describe('CommentsController (e2e)', () => {
       201,
     );
   });
+  beforeEach(async () => {});
 
-  afterEach(async () => {
+  afterAll(async () => {
     await testManager.deleteAll();
   });
   expect.setState({
@@ -67,6 +67,71 @@ describe('CommentsController (e2e)', () => {
     createUserData: usersDto.createUserData,
   });
 
+  it('comment don`t create, validation error status 400', async () => {
+    const badResponse = await commentTestManager.createComment(
+      1,
+      createdPostRes.body.commentId,
+      accessToken,
+      400,
+    );
+    commentTestManager.checkValidateErrors(badResponse);
+  });
+
+  it('comment don`t create because unauthorised, status 401', async () => {
+    const wrongAccess = '1234';
+    await commentTestManager.createComment(
+      'comment content',
+      createdPostRes.body.commentId,
+      wrongAccess,
+      401,
+    );
+  });
+
+  it('update comment ', async () => {
+    await commentTestManager.updateComment(
+      'new content',
+      createComment.body.commentId,
+      accessToken,
+      204,
+    );
+    const updatedComment = await commentTestManager.getComment(
+      createComment.body.commentId,
+    );
+
+    expect(updatedComment.body.content).toBe('new content');
+  });
+
+  it('don`t delete comment because Unauthorized', async () => {
+    const wrongToken = '';
+
+    await commentTestManager.deleteComment(
+      `/comments/${createComment.body.commentId}`,
+      wrongToken,
+      401,
+    );
+  });
+  it('get all comments by post', async () => {
+    for (let i = 0; i < 4; i++) {
+      await commentTestManager.createComment(
+        'comment content',
+        createdPostRes.body.id,
+        accessToken,
+        201,
+      );
+    }
+    const res = await commentTestManager.getAllCommentsForPost(
+      createdPostRes.body.id,
+    );
+    await commentTestManager.checkAllPostsBody(res);
+  });
+  it('delete comment ', async () => {
+    await commentTestManager.deleteComment(
+      `/comments/${createComment.body.commentId}`,
+      accessToken,
+    );
+
+    await commentTestManager.getComment(createComment.body.commentId, 404);
+  });
   it('create new comment for post and update like status', async () => {
     const createComment = await commentTestManager.createComment(
       'comment content',
@@ -83,63 +148,5 @@ describe('CommentsController (e2e)', () => {
       createComment.body.commentId,
     );
     commentTestManager.checkCommentBody(likesComment);
-  });
-
-  it('comment don`t create, validation error status 400', async () => {
-    const badResponse = await commentTestManager.createComment(
-      1,
-      createdPostRes.body.id,
-      accessToken,
-      201,
-    );
-    commentTestManager.checkValidateErrors(badResponse);
-  });
-
-  it('comment don`t create because unauthorised, status 401', async () => {
-    const wrongAccess = '1234';
-    await commentTestManager.createComment(
-      'comment content',
-      createdPostRes.body.id,
-      wrongAccess,
-      401,
-    );
-  });
-
-  it('update comment ', async () => {
-    await commentTestManager.updateComment(
-      'new content',
-      createComment.body.id,
-      accessToken,
-      204,
-    );
-    const updatedComment = commentTestManager.getComment(createComment.body.id);
-    expect(updatedComment.body.content).toBe('new content');
-  });
-  it('delete comment ', async () => {
-    await commentTestManager.deleteComment(
-      `comment/${createComment.body.id}`,
-      accessToken,
-    );
-    await commentTestManager.getComment(createComment.body.id, 404);
-  });
-  it('don`t delete comment because Unauthorized', async () => {
-    const wrongToken = '';
-    await commentTestManager.deleteComment(
-      `comment/${createComment.body.id}`,
-      wrongToken,
-      401,
-    );
-  });
-  it('get all comments by post', async () => {
-    for (let i = 0; i < 4; i++) {
-      await commentTestManager.createComment(
-        'comment content',
-        createdPostRes.body.id,
-        accessToken,
-        201,
-      );
-    }
-    const res = await commentTestManager.getAllComments(createdPostRes.body.id);
-    await commentTestManager.checkAllPostsBody(res);
   });
 });

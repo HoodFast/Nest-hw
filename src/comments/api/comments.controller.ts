@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   NotFoundException,
@@ -17,6 +18,9 @@ import { AccessTokenAuthGuard } from '../../guards/access.token.auth.guard';
 import { likesStatuses } from '../../posts/api/input/likesDtos';
 import { UpdateCommentLikesCommand } from './use-cases/update-comment-like-status.usecase';
 import { UpdateOutputData } from '../../base/models/updateOutput';
+import { CommentsInput } from './model/input/comments.input';
+import { UpdateCommentBodyCommand } from './use-cases/update-comment-body.usecase';
+import { DeleteCommentCommand } from './use-cases/delete-comment.usecase';
 
 @Controller('comments')
 export class CommentsController {
@@ -33,6 +37,7 @@ export class CommentsController {
       GetCommentCommand,
       InterlayerNotice<CommentsOutputType>
     >(command);
+    if (comment.hasError()) throw new NotFoundException();
     return comment.data;
   }
   @HttpCode(204)
@@ -58,6 +63,45 @@ export class CommentsController {
 
     if (updatedLikes.hasError())
       throw new NotFoundException(`${updatedLikes.extensions}`);
+    return;
+  }
+  @UseGuards(AccessTokenAuthGuard)
+  @HttpCode(204)
+  @Put('/:id')
+  async updateComment(
+    @Param('id') commentId: string,
+    @Body() data: CommentsInput,
+    @Req() req: Request,
+  ) {
+    // @ts-ignore
+    const userId = req.userId ? req.userId : null;
+    const command = new UpdateCommentBodyCommand(
+      data.content,
+      commentId,
+      userId,
+    );
+
+    const updatedComment = await this.commandBus.execute<
+      UpdateCommentBodyCommand,
+      InterlayerNotice<UpdateOutputData>
+    >(command);
+
+    if (updatedComment.hasError()) throw new NotFoundException();
+    return;
+  }
+  @UseGuards(AccessTokenAuthGuard)
+  @Delete('/:id')
+  @HttpCode(204)
+  async deleteComment(@Param('id') commentId: string, @Req() req: Request) {
+    // @ts-ignore
+    const userId = req.userId ? req.userId : null;
+    const command = new DeleteCommentCommand(commentId, userId);
+    const deletedComment = await this.commandBus.execute<
+      DeleteCommentCommand,
+      InterlayerNotice<UpdateOutputData>
+    >(command);
+
+    if (deletedComment.hasError()) throw new NotFoundException();
     return;
   }
 }

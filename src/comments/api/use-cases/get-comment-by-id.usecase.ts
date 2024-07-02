@@ -19,6 +19,11 @@ export class GetCommentUseCase
     const comment = await this.commentsQueryRepository.getCommentById(
       command.id,
     );
+
+    if (!comment) {
+      notice.addError('comment not found');
+      return notice;
+    }
     notice.addData(comment);
     return notice;
   }

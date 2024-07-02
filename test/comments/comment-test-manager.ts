@@ -15,8 +15,8 @@ export class CommentTestManager {
     const response = await request(this.app.getHttpServer())
       .post(`/posts/${postId}/comments`)
       .set('Authorization', `Bearer ${accessToken}`)
-      .send({ content });
-
+      .send({ content })
+      .expect(expectStatus);
     return response;
   }
   async updateComment(
@@ -27,7 +27,7 @@ export class CommentTestManager {
   ) {
     const response = await request(this.app.getHttpServer())
       .put(`/comments/${commentId}`)
-      .set('Authorized', `Bearer ${accessToken}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({ content: newContent })
       .expect(expectStatus);
     return response;
@@ -39,12 +39,13 @@ export class CommentTestManager {
   ) {
     await request(this.app.getHttpServer())
       .delete(uri)
-      .set('Authorized', `Bearer ${accessToken}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(expectStatus);
     return;
   }
   async getComment(commentId: string, expectedStatus: number = 200) {
     const httpServer = this.app.getHttpServer();
+
     const comment = await request(httpServer)
       .get(`/comments/${commentId}`)
       .expect(expectedStatus);
@@ -79,7 +80,7 @@ export class CommentTestManager {
   }
   async getAllCommentsForPost(postId: string) {
     const res = await request(this.app.getHttpServer())
-      .get(`posts/${postId}/comments`)
+      .get(`/posts/${postId}/comments`)
       .expect(200);
     return res;
   }
@@ -89,7 +90,7 @@ export class CommentTestManager {
       pagesCount: 1,
       page: 1,
       pageSize: 10,
-      totalCount: 4,
+      totalCount: 5,
       items: expect.any(Array),
     });
   }

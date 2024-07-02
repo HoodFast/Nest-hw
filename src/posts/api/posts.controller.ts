@@ -39,6 +39,7 @@ import {
   CommandCreateCommentForPostOutput,
   CreateCommentForPostCommand,
 } from './use-cases/create-comment-for-post.usecase';
+import { CommentsInput } from '../../comments/api/model/input/comments.input';
 
 @Controller('posts')
 export class PostsController {
@@ -164,7 +165,7 @@ export class PostsController {
   @Post('/:id/comments')
   async createCommentForPost(
     @Param('id') postId: string,
-    @Body() data: { content: string },
+    @Body() data: CommentsInput,
     @Req() req: Request,
   ) {
     // @ts-ignore
