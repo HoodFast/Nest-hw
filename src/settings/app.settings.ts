@@ -10,7 +10,7 @@ export const appSettings = (app: INestApplication) => {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
-      stopAtFirstError: false,
+      stopAtFirstError: true,
       exceptionFactory: (errors) => {
         const errorsForResponce: { message: string; field: string }[] = [];
 
