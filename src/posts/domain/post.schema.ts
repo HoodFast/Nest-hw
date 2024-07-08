@@ -81,8 +81,7 @@ export class Post {
     return true;
   }
   getMyStatus(userId: string): likesStatuses {
-    const likes: Likes[] = this.likes;
-    const myStatus = likes.find((i) => i.userId === userId);
+    const myStatus = this.likes.find((i) => i.userId === userId);
 
     if (!myStatus) return likesStatuses.none;
 
