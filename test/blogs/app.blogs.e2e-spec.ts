@@ -178,12 +178,13 @@ describe('BlogsController (e2e)', () => {
       .expect(200);
     await blogTestManager.checkBlogBody(res);
   });
-  it('get all posts by id', async () => {
+  it('get all blog', async () => {
     const { createBlogData } = expect.getState();
     for (let i = 0; i < 4; i++) {
       await blogTestManager.createBlog(createBlogData, 201);
     }
     const res = await request(httpServer).get(`/blogs`).expect(200);
+    debugger;
     await blogTestManager.checkAllBlogsBody(res);
   });
 });

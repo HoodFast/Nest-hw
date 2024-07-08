@@ -11,6 +11,7 @@ export class CreateBlogCommand {
     public name: string,
     public description: string,
     public websiteUrl: string,
+    public createdAt = new Date().toISOString(),
   ) {}
 }
 

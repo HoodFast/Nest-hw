@@ -9,7 +9,7 @@ export class Blog {
   description: string;
   @Prop({ required: true })
   websiteUrl: string;
-  @Prop({ default: new Date().toISOString() })
+  @Prop({ required: true })
   createdAt: string;
   @Prop({ default: false })
   isMembership: boolean;
