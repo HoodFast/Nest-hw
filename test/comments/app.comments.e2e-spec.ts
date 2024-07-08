@@ -8,6 +8,7 @@ import { blogsDto, postsDto, usersDto } from '../dtos/test.dto';
 import { TestManager } from '../testManager';
 
 import { CommentTestManager } from './comment-test-manager';
+import { likesStatuses } from '../../src/posts/api/input/likesDtos';
 
 describe('CommentsController (e2e)', () => {
   let app: INestApplication;
@@ -87,6 +88,7 @@ describe('CommentsController (e2e)', () => {
     await commentTestManager.addLikeForComment(
       createComment.body.id,
       accessToken,
+      `Like`,
     );
     const getComment = await commentTestManager.getComment(
       createComment.body.id,
@@ -121,7 +123,7 @@ describe('CommentsController (e2e)', () => {
       accessToken,
       204,
     );
-    debugger;
+
     const updatedComment = await commentTestManager.getComment(
       createComment.body.id,
     );
@@ -172,14 +174,22 @@ describe('CommentsController (e2e)', () => {
       accessToken,
       201,
     );
-
     await commentTestManager.addLikeForComment(
       createComment.body.id,
       accessToken,
+      likesStatuses.like,
     );
+    await commentTestManager.addLikeForComment(
+      createComment.body.id,
+      accessToken,
+      likesStatuses.dislike,
+    );
+
     const likesComment = await commentTestManager.getComment(
       createComment.body.id,
+      accessToken,
     );
+
     commentTestManager.checkCommentBody(likesComment);
   });
 });

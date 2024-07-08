@@ -45,7 +45,10 @@ export class Comment {
   likesCount: number;
   @Prop()
   dislikesCount: number;
-  @Prop()
+  @Prop({
+    default: [],
+    type: [Likes],
+  })
   likes: Likes[];
 
   addLike(userId: string, likeStatus: likesStatuses): boolean {
