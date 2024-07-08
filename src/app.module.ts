@@ -47,6 +47,7 @@ import { UpdateCommentLikesUseCase } from './comments/api/use-cases/update-comme
 import { CommentsController } from './comments/api/comments.controller';
 import { UpdateCommentBodyUseCase } from './comments/api/use-cases/update-comment-body.usecase';
 import { DeleteCommentUseCase } from './comments/api/use-cases/delete-comment.usecase';
+import { BlogExistsValidator } from './base/validate/blog.exist.validate';
 
 const useCases = [
   CreateBlogUseCase,
@@ -127,6 +128,7 @@ const useCases = [
     EmailService,
     UsersService,
     ConfigService,
+    BlogExistsValidator,
     ...useCases,
   ],
 })

@@ -54,6 +54,7 @@ export class CommentsController {
   ) {
     // @ts-ignore
     const userId = req.userId ? req.userId : null;
+
     const command = new UpdateCommentLikesCommand(
       data.likeStatus,
       commentId,
@@ -79,6 +80,7 @@ export class CommentsController {
   ) {
     // @ts-ignore
     const userId = req.userId ? req.userId : null;
+
     const command = new UpdateCommentBodyCommand(
       data.content,
       commentId,

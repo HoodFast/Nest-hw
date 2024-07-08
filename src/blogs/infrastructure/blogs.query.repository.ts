@@ -43,8 +43,15 @@ export class BlogsQueryRepository {
     };
   }
   async getBlogById(id: string) {
-    const blog = await this.blogModel.find({ _id: new ObjectId(id) });
-    if (!blog[0]) return null;
-    return blogMapper(blog[0]);
+    const blog = await this.blogModel.findOne({ _id: new ObjectId(id) });
+
+    if (!blog) return null;
+    return blogMapper(blog);
+  }
+  async getDbBlogById(id: string) {
+    const blog = await this.blogModel.findOne({ _id: new ObjectId(id) });
+
+    if (!blog) return null;
+    return blog;
   }
 }

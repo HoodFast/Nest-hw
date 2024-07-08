@@ -40,6 +40,7 @@ import {
   CreateCommentForPostCommand,
 } from './use-cases/create-comment-for-post.usecase';
 import { CommentsInput } from '../../comments/api/model/input/comments.input';
+import { CommentsOutputType } from '../../comments/api/model/output/comments.output';
 
 @Controller('posts')
 export class PostsController {
@@ -137,6 +138,7 @@ export class PostsController {
     if (!post) throw new NotFoundException();
     return post;
   }
+  @UseGuards(AuthGuard)
   @HttpCode(204)
   @Put(':id')
   async updatePost(@Param('id') postId, @Body() model: InputPostCreate) {
@@ -180,7 +182,7 @@ export class PostsController {
     );
     const createComment = await this.commandBus.execute<
       CreateCommentForPostCommand,
-      InterlayerNotice<CommandCreateCommentForPostOutput>
+      InterlayerNotice<CommentsOutputType>
     >(command);
     if (createComment.hasError()) throw new NotFoundException();
     return createComment.data;

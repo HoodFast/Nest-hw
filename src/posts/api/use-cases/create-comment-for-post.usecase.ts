@@ -5,6 +5,7 @@ import { PostsQueryRepository } from '../../infrastructure/posts.query.repositor
 import { CommentsRepository } from '../../../comments/infrastructure/comments.repository';
 import { CommentDbType } from '../../../comments/domain/comment.schema';
 import { UsersRepository } from '../../../users/infrastructure/users.repository';
+import { CommentsOutputType } from '../../../comments/api/model/output/comments.output';
 
 export class CommandCreateCommentForPostOutput {
   commentId: string;
@@ -23,7 +24,7 @@ export class CreateCommentForPostUseCase
   implements
     ICommandHandler<
       CreateCommentForPostCommand,
-      InterlayerNotice<CommandCreateCommentForPostOutput>
+      InterlayerNotice<CommentsOutputType>
     >
 {
   constructor(
@@ -33,8 +34,8 @@ export class CreateCommentForPostUseCase
   ) {}
   async execute(
     command: CreateCommentForPostCommand,
-  ): Promise<InterlayerNotice<CommandCreateCommentForPostOutput>> {
-    const notice = new InterlayerNotice<CommandCreateCommentForPostOutput>();
+  ): Promise<InterlayerNotice<CommentsOutputType>> {
+    const notice = new InterlayerNotice<CommentsOutputType>();
     const { userId, postId, content, createdAt } = command;
     const post = await this.postQueryRepository.getPostById(postId, userId);
 
@@ -68,7 +69,7 @@ export class CreateCommentForPostUseCase
       notice.addError('blog don`t exist', 'blog', 1);
       return notice;
     }
-    notice.addData({ commentId: result.id });
+    notice.addData(result);
     return notice;
   }
 }

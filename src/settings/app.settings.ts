@@ -4,8 +4,11 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { HttpExceptionFilter } from '../exceptionFilters/exception.filters';
+import { useContainer } from 'class-validator';
+import { AppModule } from '../app.module';
 const cookieParser = require('cookie-parser');
 export const appSettings = (app: INestApplication) => {
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
   app.enableCors();
   app.useGlobalPipes(
     new ValidationPipe({

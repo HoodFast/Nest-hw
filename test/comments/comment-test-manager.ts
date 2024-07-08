@@ -43,11 +43,21 @@ export class CommentTestManager {
       .expect(expectStatus);
     return;
   }
-  async getComment(commentId: string, expectedStatus: number = 200) {
+  async getComment(
+    commentId: string,
+    accessToken: string,
+    expectedStatus: number = 200,
+  ) {
     const httpServer = this.app.getHttpServer();
-
+    if (!accessToken) {
+      const comment = await request(httpServer)
+        .get(`/comments/${commentId}`)
+        .expect(expectedStatus);
+      return comment;
+    }
     const comment = await request(httpServer)
       .get(`/comments/${commentId}`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .expect(expectedStatus);
     return comment;
   }
@@ -90,7 +100,7 @@ export class CommentTestManager {
       pagesCount: 1,
       page: 1,
       pageSize: 10,
-      totalCount: 5,
+      totalCount: 6,
       items: expect.any(Array),
     });
   }

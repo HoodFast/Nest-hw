@@ -35,6 +35,7 @@ export class UpdateCommentBodyUseCase
     command: UpdateCommentBodyCommand,
   ): Promise<InterlayerNotice<UpdateOutputData>> {
     const notice = new InterlayerNotice<UpdateOutputData>();
+    debugger;
     const comment: CommentDocument | null =
       await this.commentsQueryRepository.getDBCommentById(command.commentId);
     if (!comment) {

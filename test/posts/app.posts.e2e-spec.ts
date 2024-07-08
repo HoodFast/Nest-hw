@@ -70,7 +70,14 @@ describe('PostsController (e2e)', () => {
 
     blogTestManager.checkValidateErrors(badResponse);
   });
-
+  it('post don`t create, validation error status 400 blog don`t exist', async () => {
+    const { createPostData } = expect.getState();
+    await blogTestManager.deleteBlog(`/blogs/${createdBlogRes.body.id}`);
+    await postTestManager.createPost(
+      { ...createPostData, blogId: createdBlogRes.body.id },
+      400,
+    );
+  });
   it('post don`t create because unauthorised, status 401', async () => {
     const response = await request(httpServer)
       .post('/posts')

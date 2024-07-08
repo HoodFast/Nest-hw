@@ -39,6 +39,7 @@ describe('CommentsController (e2e)', () => {
       blogsDto.createBlogData,
       201,
     );
+
     createdPostRes = await postTestManager.createPost(
       {
         ...postsDto.createPostData,
@@ -76,6 +77,22 @@ describe('CommentsController (e2e)', () => {
     );
     commentTestManager.checkValidateErrors(badResponse);
   });
+  it('comment create', async () => {
+    createComment = await commentTestManager.createComment(
+      'comment content',
+      createdPostRes.body.id,
+      accessToken,
+      201,
+    );
+    const likesComment = await commentTestManager.addLikeForComment(
+      createComment.body.id,
+      accessToken,
+    );
+    const getComment = await commentTestManager.getComment(
+      createComment.body.id,
+      accessToken,
+    );
+  });
 
   it('comment don`t create because unauthorised, status 401', async () => {
     const wrongAccess = '1234';
@@ -90,12 +107,13 @@ describe('CommentsController (e2e)', () => {
   it('update comment ', async () => {
     await commentTestManager.updateComment(
       'new content',
-      createComment.body.commentId,
+      createComment.body.id,
       accessToken,
       204,
     );
+    debugger;
     const updatedComment = await commentTestManager.getComment(
-      createComment.body.commentId,
+      createComment.body.id,
     );
 
     expect(updatedComment.body.content).toBe('new content');
@@ -105,7 +123,7 @@ describe('CommentsController (e2e)', () => {
     const wrongToken = '';
 
     await commentTestManager.deleteComment(
-      `/comments/${createComment.body.commentId}`,
+      `/comments/${createComment.body.id}`,
       wrongToken,
       401,
     );
@@ -126,12 +144,17 @@ describe('CommentsController (e2e)', () => {
   });
   it('delete comment ', async () => {
     await commentTestManager.deleteComment(
-      `/comments/${createComment.body.commentId}`,
+      `/comments/${createComment.body.id}`,
       accessToken,
     );
 
-    await commentTestManager.getComment(createComment.body.commentId, 404);
+    await commentTestManager.getComment(
+      createComment.body.id,
+      accessToken,
+      404,
+    );
   });
+
   it('create new comment for post and update like status', async () => {
     const createComment = await commentTestManager.createComment(
       'comment content',
@@ -141,11 +164,11 @@ describe('CommentsController (e2e)', () => {
     );
 
     await commentTestManager.addLikeForComment(
-      createComment.body.commentId,
+      createComment.body.id,
       accessToken,
     );
     const likesComment = await commentTestManager.getComment(
-      createComment.body.commentId,
+      createComment.body.id,
     );
     commentTestManager.checkCommentBody(likesComment);
   });

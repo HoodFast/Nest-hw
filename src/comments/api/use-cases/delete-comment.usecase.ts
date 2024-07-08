@@ -31,6 +31,7 @@ export class DeleteCommentUseCase
     command: DeleteCommentCommand,
   ): Promise<InterlayerNotice<UpdateOutputData>> {
     const notice = new InterlayerNotice<UpdateOutputData>();
+
     const comment: CommentDocument | null =
       await this.commentsQueryRepository.getDBCommentById(command.commentId);
     if (!comment) {

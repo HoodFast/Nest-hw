@@ -55,8 +55,19 @@ describe('BlogsController (e2e)', () => {
       createWrongBlogData,
       400,
     );
-    debugger;
+
     blogTestManager.checkValidateErrors(badResponse);
+  });
+  it('blog don`t create, validation error status 400 name is empty', async () => {
+    await blogTestManager.createBlog(
+      {
+        name: '   ',
+        description: 'dfasdfef',
+        websiteUrl:
+          'https://3Fc-qMmgZwoZ.RCJZ23z_pATmcGb7GjB8Z5VDo0Kt.kw1.6rr4O8wlbLO7HqvJppv0EBMkEqdQ0.sZGlye6dAu6FG9Ed',
+      },
+      400,
+    );
   });
 
   it('blog don`t create because unauthorised, status 401', async () => {
@@ -122,6 +133,23 @@ describe('BlogsController (e2e)', () => {
       `/blogs/${createBlog.body.id}`,
     );
     expect(updatedBlog.body.name).toBe(updateBlogData.name);
+  });
+
+  it('don`t update blog because blog don`t exist', async () => {
+    const { createBlogData } = expect.getState();
+    const createBlog = await blogTestManager.createBlog(createBlogData, 201);
+    const updateBlogData = {
+      name: 'new name',
+      description: 11,
+      websiteUrl: 'https://new-website.url',
+    };
+    await blogTestManager.deleteBlog(`/blogs/${createBlog.body.id}`);
+    const updatedBlog = await blogTestManager.updateBlog(
+      updateBlogData,
+      createBlog.body.id,
+      400,
+    );
+    debugger;
   });
   it('delete blog ', async () => {
     const { createBlogData } = expect.getState();

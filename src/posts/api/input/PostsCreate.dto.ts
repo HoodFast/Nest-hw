@@ -1,5 +1,9 @@
 import { Trim } from '../../../base/validate/trim';
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import {
+  BlogExists,
+  BlogExistsValidator,
+} from '../../../base/validate/blog.exist.validate';
 
 export class PostInput {
   @Trim()
@@ -23,6 +27,7 @@ export class InputPostCreate extends PostInput {
   @Trim()
   @IsString()
   @IsNotEmpty()
+  @BlogExists()
   blogId: string;
 }
 
