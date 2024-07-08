@@ -31,7 +31,7 @@ export const newestLikesMapper = (like: Likes): NewestLikes => {
 export const postMapper = (post: PostDocument, userId: string): PostType => {
   const getNewestLikes = post.getNewestLikes();
   const newestLikes = getNewestLikes.map(newestLikesMapper);
-  let myStatus = likesStatuses.none;
+  let myStatus = post.getMyStatus(userId);
   if (userId) {
     myStatus = post.getMyStatus(userId);
   }
