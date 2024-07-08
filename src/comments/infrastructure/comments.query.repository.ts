@@ -22,7 +22,6 @@ export class CommentsQueryRepository {
     return commentMapper(userId, comment[0]);
   }
   async getDBCommentById(commentsId: string) {
-    debugger;
     const comment = await this.commentModel.findOne({
       _id: new ObjectId(commentsId),
     });

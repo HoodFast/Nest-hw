@@ -84,13 +84,23 @@ describe('CommentsController (e2e)', () => {
       accessToken,
       201,
     );
-    const likesComment = await commentTestManager.addLikeForComment(
+    await commentTestManager.addLikeForComment(
       createComment.body.id,
       accessToken,
     );
     const getComment = await commentTestManager.getComment(
       createComment.body.id,
       accessToken,
+    );
+
+    expect(getComment.body.likesInfo.myStatus).toBe('Like');
+  });
+  it('comment don`t create content-short', async () => {
+    await commentTestManager.createComment(
+      'short',
+      createdPostRes.body.id,
+      accessToken,
+      400,
     );
   });
 
