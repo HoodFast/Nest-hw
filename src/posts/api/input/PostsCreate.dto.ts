@@ -1,9 +1,6 @@
 import { Trim } from '../../../base/validate/trim';
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
-import {
-  BlogExists,
-  BlogExistsValidator,
-} from '../../../base/validate/blog.exist.validate';
+import { BlogExists } from '../../../base/validate/blog.exist.validate';
 
 export class PostInput {
   @Trim()

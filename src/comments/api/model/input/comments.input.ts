@@ -1,10 +1,7 @@
-import { IsString } from 'class-validator';
+import { IsString, Length } from 'class-validator';
 
 export class CommentsInput {
   @IsString()
+  @Length(20, 300)
   content: string;
-}
-export class IdInput {
-  @IsString()
-  id: string;
 }
