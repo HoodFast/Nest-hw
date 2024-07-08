@@ -57,14 +57,21 @@ export class Comment {
       userId,
       likesStatus: likeStatus,
     };
-
     if (!myStatus) {
       likes.push(newLike);
-    } else {
-      myStatus.likesStatus = likeStatus;
-      myStatus.updatedAt = new Date();
+      this.likesCount = likes.filter(
+        (i) => i.likesStatus === likesStatuses.like,
+      ).length;
+      this.dislikesCount = likes.filter(
+        (i) => i.likesStatus === likesStatuses.dislike,
+      ).length;
+      return true;
     }
 
+    if (myStatus.likesStatus === likeStatus) return true;
+
+    myStatus.likesStatus = likeStatus;
+    myStatus.updatedAt = new Date();
     this.likesCount = likes.filter(
       (i) => i.likesStatus === likesStatuses.like,
     ).length;
@@ -73,6 +80,21 @@ export class Comment {
     ).length;
 
     return true;
+    // if (!myStatus) {
+    //   likes.push(newLike);
+    // } else {
+    //   myStatus.likesStatus = likeStatus;
+    //   myStatus.updatedAt = new Date();
+    // }
+    //
+    // this.likesCount = likes.filter(
+    //   (i) => i.likesStatus === likesStatuses.like,
+    // ).length;
+    // this.dislikesCount = likes.filter(
+    //   (i) => i.likesStatus === likesStatuses.dislike,
+    // ).length;
+    //
+    // return true;
   }
   getMyStatus(userId: string): likesStatuses {
     const likes: likesType[] = this.likes;
