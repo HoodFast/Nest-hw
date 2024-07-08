@@ -30,15 +30,12 @@ import {
   CommandUpdatePostOutputData,
   UpdatePostCommand,
 } from './use-cases/update-post.usecase';
-import { LikesDto, likesStatuses } from './input/likesDtos';
+import { LikesDto } from './input/likesDtos';
 import { AccessTokenAuthGuard } from '../../guards/access.token.auth.guard';
 import { UpdateLikesCommand } from './use-cases/update-likes.usecase';
 import { UpdateOutputData } from '../../base/models/updateOutput';
 import { AccessTokenGetId } from '../../guards/access.token.get.id';
-import {
-  CommandCreateCommentForPostOutput,
-  CreateCommentForPostCommand,
-} from './use-cases/create-comment-for-post.usecase';
+import { CreateCommentForPostCommand } from './use-cases/create-comment-for-post.usecase';
 import { CommentsInput } from '../../comments/api/model/input/comments.input';
 import { CommentsOutputType } from '../../comments/api/model/output/comments.output';
 
@@ -68,16 +65,17 @@ export class PostsController {
     if (updateLikes.hasError()) throw new NotFoundException();
     return;
   }
-
+  @UseGuards(AccessTokenGetId)
   @Get()
-  async getAllPosts(@Query() query: QueryPostInputModel) {
+  async getAllPosts(@Query() query: QueryPostInputModel, @Req() req: Request) {
     const sortData = {
       sortBy: query.sortBy ?? 'createdAt',
       sortDirection: query.sortDirection ?? sortDirection.desc,
       pageNumber: query.pageNumber ? +query.pageNumber : 1,
       pageSize: query.pageSize ? +query.pageSize : 10,
     };
-    const userId = '';
+    // @ts-ignore
+    const userId = req.userId ? req.userId : null;
     const posts = await this.postService.getAllPosts(userId, sortData);
 
     return posts;

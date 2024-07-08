@@ -161,6 +161,49 @@ describe('PostsController (e2e)', () => {
 
     await postTestManager.checkPostBody(postWithLikes);
   });
+  it('get post by id and add Dislike status check', async () => {
+    const { createPostData } = expect.getState();
+    const post = await postTestManager.createPost(
+      { ...createPostData, blogId: createdBlogRes.body.id },
+      201,
+    );
+    await request(httpServer).get(`/posts/${post.body.id}`).expect(200);
+    const userTestManager = new UserTestManager(app);
+    const random = randomUUID();
+    const createUserData = {
+      login: `user ${random.substring(0, 3)}`,
+      password: `${random.substring(0, 6)}`,
+      email: `usermail${random}@mail.ru`,
+    };
+    await userTestManager.createUser(createUserData, 201);
+    const userResponse = await request(httpServer)
+      .post('/auth/login')
+      .send({
+        loginOrEmail: createUserData.login,
+        password: createUserData.password,
+      })
+      .expect(200);
+
+    const accessToken = userResponse.body.accessToken;
+    await request(httpServer)
+      .put(`/posts/${post.body.id}/like-status`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        likeStatus: 'Like',
+      });
+    await request(httpServer)
+      .put(`/posts/${post.body.id}/like-status`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        likeStatus: 'Dislike',
+      });
+    const postWithDislike = await request(httpServer)
+      .get(`/posts/${post.body.id}`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200);
+
+    expect(postWithDislike.body.extendedLikesInfo.myStatus).toBe('Dislike');
+  });
   it('get all posts by id', async () => {
     const { createPostData } = expect.getState();
     for (let i = 0; i < 4; i++) {
