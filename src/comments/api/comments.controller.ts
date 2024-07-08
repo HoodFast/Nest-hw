@@ -15,12 +15,14 @@ import { GetCommentCommand } from './use-cases/get-comment-by-id.usecase';
 import { InterlayerNotice } from '../../base/models/Interlayer';
 import { CommentsOutputType } from './model/output/comments.output';
 import { AccessTokenAuthGuard } from '../../guards/access.token.auth.guard';
-import { likesStatuses } from '../../posts/api/input/likesDtos';
+
 import { UpdateCommentLikesCommand } from './use-cases/update-comment-like-status.usecase';
 import { UpdateOutputData } from '../../base/models/updateOutput';
 import { CommentsInput } from './model/input/comments.input';
 import { UpdateCommentBodyCommand } from './use-cases/update-comment-body.usecase';
 import { DeleteCommentCommand } from './use-cases/delete-comment.usecase';
+import { AccessTokenGetId } from '../../guards/access.token.get.id';
+import { LikesDto } from '../../posts/api/input/likesDtos';
 
 @Controller('comments')
 export class CommentsController {
@@ -28,10 +30,12 @@ export class CommentsController {
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
-
+  @UseGuards(AccessTokenGetId)
   @Get('/:id')
-  async getCommentById(@Param('id') id: string) {
-    const command = new GetCommentCommand(id);
+  async getCommentById(@Param('id') id: string, @Req() req: Request) {
+    // @ts-ignore
+    const userId = req.userId ? req.userId : null;
+    const command = new GetCommentCommand(id, userId);
 
     const comment = await this.queryBus.execute<
       GetCommentCommand,
@@ -46,7 +50,7 @@ export class CommentsController {
   async updateCommentLikeStatus(
     @Param('id') commentId: string,
     @Req() req: Request,
-    @Body() data: { likeStatus: likesStatuses },
+    @Body() data: LikesDto,
   ) {
     // @ts-ignore
     const userId = req.userId ? req.userId : null;

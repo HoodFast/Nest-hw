@@ -15,9 +15,9 @@ export class BlogsRepository {
     await create.save();
     return blogMapper(create);
   }
-  async updateBlog(blogId: ObjectId, updateDate: createBlogInputDto) {
+  async updateBlog(blogId: string, updateDate: createBlogInputDto) {
     const updatedBlog = await this.blogModel.updateOne(
-      { _id: blogId },
+      { _id: new ObjectId(blogId) },
       {
         $set: {
           name: updateDate.name,
@@ -29,8 +29,8 @@ export class BlogsRepository {
 
     return !!updatedBlog.matchedCount;
   }
-  async deleteBlog(id: ObjectId) {
-    const deleted = await this.blogModel.deleteOne({ _id: id });
+  async deleteBlog(id: string) {
+    const deleted = await this.blogModel.deleteOne({ _id: new ObjectId(id) });
     return !!deleted.deletedCount;
   }
 }

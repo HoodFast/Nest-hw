@@ -30,11 +30,11 @@ import {
   CommandUpdatePostOutputData,
   UpdatePostCommand,
 } from './use-cases/update-post.usecase';
-import { likesStatuses } from './input/likesDtos';
+import { LikesDto, likesStatuses } from './input/likesDtos';
 import { AccessTokenAuthGuard } from '../../guards/access.token.auth.guard';
 import { UpdateLikesCommand } from './use-cases/update-likes.usecase';
 import { UpdateOutputData } from '../../base/models/updateOutput';
-import { accessTokenGetId } from '../../guards/access.token.get.id';
+import { AccessTokenGetId } from '../../guards/access.token.get.id';
 import {
   CommandCreateCommentForPostOutput,
   CreateCommentForPostCommand,
@@ -53,7 +53,7 @@ export class PostsController {
   @UseGuards(AccessTokenAuthGuard)
   @Put(':id/like-status')
   async updateLikes(
-    @Body() body: { likeStatus: likesStatuses },
+    @Body() body: LikesDto,
     @Param('id') postId: string,
     @Req() req: Request,
   ) {
@@ -81,7 +81,7 @@ export class PostsController {
 
     return posts;
   }
-  @UseGuards(accessTokenGetId)
+  @UseGuards(AccessTokenGetId)
   @Get(':id')
   async getPostById(@Param('id') postId: string, @Req() req: Request) {
     // @ts-ignore
@@ -91,10 +91,12 @@ export class PostsController {
     if (!post) throw new NotFoundException();
     return post;
   }
+  @UseGuards(AccessTokenGetId)
   @Get(':id/comments')
   async getCommentsForPost(
     @Param('id') postId: string,
     @Query() query: QueryPostInputModel,
+    @Req() req: Request,
   ) {
     const sortData = {
       sortBy: query.sortBy ?? 'createdAt',
@@ -102,7 +104,8 @@ export class PostsController {
       pageNumber: query.pageNumber ? +query.pageNumber : 1,
       pageSize: query.pageSize ? +query.pageSize : 10,
     };
-    const userId = '';
+    // @ts-ignore
+    const userId = req.userId ? req.userId : null;
     const comments = await this.commentsQueryRepository.getAllByPostId(
       userId,
       postId,

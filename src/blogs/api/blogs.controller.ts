@@ -152,18 +152,17 @@ export class BlogsController {
     @Param('id') blogId: string,
     @Body() body: createBlogInputDto,
   ) {
-    const id = new ObjectId(blogId);
     const command = new UpdateBlogCommand(
       body.name,
       body.description,
       body.websiteUrl,
-      id,
+      blogId,
     );
     const updatedBlog = await this.commandBus.execute<
       UpdateBlogCommand,
       InterlayerNotice<CommandUpdateBlogData>
     >(command);
-    if (!updatedBlog.data) throw new NotFoundException();
+    if (updatedBlog.hasError()) throw new NotFoundException();
     return;
   }
 
@@ -171,12 +170,12 @@ export class BlogsController {
   @Delete(':id')
   @HttpCode(204)
   async deleteBlogById(@Param('id') blogId: string) {
-    const command = new DeleteBlogCommand(new ObjectId(blogId));
+    const command = new DeleteBlogCommand(blogId);
     const deletedBlog = await this.commandBus.execute<
       DeleteBlogCommand,
       InterlayerNotice<CommandDeleteBlogOutputData>
     >(command);
-    if (!deletedBlog.data) throw new NotFoundException();
+    if (deletedBlog.hasError()) throw new NotFoundException();
     return;
   }
 }

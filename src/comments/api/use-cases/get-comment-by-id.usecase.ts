@@ -4,7 +4,10 @@ import { CommentsOutputType } from '../model/output/comments.output';
 import { CommentsQueryRepository } from '../../infrastructure/comments.query.repository';
 
 export class GetCommentCommand {
-  constructor(public id: string) {}
+  constructor(
+    public id: string,
+    public userId: string,
+  ) {}
 }
 @QueryHandler(GetCommentCommand)
 export class GetCommentUseCase
@@ -18,6 +21,7 @@ export class GetCommentUseCase
     const notice = new InterlayerNotice<CommentsOutputType>();
     const comment = await this.commentsQueryRepository.getCommentById(
       command.id,
+      command.userId,
     );
 
     if (!comment) {
