@@ -9,6 +9,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -34,11 +35,12 @@ import {
   CommandUpdateBlogData,
   UpdateBlogCommand,
 } from './use-cases/update-blog.usecase';
-import { ObjectId } from 'mongodb';
+
 import {
   CommandDeleteBlogOutputData,
   DeleteBlogCommand,
 } from './use-cases/delete-blog.usecase';
+import { AccessTokenGetId } from '../../guards/access.token.get.id';
 
 export enum sortDirection {
   asc = 'asc',
@@ -81,12 +83,13 @@ export class BlogsController {
     if (!blog) throw new NotFoundException();
     return blog;
   }
-
+  @UseGuards(AccessTokenGetId)
   @Get(':id/posts')
   async getPostsForBlog(
     @Param('id') blogId: string,
     @Query() query: queryBlogsInputType,
     @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
   ) {
     const sortData = {
       sortBy: query.sortBy ?? 'createdAt',
@@ -94,7 +97,8 @@ export class BlogsController {
       pageNumber: query.pageNumber ? +query.pageNumber : 1,
       pageSize: query.pageSize ? +query.pageSize : 10,
     };
-    const userId = '';
+    // @ts-ignore
+    const userId = req.userId ? req.userId : null;
     const posts = await this.postsQueryRepository.getAllPostsForBlog(
       userId,
       blogId,

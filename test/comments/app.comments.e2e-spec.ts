@@ -49,7 +49,7 @@ describe('CommentsController (e2e)', () => {
     );
 
     createComment = await commentTestManager.createComment(
-      'comment content',
+      'comment content111111',
       createdPostRes.body.id,
       accessToken,
       201,
@@ -79,7 +79,7 @@ describe('CommentsController (e2e)', () => {
   });
   it('comment create', async () => {
     createComment = await commentTestManager.createComment(
-      'comment content',
+      'comment content111111',
       createdPostRes.body.id,
       accessToken,
       201,
@@ -97,7 +97,7 @@ describe('CommentsController (e2e)', () => {
   it('comment don`t create because unauthorised, status 401', async () => {
     const wrongAccess = '1234';
     await commentTestManager.createComment(
-      'comment content',
+      'comment content111111',
       createdPostRes.body.commentId,
       wrongAccess,
       401,
@@ -106,7 +106,7 @@ describe('CommentsController (e2e)', () => {
 
   it('update comment ', async () => {
     await commentTestManager.updateComment(
-      'new content',
+      'new content111111111111111111',
       createComment.body.id,
       accessToken,
       204,
@@ -116,7 +116,7 @@ describe('CommentsController (e2e)', () => {
       createComment.body.id,
     );
 
-    expect(updatedComment.body.content).toBe('new content');
+    expect(updatedComment.body.content).toBe('new content111111111111111111');
   });
 
   it('don`t delete comment because Unauthorized', async () => {
@@ -131,7 +131,7 @@ describe('CommentsController (e2e)', () => {
   it('get all comments by post', async () => {
     for (let i = 0; i < 4; i++) {
       await commentTestManager.createComment(
-        'comment content',
+        'comment content111111',
         createdPostRes.body.id,
         accessToken,
         201,
@@ -157,7 +157,7 @@ describe('CommentsController (e2e)', () => {
 
   it('create new comment for post and update like status', async () => {
     const createComment = await commentTestManager.createComment(
-      'comment content',
+      'comment contcomment content111111ent',
       createdPostRes.body.id,
       accessToken,
       201,
