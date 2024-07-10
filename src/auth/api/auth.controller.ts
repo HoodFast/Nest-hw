@@ -34,7 +34,7 @@ export class AuthController {
     private jwtService: JwtService,
     private usersQueryRepository: UsersQueryRepository,
   ) {}
-  @HttpCode(201)
+  @HttpCode(200)
   @UseGuards(Limiter)
   @Post('login')
   async login(
@@ -99,7 +99,7 @@ export class AuthController {
   @Post('new-password')
   async newPassword(@Body() data: recoveryPassInputDto) {
     const changePass = await this.usersService.changePass(data);
-    return changePass;
+    return;
   }
   @HttpCode(200)
   @Post('refresh-token')
