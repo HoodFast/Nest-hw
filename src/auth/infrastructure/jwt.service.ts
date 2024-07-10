@@ -114,4 +114,17 @@ export class JwtService {
       return null;
     }
   }
+  async getMetaDataByToken(token: string) {
+    try {
+      const result = jwt.verify(token, this.RT_SECRET);
+      const decoded = jwt.decode(token, { complete: true });
+      const userId = decoded.payload.userId;
+      const iat = new Date(decoded.payload.iat * 1000);
+      const deviceId = result.deviceId;
+      return { iat, deviceId, userId };
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  }
 }

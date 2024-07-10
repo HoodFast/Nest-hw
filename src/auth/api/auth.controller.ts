@@ -34,7 +34,7 @@ export class AuthController {
     private jwtService: JwtService,
     private usersQueryRepository: UsersQueryRepository,
   ) {}
-  @HttpCode(200)
+  @HttpCode(201)
   @UseGuards(Limiter)
   @Post('login')
   async login(
