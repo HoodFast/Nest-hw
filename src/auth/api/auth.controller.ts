@@ -101,6 +101,7 @@ export class AuthController {
     const changePass = await this.usersService.changePass(data);
     return changePass;
   }
+  @HttpCode(200)
   @Post('refresh-token')
   async refreshToken(
     @Req() req: Request,

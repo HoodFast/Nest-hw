@@ -184,12 +184,16 @@ describe('CommentsController (e2e)', () => {
       accessToken,
       likesStatuses.dislike,
     );
-
+    await commentTestManager.addLikeForComment(
+      createComment.body.id,
+      accessToken,
+      likesStatuses.like,
+    );
     const likesComment = await commentTestManager.getComment(
       createComment.body.id,
       accessToken,
     );
-
+    debugger;
     commentTestManager.checkCommentBody(likesComment);
   });
 });
