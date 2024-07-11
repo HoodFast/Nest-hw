@@ -137,12 +137,12 @@ export class AuthController {
   @UseGuards(AccessTokenAuthGuard)
   @Get('me')
   async getMe(@UserId() userId: string) {
-    const me = await this.usersQueryRepository.getMe(userId);
-    if (!me) throw new UnauthorizedException();
+    const my = await this.usersQueryRepository.getMe(userId);
+    if (!my) throw new UnauthorizedException();
     return {
-      userId: me._id,
-      login: me.accountData.login,
-      email: me.accountData.email,
+      userId: my._id,
+      login: my.accountData.login,
+      email: my.accountData.email,
     };
   }
 }
