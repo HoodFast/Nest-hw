@@ -48,6 +48,7 @@ import { CommentsController } from './comments/api/comments.controller';
 import { UpdateCommentBodyUseCase } from './comments/api/use-cases/update-comment-body.usecase';
 import { DeleteCommentUseCase } from './comments/api/use-cases/delete-comment.usecase';
 import { BlogExistsValidator } from './base/validate/blog.exist.validate';
+import { SessionQueryRepository } from './sessions/infrastructure/sessionQueryRepository';
 
 const useCases = [
   CreateBlogUseCase,
@@ -124,6 +125,7 @@ const useCases = [
     AuthService,
     JwtService,
     SessionRepository,
+    SessionQueryRepository,
     AuthService,
     EmailService,
     UsersService,

@@ -5,7 +5,7 @@ import { Session, SessionDocument } from '../domain/session.schema';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '../../auth/infrastructure/jwt.service';
 @Injectable()
-export class SessionRepository {
+export class SessionQueryRepository {
   constructor(
     @InjectModel(Session.name) private sessionModel: Model<SessionDocument>,
     private jwtService: JwtService,
