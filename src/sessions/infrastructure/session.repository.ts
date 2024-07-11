@@ -21,6 +21,7 @@ export class SessionRepository {
     const session = await this.sessionModel.findOne({
       deviceId: tokenMetaData.deviceId,
     });
+    if (!session) return null;
     return session;
   }
   async deleteById(_id: ObjectId): Promise<boolean> {
