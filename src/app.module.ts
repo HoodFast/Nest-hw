@@ -48,7 +48,11 @@ import { CommentsController } from './comments/api/comments.controller';
 import { UpdateCommentBodyUseCase } from './comments/api/use-cases/update-comment-body.usecase';
 import { DeleteCommentUseCase } from './comments/api/use-cases/delete-comment.usecase';
 import { BlogExistsValidator } from './base/validate/blog.exist.validate';
-import { SessionQueryRepository } from './sessions/infrastructure/sessionQueryRepository';
+import { SessionQueryRepository } from './sessions/infrastructure/session.query.repository';
+import { SecurityController } from './sessions/api/security.controller';
+import { GetAllSessionUseCase } from './sessions/api/useCases/get-all-sessions.usecase';
+import { DeleteSessionByIdUseCase } from './sessions/api/useCases/delete-session-by-id.usecase';
+import { DeleteAllSessionsUseCase } from './sessions/api/useCases/delete-all-sessions.usecase';
 
 const useCases = [
   CreateBlogUseCase,
@@ -63,6 +67,34 @@ const useCases = [
   UpdateCommentLikesUseCase,
   UpdateCommentBodyUseCase,
   DeleteCommentUseCase,
+  GetAllSessionUseCase,
+  DeleteSessionByIdUseCase,
+  DeleteAllSessionsUseCase,
+];
+const repositories = [
+  PostsRepository,
+  PostsQueryRepository,
+  BlogsRepository,
+  BlogsQueryRepository,
+  UsersRepository,
+  UsersQueryRepository,
+  TestingQueryRepository,
+  CommentsQueryRepository,
+  CommentsRepository,
+  SessionRepository,
+  SessionQueryRepository,
+];
+const services = [
+  AppService,
+  PostService,
+  BlogService,
+  UsersService,
+  AuthService,
+  JwtService,
+  AuthService,
+  EmailService,
+  UsersService,
+  ConfigService,
 ];
 // const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
@@ -107,31 +139,8 @@ const useCases = [
     TestingController,
     AuthController,
     CommentsController,
+    SecurityController,
   ],
-  providers: [
-    AppService,
-    PostService,
-    PostsRepository,
-    PostsQueryRepository,
-    BlogService,
-    BlogsRepository,
-    BlogsQueryRepository,
-    UsersService,
-    UsersRepository,
-    UsersQueryRepository,
-    TestingQueryRepository,
-    CommentsQueryRepository,
-    CommentsRepository,
-    AuthService,
-    JwtService,
-    SessionRepository,
-    SessionQueryRepository,
-    AuthService,
-    EmailService,
-    UsersService,
-    ConfigService,
-    BlogExistsValidator,
-    ...useCases,
-  ],
+  providers: [BlogExistsValidator, ...services, ...repositories, ...useCases],
 })
 export class AppModule {}
