@@ -10,11 +10,11 @@ import {
 } from '@nestjs/common';
 import { AccessTokenAuthGuard } from '../../guards/access.token.auth.guard';
 import { UserId } from '../../decorators/userId';
-import { SessionQueryRepository } from '../infrastructure/session.query.repository';
+// import { SessionQueryRepository } from '../infrastructure/session.query.repository';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-// import { GetAllSessionCommand } from './useCases/get-all-sessions.usecase';
-// import { InterlayerNotice } from '../../base/models/Interlayer';
-// import { SessionsOutputType } from './output/session.output';
+import { GetAllSessionCommand } from './useCases/get-all-sessions.usecase';
+import { InterlayerNotice } from '../../base/models/Interlayer';
+import { SessionsOutputType } from './output/session.output';
 // import { DeleteAllSessionsCommand } from './useCases/delete-all-sessions.usecase';
 // import { UpdateOutputData } from '../../base/models/updateOutput';
 // import { Token } from '../../decorators/token';
@@ -28,19 +28,19 @@ export class SecurityController {
     private commandBus: CommandBus,
   ) {}
   //
-  // @UseGuards(AccessTokenAuthGuard)
-  // @Get('/devices')
-  // async getDevices(@UserId() userId: string): Promise<SessionsOutputType[]> {
-  //   const command = new GetAllSessionCommand(userId);
-  //   const result = await this.queryBus.execute<
-  //     GetAllSessionCommand,
-  //     InterlayerNotice<SessionsOutputType[]>
-  //   >(command);
-  //   if (result.hasError())
-  //     throw new NotFoundException(result.extensions[0].message);
-  //   if (!result.data) throw new NotFoundException();
-  //   return result.data;
-  // }
+  @UseGuards(AccessTokenAuthGuard)
+  @Get('/devices')
+  async getDevices(@UserId() userId: string): Promise<SessionsOutputType[]> {
+    const command = new GetAllSessionCommand(userId);
+    const result = await this.queryBus.execute<
+      GetAllSessionCommand,
+      InterlayerNotice<SessionsOutputType[]>
+    >(command);
+    if (result.hasError())
+      throw new NotFoundException(result.extensions[0].message);
+    if (!result.data) throw new NotFoundException();
+    return result.data;
+  }
   // @HttpCode(204)
   // @UseGuards(AccessTokenAuthGuard)
   // @Delete('/devices')
