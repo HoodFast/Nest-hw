@@ -15,11 +15,11 @@ export class SessionRepository {
     const meta = await this.sessionModel.findOne({ userId, title });
     return meta;
   }
-  async getSessionByDeviceId(deviceId: string) {
-    const session = await this.sessionModel.findOne({ deviceId }).lean();
-    if (!session) return null;
-    return session;
-  }
+  // async getSessionByDeviceId(deviceId: string) {
+  //   const session = await this.sessionModel.findOne({ deviceId }).lean();
+  //   if (!session) return null;
+  //   return session;
+  // }
   async createNewSession(tokenMetaData: Session) {
     const newSession = new this.sessionModel(tokenMetaData);
     await newSession.save();
@@ -38,10 +38,10 @@ export class SessionRepository {
 
     return meta;
   }
-  async getAllSessionByUserId(userId: string) {
-    const allSessions = this.sessionModel.find({
-      userId: new ObjectId(userId),
-    });
-    return allSessions;
-  }
+  // async getAllSessionByUserId(userId: string) {
+  //   const allSessions = this.sessionModel.find({
+  //     userId: new ObjectId(userId),
+  //   });
+  //   return allSessions;
+  // }
 }
