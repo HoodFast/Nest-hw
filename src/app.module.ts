@@ -51,6 +51,7 @@ import { BlogExistsValidator } from './base/validate/blog.exist.validate';
 // import { SessionQueryRepository } from './sessions/infrastructure/session.query.repository';
 // import { SecurityController } from './sessions/api/security.controller';
 import { SessionRepository } from './sessions/infrastructure/session.repository';
+import { SecurityController } from './sessions/api/security.controller';
 // import { GetAllSessionUseCase } from './sessions/api/useCases/get-all-sessions.usecase';
 // import { DeleteSessionByIdUseCase } from './sessions/api/useCases/delete-session-by-id.usecase';
 // import { DeleteAllSessionsUseCase } from './sessions/api/useCases/delete-all-sessions.usecase';
@@ -140,7 +141,7 @@ const services = [
     TestingController,
     AuthController,
     CommentsController,
-    // SecurityController,
+    SecurityController,
   ],
   providers: [BlogExistsValidator, ...services, ...repositories, ...useCases],
 })
