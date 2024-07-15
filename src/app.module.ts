@@ -24,7 +24,7 @@ import { TestingController } from './testing/api/testing.controller';
 import { CommentsQueryRepository } from './comments/infrastructure/comments.query.repository';
 import { AuthService } from './auth/application/auth.service';
 import { JwtService } from './auth/infrastructure/jwt.service';
-// import { SessionRepository } from './sessions/infrastructure/session.repository';
+
 import { AuthController } from './auth/api/auth.controller';
 import { Session, SessionSchema } from './sessions/domain/session.schema';
 import { EmailService } from './auth/infrastructure/email.service';
@@ -49,7 +49,8 @@ import { UpdateCommentBodyUseCase } from './comments/api/use-cases/update-commen
 import { DeleteCommentUseCase } from './comments/api/use-cases/delete-comment.usecase';
 import { BlogExistsValidator } from './base/validate/blog.exist.validate';
 // import { SessionQueryRepository } from './sessions/infrastructure/session.query.repository';
-import { SecurityController } from './sessions/api/security.controller';
+// import { SecurityController } from './sessions/api/security.controller';
+import { SessionRepository } from './sessions/infrastructure/session.repository';
 // import { GetAllSessionUseCase } from './sessions/api/useCases/get-all-sessions.usecase';
 // import { DeleteSessionByIdUseCase } from './sessions/api/useCases/delete-session-by-id.usecase';
 // import { DeleteAllSessionsUseCase } from './sessions/api/useCases/delete-all-sessions.usecase';
@@ -81,7 +82,7 @@ const repositories = [
   TestingQueryRepository,
   CommentsQueryRepository,
   CommentsRepository,
-  // SessionRepository,
+  SessionRepository,
   // SessionQueryRepository,
 ];
 const services = [
@@ -139,7 +140,7 @@ const services = [
     TestingController,
     AuthController,
     CommentsController,
-    SecurityController,
+    // SecurityController,
   ],
   providers: [BlogExistsValidator, ...services, ...repositories, ...useCases],
 })
