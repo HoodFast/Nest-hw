@@ -49,6 +49,7 @@ import { CommentsController } from './comments/api/comments.controller';
 import { CommentsRepository } from './comments/infrastructure/comments.repository';
 import { SessionRepository } from './sessions/infrastructure/session.repository';
 import { BlogExistsValidator } from './base/validate/blog.exist.validate';
+import { SecurityController } from './sessions/api/security.controller';
 
 const useCases = [
   CreateBlogUseCase,
@@ -135,7 +136,7 @@ const useCases = [
     TestingController,
     AuthController,
     CommentsController,
-    // SecurityController,
+    SecurityController,
   ],
   providers: [
     AppService,
