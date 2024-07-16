@@ -10,8 +10,9 @@ import {
 } from '@nestjs/common';
 // import { AccessTokenAuthGuard } from '../../guards/access.token.auth.guard';
 // import { UserId } from '../../decorators/userId';
-// import { SessionQueryRepository } from '../infrastructure/session.query.repository';
-// import { CommandBus, QueryBus } from '@nestjs/cqrs';
+
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { SessionQueryRepository } from '../infrastructure/session.query.repository';
 // import { GetAllSessionCommand } from './useCases/get-all-sessions.usecase';
 // import { InterlayerNotice } from '../../base/models/Interlayer';
 // import { SessionsOutputType } from './output/session.output';
@@ -22,11 +23,11 @@ import {
 //
 @Controller('security')
 export class SecurityController {
-  //   constructor(
-  //     // private sessionQueryRepository: SessionQueryRepository,
-  //     private queryBus: QueryBus,
-  //     private commandBus: CommandBus,
-  //   ) {}
+  constructor(
+    private sessionQueryRepository: SessionQueryRepository,
+    private queryBus: QueryBus,
+    private commandBus: CommandBus,
+  ) {}
   //
   //   @UseGuards(AccessTokenAuthGuard)
   //   @Get('/devices')

@@ -50,6 +50,7 @@ import { CommentsRepository } from './comments/infrastructure/comments.repositor
 import { SessionRepository } from './sessions/infrastructure/session.repository';
 import { BlogExistsValidator } from './base/validate/blog.exist.validate';
 import { SecurityController } from './sessions/api/security.controller';
+import { SessionQueryRepository } from './sessions/infrastructure/session.query.repository';
 
 const useCases = [
   CreateBlogUseCase,
@@ -155,7 +156,7 @@ const useCases = [
     AuthService,
     JwtService,
     SessionRepository,
-    // SessionQueryRepository,
+    SessionQueryRepository,
     AuthService,
     EmailService,
     UsersService,
