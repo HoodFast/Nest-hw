@@ -38,10 +38,10 @@ export class SessionRepository {
 
     return meta;
   }
-  // async getAllSessionByUserId(userId: string) {
-  //   const allSessions = this.sessionModel.find({
-  //     userId: new ObjectId(userId),
-  //   });
-  //   return allSessions;
-  // }
+  async getAllSessionByUserId(userId: string) {
+    const allSessions = this.sessionModel.find({
+      userId: new ObjectId(userId),
+    });
+    return allSessions;
+  }
 }
