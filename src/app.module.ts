@@ -52,6 +52,8 @@ import { BlogExistsValidator } from './base/validate/blog.exist.validate';
 import { SecurityController } from './sessions/api/security.controller';
 import { SessionQueryRepository } from './sessions/infrastructure/session.query.repository';
 import { DeleteAllSessionsUseCase } from './sessions/api/useCases/delete-all-sessions.usecase';
+import { DeleteSessionByIdUseCase } from './sessions/api/useCases/delete-session-by-id.usecase';
+import { GetAllSessionUseCase } from './sessions/api/useCases/get-all-sessions.usecase';
 
 const useCases = [
   CreateBlogUseCase,
@@ -66,8 +68,8 @@ const useCases = [
   UpdateCommentLikesUseCase,
   UpdateCommentBodyUseCase,
   DeleteCommentUseCase,
-  // GetAllSessionUseCase,
-  // DeleteSessionByIdUseCase,
+  GetAllSessionUseCase,
+  DeleteSessionByIdUseCase,
   DeleteAllSessionsUseCase,
 ];
 // const repositories = [
