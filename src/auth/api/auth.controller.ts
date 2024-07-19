@@ -59,7 +59,7 @@ export class AuthController {
     });
     return { accessToken };
   }
-  // @UseGuards(AccessTokenAuthGuard)
+  @UseGuards(AccessTokenAuthGuard)
   @HttpCode(204)
   @Post('logout')
   async logout(@Req() req: Request) {
