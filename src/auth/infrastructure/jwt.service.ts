@@ -30,6 +30,7 @@ export class JwtService {
     const token = jwt.sign({ userId }, this.AC_SECRET, {
       expiresIn: this.AC_TIME,
     });
+    debugger;
     return token;
   }
   async createRefreshJWT(
@@ -43,10 +44,11 @@ export class JwtService {
     });
     const decoded = jwt.decode(token, { complete: true });
     const iat = new Date(decoded.payload.iat * 1000);
+
     const tokenMetaData: Session = {
       iat,
       deviceId,
-      expireDate: decoded.payload.exp,
+      expireDate: new Date(decoded.payload.exp * 1000),
       userId,
       ip,
       title,
@@ -111,6 +113,7 @@ export class JwtService {
       if (blackListCheck) return null;
       return result.userId;
     } catch (err) {
+      debugger;
       return null;
     }
   }
