@@ -64,8 +64,10 @@ export class AuthController {
   @Post('logout')
   async logout(@Req() req: Request) {
     const token = req.cookies.refreshToken;
-    const deleteSession = await this.authService.deleteSession(token);
-    if (!deleteSession) throw new UnauthorizedException();
+    const checkToken = await this.jwtService.checkRefreshToken(token);
+    if (!checkToken) throw new UnauthorizedException();
+    await this.authService.deleteSession(token);
+    // if (!deleteSession) throw new UnauthorizedException();
     return;
   }
 
@@ -101,6 +103,7 @@ export class AuthController {
     const changePass = await this.usersService.changePass(data);
     return;
   }
+
   @HttpCode(200)
   @Post('refresh-token')
   async refreshToken(

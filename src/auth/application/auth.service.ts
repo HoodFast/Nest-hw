@@ -82,19 +82,19 @@ export class AuthService {
       title,
     );
     if (!refreshToken) return null;
-    const decoded = jwt.decode(refreshToken, { complete: true });
-    const iat = await this.jwtService.getIatFromToken(refreshToken);
-    const tokenMetaData: Session = {
-      iat,
-      deviceId,
-      expireDate: decoded.payload.exp,
-      userId,
-      ip,
-      title,
-    };
-    const setTokenMetaData =
-      await this.sessionRepository.createNewSession(tokenMetaData);
-    if (!setTokenMetaData) return null;
+    // const decoded = jwt.decode(refreshToken, { complete: true });
+    // const iat = await this.jwtService.getIatFromToken(refreshToken);
+    // const tokenMetaData: Session = {
+    //   iat,
+    //   deviceId,
+    //   expireDate: decoded.payload.exp,
+    //   userId,
+    //   ip,
+    //   title,
+    // };
+    // const setTokenMetaData =
+    //   await this.sessionRepository.createNewSession(tokenMetaData);
+    // if (!setTokenMetaData) return null;
     return { accessToken, refreshToken };
   }
 
@@ -153,8 +153,9 @@ export class AuthService {
         dataSession.iat,
         dataSession.deviceId,
       );
+    debugger;
     if (oldSession) {
-      await this.sessionRepository.deleteById(oldSession._id);
+      await this.sessionRepository.deleteById(oldSession.id);
     } else {
       return false;
     }
