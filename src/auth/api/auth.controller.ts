@@ -62,10 +62,13 @@ export class AuthController {
   @UseGuards(AccessTokenAuthGuard)
   @HttpCode(204)
   @Post('logout')
-  async logout(@Req() req: Request) {
+  async logout(@Req() req: Request, @UserId() userId: string) {
+    const title = req.get('User-Agent') || 'none title';
     const token = req.cookies.refreshToken;
     const checkToken = await this.jwtService.checkRefreshToken(token);
-    if (!checkToken) throw new UnauthorizedException();
+    if (!checkToken) {
+      await this.authService.deleteSessionUsingLogin(userId, title);
+    }
     await this.authService.deleteSession(token);
     // if (!deleteSession) throw new UnauthorizedException();
     return;

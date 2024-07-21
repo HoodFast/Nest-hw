@@ -6,7 +6,6 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Session } from '../../sessions/domain/session.schema';
 import { randomUUID } from 'crypto';
 import { UsersQueryRepository } from '../../users/infrastructure/users.query.repository';
 import { UsersRepository } from '../../users/infrastructure/users.repository';
@@ -63,8 +62,8 @@ export class AuthService {
       password,
     );
     if (!userId) return null;
-    const oldSession = await this.sessionRepository.getSessionForLogin(
-      userId,
+    const oldSession = await this.sessionRepository.getSessionForUserId(
+      userId.toString(),
       title,
     );
     const deviceId = oldSession?.deviceId || randomUUID();
@@ -153,12 +152,25 @@ export class AuthService {
         dataSession.iat,
         dataSession.deviceId,
       );
-    debugger;
     if (oldSession) {
       await this.sessionRepository.deleteById(oldSession.id);
     } else {
       return false;
     }
+    return true;
+  }
+  async deleteSessionUsingLogin(
+    userId: string,
+    title: string,
+  ): Promise<boolean> {
+    const dataSession = await this.sessionRepository.getSessionForUserId(
+      userId,
+      title,
+    );
+    if (!dataSession) return false;
+
+    await this.sessionRepository.deleteById(dataSession.id);
+
     return true;
   }
 }

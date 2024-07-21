@@ -8,11 +8,14 @@ export class SessionRepository {
   constructor(
     @InjectModel(Session.name) private sessionModel: Model<SessionDocument>,
   ) {}
-  async getSessionForLogin(
-    userId: ObjectId,
+  async getSessionForUserId(
+    userId: string,
     title: string,
   ): Promise<SessionDocument | null> {
-    const meta = await this.sessionModel.findOne({ userId, title });
+    const meta = await this.sessionModel.findOne({
+      userId: new ObjectId(userId),
+      title,
+    });
     return meta;
   }
   async getSessionByDeviceId(deviceId: string) {
