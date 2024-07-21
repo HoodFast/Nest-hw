@@ -51,7 +51,7 @@ export class AuthController {
       ip,
       title,
     );
-    if (!tokens) throw new UnauthorizedException();
+    if (!tokens) throw new UnauthorizedException('get tokens pair error');
     const { accessToken, refreshToken } = tokens;
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
@@ -68,6 +68,7 @@ export class AuthController {
     const checkToken = await this.jwtService.checkRefreshToken(token);
     if (!checkToken) {
       await this.authService.deleteSessionUsingLogin(userId, title);
+      return;
     }
     await this.authService.deleteSession(token);
     // if (!deleteSession) throw new UnauthorizedException();
@@ -80,7 +81,7 @@ export class AuthController {
   async registration(@Body() data: UserInputDto) {
     const { login, email, password } = data;
     const res = await this.usersService.createUser(login, email, password);
-    if (!res) throw new UnauthorizedException();
+    if (!res) throw new UnauthorizedException('create user error');
     return;
   }
   @UseGuards(Limiter)
@@ -118,7 +119,7 @@ export class AuthController {
 
     const token = req.cookies.refreshToken;
     const user = await this.jwtService.checkRefreshToken(token);
-    if (!user) throw new UnauthorizedException();
+    if (!user) throw new UnauthorizedException('check refresh token error');
 
     const tokens = await this.authService.refreshTokensPair(
       user,
@@ -144,7 +145,7 @@ export class AuthController {
   @Get('me')
   async getMe(@UserId() userId: string) {
     const my = await this.usersQueryRepository.getMe(userId);
-    if (!my) throw new UnauthorizedException();
+    if (!my) throw new UnauthorizedException('getMe error');
     return {
       userId: my._id,
       login: my.accountData.login,

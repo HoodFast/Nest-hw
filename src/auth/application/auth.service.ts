@@ -104,7 +104,8 @@ export class AuthService {
     token: string,
   ) {
     const session = await this.jwtService.getSessionDataByToken(token);
-    if (!session) throw new UnauthorizedException();
+    if (!session)
+      throw new UnauthorizedException('couldn`t get the data session');
     const oldSession =
       await this.sessionRepository.getSessionForRefreshDecodeToken(
         session.iat,
@@ -114,7 +115,7 @@ export class AuthService {
     if (oldSession) {
       await this.sessionRepository.deleteById(oldSession._id);
     } else {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('The old session is gone');
     }
     const accessToken = await this.jwtService.createJWT(user._id);
     const refreshToken = await this.jwtService.createRefreshJWT(

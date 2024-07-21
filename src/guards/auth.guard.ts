@@ -16,14 +16,16 @@ export class AuthGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request: Request = context.switchToHttp().getRequest();
     if (!request.headers.authorization) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('auth guard no headers');
     }
     const auth = request.headers.authorization;
     const type = auth.split(' ')[0];
-    if (type !== 'Basic') throw new UnauthorizedException();
+    if (type !== 'Basic')
+      throw new UnauthorizedException('type is not a Basic');
     const authPayload = auth.split(' ')[1];
     const decodePayload = Buffer.from(authPayload, 'base64').toString();
-    if (decodePayload !== 'admin:qwerty') throw new UnauthorizedException();
+    if (decodePayload !== 'admin:qwerty')
+      throw new UnauthorizedException('login or pass is incorect');
     return true;
   }
 }
