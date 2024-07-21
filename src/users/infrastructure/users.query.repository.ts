@@ -77,4 +77,9 @@ export class UsersQueryRepository {
     if (!user) return null;
     return user;
   }
+  async getUserById(userId: string): Promise<UserDocument | null> {
+    const user = await this.userModel.findOne({ id: userId });
+    if (!user) return null;
+    return user;
+  }
 }

@@ -25,6 +25,7 @@ import { UsersQueryRepository } from '../../users/infrastructure/users.query.rep
 import { confirmDto } from '../../users/api/input/conf.code.dto';
 import { UserInputDto } from '../../users/api/input/userInput.dto';
 import { emailResendingDto } from './input/email.resending.input';
+import { RefreshTokenGuard } from '../../guards/refresh-token.guards';
 
 @Controller('auth')
 export class AuthController {
@@ -59,19 +60,21 @@ export class AuthController {
     });
     return { accessToken };
   }
-  @UseGuards(AccessTokenAuthGuard)
+  @UseGuards(RefreshTokenGuard)
   @HttpCode(204)
   @Post('logout')
-  async logout(@Req() req: Request, @UserId() userId: string) {
-    const title = req.get('User-Agent') || 'none title';
+  async logout(@Req() req: Request) {
     const token = req.cookies.refreshToken;
-    const checkToken = await this.jwtService.checkRefreshToken(token);
-    if (!checkToken) {
-      await this.authService.deleteSessionUsingLogin(userId, title);
-      return;
-    }
     await this.authService.deleteSession(token);
-    // if (!deleteSession) throw new UnauthorizedException();
+    // const title = req.get('User-Agent') || 'none title';
+    // const token = req.cookies.refreshToken;
+    // const checkToken = await this.jwtService.checkRefreshToken(token);
+    // if (!checkToken) {
+    //   await this.authService.deleteSessionUsingLogin(userId, title);
+    //   return;
+    // }
+    // await this.authService.deleteSession(token);
+    // // if (!deleteSession) throw new UnauthorizedException();
     return;
   }
 
