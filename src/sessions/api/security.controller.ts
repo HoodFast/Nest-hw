@@ -29,7 +29,7 @@ export class SecurityController {
     private commandBus: CommandBus,
   ) {}
 
-  @UseGuards(RefreshTokenGuard)
+  @UseGuards()
   @Get('/devices')
   async getDevices(@UserId() userId: string): Promise<SessionsOutputType[]> {
     const command = new GetAllSessionCommand(userId);
