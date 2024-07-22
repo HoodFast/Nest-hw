@@ -36,6 +36,10 @@ export class SessionRepository {
     const res = await this.sessionModel.deleteOne({ _id });
     return !!res.deletedCount;
   }
+  async deleteByDeviceId(deviceId: string): Promise<boolean> {
+    const res = await this.sessionModel.deleteOne({ deviceId });
+    return !!res.deletedCount;
+  }
   async getSessionForRefreshDecodeToken(iat: string, deviceId: string) {
     const meta = await this.sessionModel.findOne({
       iat: iat,

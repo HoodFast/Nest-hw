@@ -34,7 +34,7 @@ export class DeleteSessionByIdUseCase
       notice.addError('forbidden', '2');
       return notice;
     }
-    await this.sessionRepository.deleteById(new ObjectId(command.deviceId));
+    await this.sessionRepository.deleteByDeviceId(command.deviceId);
     notice.addData({ updated: true });
     return notice;
   }
