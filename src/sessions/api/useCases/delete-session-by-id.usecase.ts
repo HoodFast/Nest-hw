@@ -25,15 +25,16 @@ export class DeleteSessionByIdUseCase
     const notice = new InterlayerNotice<UpdateOutputData>();
     const sessionsByDeviceId =
       await this.sessionRepository.getSessionByDeviceId(command.deviceId);
-
+    debugger;
     if (!sessionsByDeviceId) {
       notice.addError('invalid meta data', '1');
       return notice;
     }
-    if (sessionsByDeviceId.userId !== new ObjectId(command.userId)) {
+    if (sessionsByDeviceId.userId.toString() !== command.userId) {
       notice.addError('forbidden', '2');
+      return notice;
     }
-
+    await this.sessionRepository.deleteById(new ObjectId(command.deviceId));
     notice.addData({ updated: true });
     return notice;
   }
