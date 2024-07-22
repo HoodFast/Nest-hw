@@ -36,8 +36,13 @@ export class SessionRepository {
     const res = await this.sessionModel.deleteOne({ _id });
     return !!res.deletedCount;
   }
-  async getSessionForRefreshDecodeToken(iat: Date, deviceId: string) {
-    const meta = await this.sessionModel.findOne({ iat, deviceId });
+  async getSessionForRefreshDecodeToken(iat: string, deviceId: string) {
+    const meta = await this.sessionModel.findOne({
+      iat: iat,
+      deviceId: deviceId,
+    });
+    const all = await this.sessionModel.find({});
+    const date = all[0].iat;
 
     return meta;
   }

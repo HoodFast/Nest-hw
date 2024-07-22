@@ -61,12 +61,14 @@ export class AuthService {
       loginOrEmail,
       password,
     );
+
     if (!userId) return null;
     const oldSession = await this.sessionRepository.getSessionForUserId(
       userId.toString(),
       title,
     );
     const deviceId = oldSession?.deviceId || randomUUID();
+
     if (oldSession) {
       await this.sessionRepository.deleteById(oldSession._id);
     }
@@ -108,9 +110,10 @@ export class AuthService {
       throw new UnauthorizedException('couldn`t get the data session');
     const oldSession =
       await this.sessionRepository.getSessionForRefreshDecodeToken(
-        session.iat,
+        session.iat.toISOString(),
         session.deviceId,
       );
+
     const deviceId = oldSession?.deviceId;
     if (oldSession) {
       await this.sessionRepository.deleteById(oldSession._id);
@@ -150,7 +153,7 @@ export class AuthService {
     if (!dataSession) return false;
     const oldSession =
       await this.sessionRepository.getSessionForRefreshDecodeToken(
-        dataSession.iat,
+        dataSession.iat.toISOString(),
         dataSession.deviceId,
       );
     if (oldSession) {

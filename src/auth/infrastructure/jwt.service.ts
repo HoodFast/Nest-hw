@@ -90,13 +90,16 @@ export class JwtService {
       return null;
     }
   }
-  async verifyRefreshToken(token: string, title: string) {
+  async verifyRefreshToken(token: string) {
     try {
       const result = jwt.verify(token, this.RT_SECRET);
-      const blackListCheck = await this.sessionRepository.getSessionForUserId(
-        result.userId,
-        title,
-      );
+      const date = new Date(result.iat * 1000);
+      const blackListCheck =
+        await this.sessionRepository.getSessionForRefreshDecodeToken(
+          date.toISOString(),
+          result.deviceId,
+        );
+
       if (!blackListCheck) return null;
       return result;
     } catch (e) {
