@@ -90,14 +90,14 @@ export class JwtService {
       return null;
     }
   }
-  async verifyRefreshToken(token: string) {
+  async verifyRefreshToken(token: string, title: string) {
     try {
       const result = jwt.verify(token, this.RT_SECRET);
-      const blackListCheck = await this.usersRepository.blackListCheck(
+      const blackListCheck = await this.sessionRepository.getSessionForUserId(
         result.userId,
-        token,
+        title,
       );
-      if (blackListCheck) return null;
+      if (!blackListCheck) return null;
       return result;
     } catch (e) {
       return null;

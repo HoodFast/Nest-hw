@@ -17,11 +17,15 @@ export class RefreshTokenGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const refreshToken = request.cookies.refreshToken;
+    const title = request.headers['user-agent'] || 'none title';
     if (!refreshToken)
       throw new UnauthorizedException(
         `RefreshTokenGuard - dont find token in cookies`,
       );
-    const jwtPayload = await this.jwtService.verifyRefreshToken(refreshToken);
+    const jwtPayload = await this.jwtService.verifyRefreshToken(
+      refreshToken,
+      title,
+    );
 
     if (!jwtPayload)
       throw new UnauthorizedException('RefreshTokenGuard - token don`t verify');

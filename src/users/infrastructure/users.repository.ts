@@ -67,7 +67,9 @@ export class UsersRepository {
     const res = await this.userModel.findOne({ _id: new ObjectId(userId) });
     if (!res) return false;
     const blackList = res.tokensBlackList;
-    return blackList?.includes(token);
+    const check = blackList?.includes(token);
+
+    return check;
   }
   async updateNewConfirmCode(userId: ObjectId, code: string): Promise<boolean> {
     const res = await this.userModel.updateOne(
