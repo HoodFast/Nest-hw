@@ -27,7 +27,7 @@ export class RefreshTokenGuard implements CanActivate {
     const user = await this.usersQueryRepository.getUserById(jwtPayload.userId);
     if (!user)
       throw new UnauthorizedException('RefreshTokenGuard - user not found');
-    request.user = user;
+    request.userId = user.id;
     request.refreshToken = jwtPayload;
     return true;
   }

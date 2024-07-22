@@ -6,7 +6,6 @@ import { ObjectId } from 'mongodb';
 
 export class DeleteSessionByIdCommand {
   constructor(
-    public token: string,
     public deviceId: string,
     public userId: string,
   ) {}

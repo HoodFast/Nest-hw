@@ -17,9 +17,10 @@ import { DeleteAllSessionsCommand } from './useCases/delete-all-sessions.usecase
 import { InterlayerNotice } from '../../base/models/Interlayer';
 import { UpdateOutputData } from '../../base/models/updateOutput';
 import { DeleteSessionByIdCommand } from './useCases/delete-session-by-id.usecase';
-import { Token } from '../../decorators/token';
+
 import { SessionsOutputType } from './output/session.output';
 import { GetAllSessionCommand } from './useCases/get-all-sessions.usecase';
+import { RefreshTokenGuard } from '../../guards/refresh-token.guards';
 
 @Controller('security')
 export class SecurityController {
@@ -29,7 +30,7 @@ export class SecurityController {
     private commandBus: CommandBus,
   ) {}
 
-  @UseGuards(AccessTokenAuthGuard)
+  @UseGuards(RefreshTokenGuard)
   @Get('/devices')
   async getDevices(@UserId() userId: string): Promise<SessionsOutputType[]> {
     const command = new GetAllSessionCommand(userId);
@@ -43,7 +44,7 @@ export class SecurityController {
     return result.data;
   }
   @HttpCode(204)
-  @UseGuards(AccessTokenAuthGuard)
+  @UseGuards(RefreshTokenGuard)
   @Delete('/devices')
   async deleteAllDevices(@UserId() userId: string) {
     const command = new DeleteAllSessionsCommand(userId);
@@ -57,14 +58,13 @@ export class SecurityController {
     return;
   }
   @HttpCode(204)
-  @UseGuards(AccessTokenAuthGuard)
+  @UseGuards(RefreshTokenGuard)
   @Delete('/devices/:id')
   async deleteSessionById(
-    @Token() token: string,
     @Param('id') deviceId: string,
     @UserId() userId: string,
   ) {
-    const command = new DeleteSessionByIdCommand(token, deviceId, userId);
+    const command = new DeleteSessionByIdCommand(deviceId, userId);
     const result = await this.commandBus.execute<
       DeleteSessionByIdCommand,
       InterlayerNotice<UpdateOutputData>
