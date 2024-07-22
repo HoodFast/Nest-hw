@@ -193,7 +193,7 @@ describe('CommentsController (e2e)', () => {
       createComment.body.id,
       accessToken,
     );
-    debugger;
+
     commentTestManager.checkCommentBody(likesComment);
   });
 });

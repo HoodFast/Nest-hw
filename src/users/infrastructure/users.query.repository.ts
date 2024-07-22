@@ -78,7 +78,8 @@ export class UsersQueryRepository {
     return user;
   }
   async getUserById(userId: string): Promise<UserDocument | null> {
-    const user = await this.userModel.findOne({ id: userId });
+    const user = await this.userModel.findOne({ _id: new ObjectId(userId) });
+
     if (!user) return null;
     return user;
   }

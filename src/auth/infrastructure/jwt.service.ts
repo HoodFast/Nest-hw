@@ -30,7 +30,7 @@ export class JwtService {
     const token = jwt.sign({ userId }, this.AC_SECRET, {
       expiresIn: this.AC_TIME,
     });
-    debugger;
+
     return token;
   }
   async createRefreshJWT(
@@ -125,7 +125,6 @@ export class JwtService {
       if (blackListCheck) return null;
       return result.userId;
     } catch (err) {
-      debugger;
       return null;
     }
   }

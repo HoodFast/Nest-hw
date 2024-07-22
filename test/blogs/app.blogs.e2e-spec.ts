@@ -149,7 +149,6 @@ describe('BlogsController (e2e)', () => {
       createBlog.body.id,
       400,
     );
-    debugger;
   });
   it('delete blog ', async () => {
     const { createBlogData } = expect.getState();
@@ -184,7 +183,7 @@ describe('BlogsController (e2e)', () => {
       await blogTestManager.createBlog(createBlogData, 201);
     }
     const res = await request(httpServer).get(`/blogs`).expect(200);
-    debugger;
+
     await blogTestManager.checkAllBlogsBody(res);
   });
 });

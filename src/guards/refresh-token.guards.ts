@@ -22,6 +22,7 @@ export class RefreshTokenGuard implements CanActivate {
         `RefreshTokenGuard - dont find token in cookies`,
       );
     const jwtPayload = await this.jwtService.verifyRefreshToken(refreshToken);
+
     if (!jwtPayload)
       throw new UnauthorizedException('RefreshTokenGuard - token don`t verify');
     const user = await this.usersQueryRepository.getUserById(jwtPayload.userId);
