@@ -11,7 +11,6 @@ import {
 
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { SessionQueryRepository } from '../infrastructure/session.query.repository';
-import { AccessTokenAuthGuard } from '../../guards/access.token.auth.guard';
 import { UserId } from '../../decorators/userId';
 import { DeleteAllSessionsCommand } from './useCases/delete-all-sessions.usecase';
 import { InterlayerNotice } from '../../base/models/Interlayer';

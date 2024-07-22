@@ -121,6 +121,7 @@ export class AuthController {
     const ip = req.ip || 'none ip';
 
     const token = req.cookies.refreshToken;
+
     const user = await this.jwtService.checkRefreshToken(token);
     if (!user) throw new UnauthorizedException('check refresh token error');
 

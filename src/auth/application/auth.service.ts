@@ -108,6 +108,7 @@ export class AuthService {
     const session = await this.jwtService.getSessionDataByToken(token);
     if (!session)
       throw new UnauthorizedException('couldn`t get the data session');
+
     const oldSession =
       await this.sessionRepository.getSessionForRefreshDecodeToken(
         session.iat.toISOString(),

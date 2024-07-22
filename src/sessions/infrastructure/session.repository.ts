@@ -41,9 +41,6 @@ export class SessionRepository {
       iat: iat,
       deviceId: deviceId,
     });
-    const all = await this.sessionModel.find({});
-    const date = all[0].iat;
-
     return meta;
   }
   async getAllSessionByUserId(userId: string) {
