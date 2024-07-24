@@ -54,10 +54,10 @@ export class SessionRepository {
     });
     return allSessions;
   }
-  async deleteAllSession(userId: string, title: string) {
+  async deleteAllSession(userId: string, deviceId: string) {
     const deletedSessions = this.sessionModel.deleteMany({
       userId,
-      title: { $ne: title },
+      deviceId: { $ne: deviceId },
     });
     return;
   }

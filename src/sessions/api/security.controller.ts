@@ -20,7 +20,6 @@ import { DeleteSessionByIdCommand } from './useCases/delete-session-by-id.usecas
 import { SessionsOutputType } from './output/session.output';
 import { GetAllSessionCommand } from './useCases/get-all-sessions.usecase';
 import { RefreshTokenGuard } from '../../guards/refresh-token.guards';
-import { Token } from '../../decorators/token';
 import { TokenPayload } from '../../decorators/token-payload';
 
 @Controller('security')
@@ -51,8 +50,7 @@ export class SecurityController {
     @UserId() userId: string,
     @TokenPayload() tokenPayload: any,
   ) {
-    console.log(tokenPayload);
-    const command = new DeleteAllSessionsCommand(userId, tokenPayload.title);
+    const command = new DeleteAllSessionsCommand(userId, tokenPayload.deviceId);
     const result = await this.commandBus.execute<
       DeleteAllSessionsCommand,
       InterlayerNotice<UpdateOutputData>
