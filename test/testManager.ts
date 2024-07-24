@@ -46,7 +46,13 @@ export class TestManager {
       loginOrEmail: createUserData.login,
       password: createUserData.password,
     });
-
+    const userResponse2 = await request(httpServer)
+      .post('/auth/login')
+      .set('User-Agent', '123')
+      .send({
+        loginOrEmail: createUserData.login,
+        password: createUserData.password,
+      });
     const refreshToken = userResponse1.headers[`set-cookie`][0]
       .split('=')[1]
       .split(';')[0];
