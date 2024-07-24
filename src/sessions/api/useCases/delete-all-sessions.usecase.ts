@@ -4,7 +4,10 @@ import { UpdateOutputData } from '../../../base/models/updateOutput';
 import { SessionRepository } from '../../infrastructure/session.repository';
 
 export class DeleteAllSessionsCommand {
-  constructor(public userId: string) {}
+  constructor(
+    public userId: string,
+    public deviceId: string,
+  ) {}
 }
 @CommandHandler(DeleteAllSessionsCommand)
 export class DeleteAllSessionsUseCase
@@ -20,7 +23,11 @@ export class DeleteAllSessionsUseCase
   ): Promise<InterlayerNotice<UpdateOutputData>> {
     const notice = new InterlayerNotice<UpdateOutputData>();
     const allSessionsByToken =
-      await this.sessionRepository.getAllSessionByUserId(command.userId);
+      await this.sessionRepository.getAllSessionByUserId(
+        command.userId,
+        command.deviceId,
+      );
+    debugger;
     if (!allSessionsByToken) {
       notice.addError('invalid meta data');
 

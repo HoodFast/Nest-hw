@@ -33,7 +33,7 @@ export class RefreshTokenGuard implements CanActivate {
     if (!user)
       throw new UnauthorizedException('RefreshTokenGuard - user not found');
     request.userId = user.id;
-    request.refreshToken = jwtPayload;
+    request.tokenPayload = jwtPayload;
     return true;
   }
 }

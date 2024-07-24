@@ -47,9 +47,10 @@ export class SessionRepository {
     });
     return meta;
   }
-  async getAllSessionByUserId(userId: string) {
+  async getAllSessionByUserId(userId: string, deviceId: string) {
     const allSessions = this.sessionModel.find({
       userId: new ObjectId(userId),
+      deviceId,
     });
     return allSessions;
   }

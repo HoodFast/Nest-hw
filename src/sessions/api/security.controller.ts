@@ -20,6 +20,8 @@ import { DeleteSessionByIdCommand } from './useCases/delete-session-by-id.usecas
 import { SessionsOutputType } from './output/session.output';
 import { GetAllSessionCommand } from './useCases/get-all-sessions.usecase';
 import { RefreshTokenGuard } from '../../guards/refresh-token.guards';
+import { Token } from '../../decorators/token';
+import { TokenPayload } from '../../decorators/token-payload';
 
 @Controller('security')
 export class SecurityController {
@@ -45,8 +47,12 @@ export class SecurityController {
   @HttpCode(204)
   @UseGuards(RefreshTokenGuard)
   @Delete('/devices')
-  async deleteAllDevices(@UserId() userId: string) {
-    const command = new DeleteAllSessionsCommand(userId);
+  async deleteAllDevices(
+    @UserId() userId: string,
+    @TokenPayload() tokenPayload: any,
+  ) {
+    debugger;
+    const command = new DeleteAllSessionsCommand(userId, tokenPayload.deviceId);
     const result = await this.commandBus.execute<
       DeleteAllSessionsCommand,
       InterlayerNotice<UpdateOutputData>

@@ -42,9 +42,12 @@ describe('security Controller (e2e)', () => {
   expect.setState({});
 
   it('comment don`t create, validation error status 400', async () => {
-    const requests = await request(httpServer)
-      .get('/security/devices')
+    await request(httpServer)
+      .delete('/security/devices')
       .send({ refreshToken: refreshTokenUser1 });
+    const user2 = await request(httpServer)
+      .get('/security/devices')
+      .send({ refreshToken: refreshTokenUser2 });
 
     return true;
   });
