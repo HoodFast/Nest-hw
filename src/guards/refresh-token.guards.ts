@@ -26,7 +26,9 @@ export class RefreshTokenGuard implements CanActivate {
     const jwtPayload = await this.jwtService.verifyRefreshToken(refreshToken);
 
     if (!jwtPayload)
-      throw new UnauthorizedException('RefreshTokenGuard - token don`t verify');
+      throw new UnauthorizedException(
+        `RefreshTokenGuard - token dont verify ${refreshToken}`,
+      );
     const user = await this.usersQueryRepository.getUserById(jwtPayload.userId);
     if (!user)
       throw new UnauthorizedException('RefreshTokenGuard - user not found');
