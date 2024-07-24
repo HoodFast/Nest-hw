@@ -68,7 +68,7 @@ export class SessionRepository {
     //   deviceId: { $ne: deviceId },
     // });
     // console.log(sessionMapper(findDelete));
-    const deletedSessions = this.sessionModel.deleteMany({
+    const deletedSessions = await this.sessionModel.deleteMany({
       userId,
       deviceId: { $ne: deviceId },
     });
