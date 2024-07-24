@@ -52,14 +52,12 @@ export class SecurityController {
   async deleteAllDevices(
     @UserId() userId: string,
     @TokenPayload() tokenPayload: any,
-    @Req() req: Request,
   ) {
-    // const getMetaData = await this.sessionRepository.getAllSessionByDeviceId(
-    //   tokenPayload.deviceId,
-    // );
-    // if (getMetaData) {
-    //   console.log(getMetaData[0]);
-    // }
+    const getMetaData =
+      await this.sessionRepository.getAllSessionByUserId(userId);
+    if (getMetaData) {
+      console.log(getMetaData);
+    }
 
     const command = new DeleteAllSessionsCommand(userId, tokenPayload.deviceId);
     const result = await this.commandBus.execute<

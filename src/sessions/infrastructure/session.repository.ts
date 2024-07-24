@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Session, SessionDocument } from '../domain/session.schema';
 import { Injectable } from '@nestjs/common';
+import { sessionMapper } from '../domain/session.mapper';
 @Injectable()
 export class SessionRepository {
   constructor(
@@ -23,8 +24,8 @@ export class SessionRepository {
     if (!session) return null;
     return session;
   }
-  async getAllSessionByDeviceId(deviceId: string) {
-    const session = await this.sessionModel.find({ deviceId });
+  async getAllSessionByUserId(userId: string) {
+    const session = await this.sessionModel.find({ userId });
     if (!session) return null;
     return session;
   }
@@ -60,11 +61,11 @@ export class SessionRepository {
     return allSessions;
   }
   async deleteAllSession(userId: string, deviceId: string) {
-    const findDelete = this.sessionModel.find({
-      userId,
-      deviceId: { $ne: deviceId },
-    });
-    console.log(findDelete.lean());
+    // const findDelete = await this.sessionModel.find({
+    //   userId,
+    //   deviceId: { $ne: deviceId },
+    // });
+    // console.log(sessionMapper(findDelete));
     const deletedSessions = this.sessionModel.deleteMany({
       userId,
       deviceId: { $ne: deviceId },
