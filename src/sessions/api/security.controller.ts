@@ -6,6 +6,7 @@ import {
   HttpCode,
   NotFoundException,
   Param,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 
@@ -51,6 +52,7 @@ export class SecurityController {
   async deleteAllDevices(
     @UserId() userId: string,
     @TokenPayload() tokenPayload: any,
+    @Req() req: Request,
   ) {
     // const getMetaData = await this.sessionRepository.getAllSessionByDeviceId(
     //   tokenPayload.deviceId,
@@ -58,7 +60,7 @@ export class SecurityController {
     // if (getMetaData) {
     //   console.log(getMetaData[0]);
     // }
-
+    console.log(req);
     const command = new DeleteAllSessionsCommand(userId, tokenPayload.deviceId);
     const result = await this.commandBus.execute<
       DeleteAllSessionsCommand,
