@@ -54,4 +54,11 @@ export class SessionRepository {
     });
     return allSessions;
   }
+  async deleteAllSession(userId: string, deviceId: string) {
+    const deletedSessions = this.sessionModel.deleteOne({
+      userId,
+      deviceId: { $ne: deviceId },
+    });
+    return;
+  }
 }
