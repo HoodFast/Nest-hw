@@ -51,8 +51,8 @@ export class SecurityController {
     @UserId() userId: string,
     @TokenPayload() tokenPayload: any,
   ) {
-    console.log(tokenPayload.deviceId);
-    const command = new DeleteAllSessionsCommand(userId, tokenPayload.deviceId);
+    console.log(tokenPayload);
+    const command = new DeleteAllSessionsCommand(userId, tokenPayload.title);
     const result = await this.commandBus.execute<
       DeleteAllSessionsCommand,
       InterlayerNotice<UpdateOutputData>
