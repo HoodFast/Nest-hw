@@ -50,7 +50,7 @@ export class SessionRepository {
   async getAllSessionByUserId(userId: string, deviceId: string) {
     const allSessions = this.sessionModel.find({
       userId: new ObjectId(userId),
-      deviceId,
+      deviceId: deviceId,
     });
     return allSessions;
   }
