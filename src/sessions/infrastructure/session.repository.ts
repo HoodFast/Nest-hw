@@ -60,6 +60,11 @@ export class SessionRepository {
     return allSessions;
   }
   async deleteAllSession(userId: string, deviceId: string) {
+    const findDelete = this.sessionModel.find({
+      userId,
+      deviceId: { $ne: deviceId },
+    });
+    console.log(findDelete);
     const deletedSessions = this.sessionModel.deleteMany({
       userId,
       deviceId: { $ne: deviceId },
