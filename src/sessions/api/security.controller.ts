@@ -54,7 +54,7 @@ export class SecurityController {
     @TokenPayload() tokenPayload: any,
   ) {
     const getMetaData =
-      await this.sessionRepository.getAllSessionByUserId(userId);
+      await this.sessionRepository.getAllSessionByOnlyUserId(userId);
     if (getMetaData) {
       console.log(getMetaData);
     }

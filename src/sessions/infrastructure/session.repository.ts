@@ -24,7 +24,7 @@ export class SessionRepository {
     if (!session) return null;
     return session;
   }
-  async getAllSessionByUserId(userId: string) {
+  async getAllSessionByOnlyUserId(userId: string) {
     const session = await this.sessionModel.find({ userId });
     if (!session) return null;
     return session;
