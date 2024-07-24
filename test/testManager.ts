@@ -52,7 +52,6 @@ export class TestManager {
       .split(';')[0];
 
     const accessToken = userResponse1.body.accessToken;
-
     return { accessToken, refreshToken };
   }
 }

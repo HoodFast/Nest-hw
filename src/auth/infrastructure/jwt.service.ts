@@ -94,13 +94,13 @@ export class JwtService {
     try {
       const result = jwt.verify(token, this.RT_SECRET);
       const date = new Date(result.iat * 1000);
-      const blackListCheck =
-        await this.sessionRepository.getSessionForRefreshDecodeToken(
-          date.toISOString(),
-          result.deviceId,
-        );
-
-      if (!blackListCheck) return null;
+      // const blackListCheck =
+      //   await this.sessionRepository.getSessionForRefreshDecodeToken(
+      //     date.toISOString(),
+      //     result.deviceId,
+      //   );
+      //
+      // if (!blackListCheck) return null;
       return result;
     } catch (e) {
       return null;
