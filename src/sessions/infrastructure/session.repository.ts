@@ -55,7 +55,7 @@ export class SessionRepository {
     return allSessions;
   }
   async deleteAllSession(userId: string, deviceId: string) {
-    const deletedSessions = this.sessionModel.deleteOne({
+    const deletedSessions = this.sessionModel.deleteMany({
       userId,
       deviceId: { $ne: deviceId },
     });
