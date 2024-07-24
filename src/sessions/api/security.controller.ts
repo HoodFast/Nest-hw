@@ -21,11 +21,13 @@ import { SessionsOutputType } from './output/session.output';
 import { GetAllSessionCommand } from './useCases/get-all-sessions.usecase';
 import { RefreshTokenGuard } from '../../guards/refresh-token.guards';
 import { TokenPayload } from '../../decorators/token-payload';
+import { SessionRepository } from '../infrastructure/session.repository';
 
 @Controller('security')
 export class SecurityController {
   constructor(
     private sessionQueryRepository: SessionQueryRepository,
+    private sessionRepository: SessionRepository,
     private queryBus: QueryBus,
     private commandBus: CommandBus,
   ) {}
@@ -50,7 +52,12 @@ export class SecurityController {
     @UserId() userId: string,
     @TokenPayload() tokenPayload: any,
   ) {
-    console.log(tokenPayload);
+    const getMetaData =
+      await this.sessionRepository.getSessionForRefreshDecodeToken(
+        tokenPayload.iat,
+        tokenPayload.deviceId,
+      );
+    console.log(getMetaData);
     const command = new DeleteAllSessionsCommand(userId, tokenPayload.deviceId);
     const result = await this.commandBus.execute<
       DeleteAllSessionsCommand,
