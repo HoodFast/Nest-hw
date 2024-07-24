@@ -58,7 +58,8 @@ export class SecurityController {
     if (getMetaData) {
       console.log(getMetaData);
     }
-
+    console.log(`Token device ID ${tokenPayload.deviceId}`);
+    console.log(`Token user ID ${tokenPayload.userId}`);
     const command = new DeleteAllSessionsCommand(userId, tokenPayload.deviceId);
     const result = await this.commandBus.execute<
       DeleteAllSessionsCommand,
