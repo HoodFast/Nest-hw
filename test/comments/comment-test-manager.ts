@@ -1,7 +1,5 @@
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { createBlogInputDto } from '../../src/blogs/api/model/input/create-blog-input-dto';
-import { PostInput } from '../../src/posts/api/input/PostsCreate.dto';
 import { likesStatuses } from '../../src/posts/api/input/likesDtos';
 
 export class CommentTestManager {

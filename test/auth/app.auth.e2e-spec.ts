@@ -10,7 +10,7 @@ import { UsersServiceEmailMock } from '../users/mock/email.mock.class';
 import { UserTestManager } from '../users/user.test.manager';
 import { errors, usersDto } from '../dtos/test.dto';
 
-describe('UsersController (e2e)', () => {
+describe('AuthController (e2e)', () => {
   let app: INestApplication;
   let httpServer;
   beforeAll(async () => {

@@ -25,7 +25,7 @@ export class DeleteSessionByIdUseCase
     const notice = new InterlayerNotice<UpdateOutputData>();
     const sessionsByDeviceId =
       await this.sessionRepository.getSessionByDeviceId(command.deviceId);
-    debugger;
+
     if (!sessionsByDeviceId) {
       notice.addError('invalid meta data', '1');
       return notice;
