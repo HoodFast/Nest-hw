@@ -64,7 +64,7 @@ export class SessionRepository {
       userId,
       deviceId: { $ne: deviceId },
     });
-    console.log(findDelete);
+    console.log(findDelete.lean());
     const deletedSessions = this.sessionModel.deleteMany({
       userId,
       deviceId: { $ne: deviceId },
