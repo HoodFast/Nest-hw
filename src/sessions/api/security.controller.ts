@@ -52,12 +52,13 @@ export class SecurityController {
     @UserId() userId: string,
     @TokenPayload() tokenPayload: any,
   ) {
-    const getMetaData =
-      await this.sessionRepository.getSessionForRefreshDecodeToken(
-        tokenPayload.iat,
-        tokenPayload.deviceId,
-      );
-    console.log(getMetaData);
+    const getMetaData = await this.sessionRepository.getAllSessionByDeviceId(
+      tokenPayload.deviceId,
+    );
+    if (getMetaData) {
+      console.log(getMetaData[0]);
+    }
+
     const command = new DeleteAllSessionsCommand(userId, tokenPayload.deviceId);
     const result = await this.commandBus.execute<
       DeleteAllSessionsCommand,

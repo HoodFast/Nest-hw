@@ -23,6 +23,11 @@ export class SessionRepository {
     if (!session) return null;
     return session;
   }
+  async getAllSessionByDeviceId(deviceId: string) {
+    const session = await this.sessionModel.find({ deviceId });
+    if (!session) return null;
+    return session;
+  }
   async createNewSession(tokenMetaData: Session) {
     const newSession = new this.sessionModel(tokenMetaData);
     await newSession.save();
