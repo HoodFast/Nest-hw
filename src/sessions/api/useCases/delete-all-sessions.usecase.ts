@@ -22,19 +22,6 @@ export class DeleteAllSessionsUseCase
     command: DeleteAllSessionsCommand,
   ): Promise<InterlayerNotice<UpdateOutputData>> {
     const notice = new InterlayerNotice<UpdateOutputData>();
-    // const allSessionsByToken =
-    //   await this.sessionRepository.getAllSessionByUserId(
-    //     command.userId,
-    //     command.deviceId,
-    //   );
-    // if (!allSessionsByToken) {
-    //   notice.addError('invalid meta data');
-    //
-    //   return notice;
-    // }
-    // for (let i = 0; i < allSessionsByToken.length; i++) {
-    //   await this.sessionRepository.deleteById(allSessionsByToken[i]._id);
-    // }
     await this.sessionRepository.deleteAllSession(
       command.userId,
       command.deviceId,

@@ -2,7 +2,6 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { UserTestManager } from './users/user.test.manager';
 import { randomUUID } from 'crypto';
-import cookieParser from 'cookie-parser';
 
 export class TestManager {
   constructor(protected readonly app: INestApplication) {}

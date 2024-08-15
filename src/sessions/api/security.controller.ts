@@ -53,13 +53,6 @@ export class SecurityController {
     @UserId() userId: string,
     @TokenPayload() tokenPayload: any,
   ) {
-    // const getMetaData =
-    //   await this.sessionRepository.getAllSessionByOnlyUserId(userId);
-    // if (getMetaData) {
-    //   console.log(getMetaData);
-    // }
-    // console.log(`Token device ID ${tokenPayload.deviceId}`);
-    // console.log(`Token user ID ${tokenPayload.userId}`);
     const command = new DeleteAllSessionsCommand(userId, tokenPayload.deviceId);
     const result = await this.commandBus.execute<
       DeleteAllSessionsCommand,

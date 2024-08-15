@@ -24,7 +24,7 @@ import { TestingController } from './testing/api/testing.controller';
 import { CommentsQueryRepository } from './comments/infrastructure/comments.query.repository';
 import { AuthService } from './auth/application/auth.service';
 import { JwtService } from './auth/infrastructure/jwt.service';
-
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from './auth/api/auth.controller';
 import { Session, SessionSchema } from './sessions/domain/session.schema';
 import { EmailService } from './auth/infrastructure/email.service';
@@ -100,6 +100,16 @@ const useCases = [
 // const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
   imports: [
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: '127.0.0.1',
+      port: 3306,
+      username: 'root',
+      password: 'root',
+      database: 'test',
+      autoLoadEntities: true,
+      synchronize: true,
+    }),
     CqrsModule,
     ConfigModule.forRoot({
       isGlobal: true,
