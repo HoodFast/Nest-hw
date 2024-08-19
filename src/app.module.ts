@@ -54,6 +54,7 @@ import { SessionQueryRepository } from './sessions/infrastructure/session.query.
 import { DeleteAllSessionsUseCase } from './sessions/api/useCases/delete-all-sessions.usecase';
 import { DeleteSessionByIdUseCase } from './sessions/api/useCases/delete-session-by-id.usecase';
 import { GetAllSessionUseCase } from './sessions/api/useCases/get-all-sessions.usecase';
+import { UsersSqlRepository } from './users/infrastructure/users.sql.repository';
 
 const useCases = [
   CreateBlogUseCase,
@@ -100,16 +101,6 @@ const useCases = [
 // const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: '127.0.0.1',
-      port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'test',
-      autoLoadEntities: true,
-      synchronize: true,
-    }),
     CqrsModule,
     ConfigModule.forRoot({
       isGlobal: true,
@@ -136,6 +127,16 @@ const useCases = [
 
       inject: [ConfigService],
     }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5433,
+      username: 'nodejs',
+      password: 'nodejs',
+      database: 'postgres',
+      autoLoadEntities: false,
+      synchronize: false,
+    }),
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
     MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
@@ -153,6 +154,7 @@ const useCases = [
     SecurityController,
   ],
   providers: [
+    UsersSqlRepository,
     AppService,
     PostService,
     PostsRepository,
