@@ -8,7 +8,7 @@ export class UsersSqlQueryRepository {
 
   async getAll(): Promise<any> {
     const result = await this.dataSource.query(`
-    SELECT id, "Login"
+    SELECT id, "login"
         FROM public."Users";`);
     return result;
   }

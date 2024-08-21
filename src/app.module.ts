@@ -55,6 +55,7 @@ import { DeleteAllSessionsUseCase } from './sessions/api/useCases/delete-all-ses
 import { DeleteSessionByIdUseCase } from './sessions/api/useCases/delete-session-by-id.usecase';
 import { GetAllSessionUseCase } from './sessions/api/useCases/get-all-sessions.usecase';
 import { UsersSqlRepository } from './users/infrastructure/users.sql.repository';
+import { UsersSqlQueryRepository } from './users/infrastructure/users.sql.query.repository';
 
 const useCases = [
   CreateBlogUseCase,
@@ -155,6 +156,7 @@ const useCases = [
   ],
   providers: [
     UsersSqlRepository,
+    UsersSqlQueryRepository,
     AppService,
     PostService,
     PostsRepository,

@@ -7,7 +7,6 @@ import {
   Post,
   Query,
   Res,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { UserInputDto } from './input/userInput.dto';
@@ -16,7 +15,6 @@ import { UsersSortData } from '../../base/sortData/sortData.model';
 import { UsersQueryRepository } from '../infrastructure/users.query.repository';
 import { Response } from 'express';
 import { sortDirection } from '../../blogs/api/blogs.controller';
-import { validateOrReject } from 'class-validator';
 import { AuthGuard } from '../../guards/auth.guard';
 
 // const validateOrRejectModel = async (model: any, ctor: { new (): any }) => {

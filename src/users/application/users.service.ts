@@ -10,13 +10,17 @@ import { ObjectId } from 'mongodb';
 import { EmailService } from '../../auth/infrastructure/email.service';
 import { recoveryPassInputDto } from '../../auth/api/input/new.password.input';
 import { JwtService } from '../../auth/infrastructure/jwt.service';
+import { UsersSqlQueryRepository } from '../infrastructure/users.sql.query.repository';
+import { UsersSqlRepository } from '../infrastructure/users.sql.repository';
 
 const saltRounds = 10;
 @Injectable()
 export class UsersService {
   constructor(
     protected usersRepository: UsersRepository,
+    protected sqlUsersRepository: UsersSqlRepository,
     protected usersQueryRepository: UsersQueryRepository,
+    protected slqUsersQueryRepository: UsersSqlQueryRepository,
     protected emailService: EmailService,
     protected jwtService: JwtService,
   ) {}
@@ -57,7 +61,7 @@ export class UsersService {
       tokensBlackList: [],
     };
 
-    const createdUser = await this.usersRepository.createUser(userData);
+    const createdUser = await this.sqlUsersRepository.createUser(userData);
     if (!createdUser) {
       return null;
     }
