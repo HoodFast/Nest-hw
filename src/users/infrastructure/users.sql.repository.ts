@@ -26,6 +26,7 @@ export class UsersSqlRepository {
         "id", "_passwordHash", "login", "email", "createdAt")
         VALUES ($1, $2, $3, $4, $5);
     `;
+      debugger;
       const insertUserTable = await this.dataSource.query(query, [
         userId,
         accountData._passwordHash,
