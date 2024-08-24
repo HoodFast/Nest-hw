@@ -20,8 +20,6 @@ export class UsersSqlRepository {
     const userId = randomUUID();
     const emailId = randomUUID();
 
-    const date = accountData.createdAt.toISOString();
-
     try {
       const query = `
         INSERT INTO public."Users"(
@@ -33,7 +31,7 @@ export class UsersSqlRepository {
         accountData._passwordHash,
         accountData.login,
         accountData.email,
-        accountData.createdAt.toISOString(),
+        accountData.createdAt,
       ]);
       const queryEmail = `
         INSERT INTO public."emailConfirmation"(
@@ -59,7 +57,7 @@ export class UsersSqlRepository {
     `,
       [userId],
     );
-    debugger;
+
     return {
       id: result[0].id,
       login: result[0].login,

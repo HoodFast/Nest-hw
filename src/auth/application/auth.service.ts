@@ -158,11 +158,10 @@ export class AuthService {
         dataSession.deviceId,
       );
     if (oldSession) {
-      await this.sessionRepository.deleteById(oldSession.id);
+      return await this.sessionRepository.deleteById(oldSession.id);
     } else {
       return false;
     }
-    return true;
   }
   async deleteSessionUsingLogin(
     userId: string,
