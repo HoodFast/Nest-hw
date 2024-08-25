@@ -24,10 +24,10 @@ export class UsersService {
     protected emailService: EmailService,
     protected jwtService: JwtService,
   ) {}
-  async findUser(loginOrEmail: string) {
-    const user = await this.usersQueryRepository.findUser(loginOrEmail);
-    return user;
-  }
+  // async findUser(loginOrEmail: string) {
+  //   const user = await this.usersQueryRepository.findUser(loginOrEmail);
+  //   return user;
+  // }
   async createUser(
     login: string,
     email: string,
