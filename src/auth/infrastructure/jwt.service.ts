@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import { Injectable } from '@nestjs/common';
 
 import { randomUUID } from 'crypto';
@@ -8,6 +7,9 @@ import { Session } from '../../sessions/domain/session.schema';
 import { UsersRepository } from '../../users/infrastructure/users.repository';
 import { ConfigService } from '@nestjs/config';
 import { ConfigurationType } from '../../settings/configuration';
+import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.query.repository';
+import { ObjectId } from 'mongodb';
+import { UsersSqlRepository } from '../../users/infrastructure/users.sql.repository';
 const jwt = require('jsonwebtoken');
 
 @Injectable()
@@ -15,6 +17,8 @@ export class JwtService {
   constructor(
     private sessionRepository: SessionRepository,
     private usersQueryRepository: UsersQueryRepository,
+    private usersSqlQueryRepository: UsersSqlQueryRepository,
+    private usersSqlRepository: UsersSqlRepository,
     private usersRepository: UsersRepository,
     private configService: ConfigService<ConfigurationType, true>,
   ) {}
@@ -26,7 +30,7 @@ export class JwtService {
   private RECOVERY_SECRET = this.jwtSettings.RECOVERY_SECRET;
   private RECOVERY_TIME = this.jwtSettings.RECOVERY_TIME;
 
-  async createJWT(userId: ObjectId): Promise<string> {
+  async createJWT(userId: string): Promise<string> {
     const token = jwt.sign({ userId }, this.AC_SECRET, {
       expiresIn: this.AC_TIME,
     });
@@ -34,7 +38,7 @@ export class JwtService {
     return token;
   }
   async createRefreshJWT(
-    userId: ObjectId,
+    userId: string,
     deviceId: string = randomUUID(),
     ip: string,
     title: string,
@@ -49,7 +53,7 @@ export class JwtService {
       iat,
       deviceId,
       expireDate: new Date(decoded.payload.exp * 1000),
-      userId,
+      userId: new ObjectId(userId),
       ip,
       title,
     };
@@ -65,7 +69,7 @@ export class JwtService {
   }
   async createRecoveryCode(email: string) {
     try {
-      const user = await this.usersQueryRepository.findUser(email);
+      const user = await this.usersSqlQueryRepository.findUser(email);
       const token = jwt.sign({ userId: user?._id }, this.RECOVERY_SECRET, {
         expiresIn: this.RECOVERY_TIME,
       });
@@ -79,12 +83,14 @@ export class JwtService {
   async checkRefreshToken(token: string) {
     try {
       const result = jwt.verify(token, this.RT_SECRET);
-      const blackListCheck = await this.usersRepository.blackListCheck(
+      const blackListCheck = await this.usersSqlRepository.blackListCheck(
         result.userId,
         token,
       );
       if (blackListCheck) return null;
-      const user = await this.usersRepository.getUserById(result.userId);
+      const user = await this.usersSqlQueryRepository.getUserById(
+        result.userId,
+      );
       return user;
     } catch (err) {
       return null;
@@ -121,7 +127,7 @@ export class JwtService {
   async getUserIdByToken(token: string): Promise<string | null> {
     try {
       const result = jwt.verify(token, this.AC_SECRET);
-      const blackListCheck = await this.usersRepository.blackListCheck(
+      const blackListCheck = await this.usersSqlRepository.blackListCheck(
         result.userId,
         token,
       );

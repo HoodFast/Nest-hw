@@ -20,7 +20,7 @@ export class UsersService {
     protected usersRepository: UsersRepository,
     protected sqlUsersRepository: UsersSqlRepository,
     protected usersQueryRepository: UsersQueryRepository,
-    protected slqUsersQueryRepository: UsersSqlQueryRepository,
+    protected usersSqlQueryRepository: UsersSqlQueryRepository,
     protected emailService: EmailService,
     protected jwtService: JwtService,
   ) {}
@@ -76,7 +76,7 @@ export class UsersService {
     return createdUser;
   }
   async sendConfirmCode(email: string) {
-    const user = await this.usersQueryRepository.findUser(email);
+    const user = await this.usersSqlQueryRepository.findUser(email);
     if (!user) return false;
     const subject = 'Email Confirmation';
     const message = `<h1>Thank for your registration</h1>
@@ -89,8 +89,8 @@ export class UsersService {
   async checkCredentials(
     loginOrEmail: string,
     password: string,
-  ): Promise<ObjectId | null> {
-    const user = await this.usersQueryRepository.findUser(loginOrEmail);
+  ): Promise<string | null> {
+    const user = await this.usersSqlQueryRepository.findUser(loginOrEmail);
     if (!user) return null;
     if (!user.emailConfirmation.isConfirmed) return null;
     const res = await bcrypt.compare(password, user.accountData._passwordHash);

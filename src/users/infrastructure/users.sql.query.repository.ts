@@ -7,6 +7,7 @@ import { OutputUsersType } from '../api/output/users.output.dto';
 import { UserDocument } from '../domain/user.schema';
 import { userMapper } from '../domain/mapper/user.mapper.for.sql';
 import { UserEntity } from '../domain/user.entity';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UsersSqlQueryRepository {
@@ -99,5 +100,27 @@ export class UsersSqlQueryRepository {
       totalCount: +totalCount[0].count,
       items: res,
     };
+  }
+  async getUserById(id: string): Promise<UserEntity | null> {
+    const res = this.dataSource.query(
+      `
+    SELECT u."id",
+      u."login",
+      u."email",
+      u."_passwordHash",
+      u."recoveryCode",
+      u."createdAt",
+      e."expirationDate",
+      e."isConfirmed",
+      e."confirmationCode"
+        FROM public."Users" u
+        LEFT JOIN public."emailConfirmation" e
+        ON u."id" = e."userId"
+        WHERE u."id" like $1
+    `,
+      [id],
+    );
+    if (!res) return null;
+    return userMapper(res);
   }
 }

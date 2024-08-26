@@ -71,9 +71,9 @@ export class UsersRepository {
 
     return check;
   }
-  async updateNewConfirmCode(userId: ObjectId, code: string): Promise<boolean> {
+  async updateNewConfirmCode(userId: string, code: string): Promise<boolean> {
     const res = await this.userModel.updateOne(
-      { _id: userId },
+      { _id: new Object(userId) },
       {
         $set: {
           'emailConfirmation.confirmationCode': code,

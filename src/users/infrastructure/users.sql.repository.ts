@@ -4,6 +4,7 @@ import { DataSource } from 'typeorm';
 import { User } from '../domain/user.schema';
 import { OutputUsersType } from '../api/output/users.output.dto';
 import { randomUUID } from 'crypto';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UsersSqlRepository {
@@ -65,5 +66,21 @@ export class UsersSqlRepository {
       email: result[0].email,
       createdAt: result[0].createdAt,
     };
+  }
+
+  async blackListCheck(userId: string, token: string): Promise<boolean> {
+    const res = await this.dataSource.query(
+      `
+        SELECT  ARRAY_AGG(token)
+            FROM public."tokensBlackList" t
+            WHERE t."userId" = $1`,
+      [userId],
+    );
+    if (!res) return false;
+    debugger;
+    const blackList = res[0].array_agg;
+    const check = blackList?.includes(token);
+
+    return check;
   }
 }

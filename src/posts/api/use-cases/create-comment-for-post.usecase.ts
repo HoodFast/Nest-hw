@@ -6,6 +6,7 @@ import { CommentsRepository } from '../../../comments/infrastructure/comments.re
 import { CommentDbType } from '../../../comments/domain/comment.schema';
 import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import { CommentsOutputType } from '../../../comments/api/model/output/comments.output';
+import { UsersSqlQueryRepository } from '../../../users/infrastructure/users.sql.query.repository';
 
 export class CommandCreateCommentForPostOutput {
   commentId: string;
@@ -30,6 +31,7 @@ export class CreateCommentForPostUseCase
   constructor(
     private commentsRepository: CommentsRepository,
     private userRepository: UsersRepository,
+    private usersSqlQueryRepository: UsersSqlQueryRepository,
     private postQueryRepository: PostsQueryRepository,
   ) {}
   async execute(
@@ -44,7 +46,7 @@ export class CreateCommentForPostUseCase
       return notice;
     }
 
-    const user = await this.userRepository.getUserById(userId);
+    const user = await this.usersSqlQueryRepository.getUserById(userId);
 
     if (!user) {
       notice.addError('user don`t exist', 'user', 1);

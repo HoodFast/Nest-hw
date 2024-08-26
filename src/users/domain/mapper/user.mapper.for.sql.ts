@@ -3,7 +3,7 @@ import { UserEntity } from '../user.entity';
 export const userMapper = (data: any): UserEntity => {
   debugger;
   return {
-    id: data.id,
+    _id: data.id,
     accountData: {
       _passwordHash: data._passwordHash,
       recoveryCode: data.recoveryCode,

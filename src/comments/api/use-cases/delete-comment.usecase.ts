@@ -9,6 +9,7 @@ import { CommentDocument } from '../../domain/comment.schema';
 import { CommentsQueryRepository } from '../../infrastructure/comments.query.repository';
 import { ForbiddenException } from '@nestjs/common';
 import { CommentsRepository } from '../../infrastructure/comments.repository';
+import { UsersSqlQueryRepository } from '../../../users/infrastructure/users.sql.query.repository';
 
 export class DeleteCommentCommand {
   constructor(
@@ -26,6 +27,7 @@ export class DeleteCommentUseCase
     private commentsQueryRepository: CommentsQueryRepository,
     private commentsRepository: CommentsRepository,
     private usersRepository: UsersRepository,
+    private usersSqlQueryRepository: UsersSqlQueryRepository,
   ) {}
   async execute(
     command: DeleteCommentCommand,
@@ -39,7 +41,7 @@ export class DeleteCommentUseCase
       return notice;
     }
 
-    const user = await this.usersRepository.getUserById(command.userId);
+    const user = await this.usersSqlQueryRepository.getUserById(command.userId);
     if (!user) {
       notice.addError('user not found');
       return notice;

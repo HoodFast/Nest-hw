@@ -8,6 +8,7 @@ import { UsersRepository } from '../../../users/infrastructure/users.repository'
 import { CommentDocument } from '../../domain/comment.schema';
 import { CommentsQueryRepository } from '../../infrastructure/comments.query.repository';
 import { likesStatuses } from '../../../posts/domain/post.schema';
+import { UsersSqlQueryRepository } from '../../../users/infrastructure/users.sql.query.repository';
 
 export class UpdateCommentLikesCommand {
   constructor(
@@ -28,6 +29,7 @@ export class UpdateCommentLikesUseCase
   constructor(
     private commentsQueryRepository: CommentsQueryRepository,
     private usersRepository: UsersRepository,
+    private usersSqlQueryRepository: UsersSqlQueryRepository,
   ) {}
   async execute(
     command: UpdateCommentLikesCommand,
@@ -40,7 +42,7 @@ export class UpdateCommentLikesUseCase
       return notice;
     }
 
-    const user = await this.usersRepository.getUserById(command.userId);
+    const user = await this.usersSqlQueryRepository.getUserById(command.userId);
     if (!user) {
       notice.addError('user not found');
       return notice;

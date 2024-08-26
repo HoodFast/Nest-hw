@@ -1,5 +1,5 @@
 export class UserEntity {
-  id: string;
+  _id: string;
   accountData: {
     _passwordHash: string;
     recoveryCode?: string;

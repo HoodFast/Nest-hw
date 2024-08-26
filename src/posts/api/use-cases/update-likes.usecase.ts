@@ -4,6 +4,7 @@ import { PostsRepository } from '../../infrastructure/posts.repository';
 import { UpdateOutputData } from '../../../base/models/updateOutput';
 import { likesStatuses, PostDocument } from '../../domain/post.schema';
 import { UsersRepository } from '../../../users/infrastructure/users.repository';
+import { UsersSqlQueryRepository } from '../../../users/infrastructure/users.sql.query.repository';
 
 export class UpdateLikesCommand {
   constructor(
@@ -21,6 +22,7 @@ export class UpdateLikesUseCase
   constructor(
     private postsRepository: PostsRepository,
     private usersRepository: UsersRepository,
+    private usersSqlQueryRepository: UsersSqlQueryRepository,
   ) {}
   async execute(
     command: UpdateLikesCommand,
@@ -34,7 +36,7 @@ export class UpdateLikesUseCase
       return notice;
     }
 
-    const user = await this.usersRepository.getUserById(command.userId);
+    const user = await this.usersSqlQueryRepository.getUserById(command.userId);
     if (!user) {
       notice.addError('user not found');
       return notice;

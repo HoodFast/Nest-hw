@@ -11,6 +11,8 @@ import { UsersQueryRepository } from '../../users/infrastructure/users.query.rep
 import { UsersRepository } from '../../users/infrastructure/users.repository';
 import { EmailService } from '../infrastructure/email.service';
 import { UserDocument } from '../../users/domain/user.schema';
+import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.query.repository';
+import { UserEntity } from '../../users/domain/user.entity';
 const jwt = require('jsonwebtoken');
 @Injectable()
 export class AuthService {
@@ -19,6 +21,7 @@ export class AuthService {
     protected sessionRepository: SessionRepository,
     protected jwtService: JwtService,
     protected usersQueryRepository: UsersQueryRepository,
+    protected usersSqlQueryRepository: UsersSqlQueryRepository,
     protected usersRepository: UsersRepository,
     protected emailService: EmailService,
   ) {}
@@ -100,7 +103,7 @@ export class AuthService {
   }
 
   async refreshTokensPair(
-    user: UserDocument,
+    user: UserEntity,
     ip: string,
     title: string,
     token: string,
@@ -131,7 +134,7 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
   async resendConfirmationCode(email: string) {
-    const user = await this.usersQueryRepository.findUser(email);
+    const user = await this.usersSqlQueryRepository.findUser(email);
     if (!user) throw new BadRequestException('mail doesnt exist', 'email');
     if (user?.emailConfirmation.isConfirmed)
       throw new BadRequestException('code is already confirm', 'email');
