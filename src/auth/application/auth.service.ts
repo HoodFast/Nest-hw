@@ -13,6 +13,7 @@ import { EmailService } from '../infrastructure/email.service';
 import { UserDocument } from '../../users/domain/user.schema';
 import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.query.repository';
 import { UserEntity } from '../../users/domain/user.entity';
+import { UsersSqlRepository } from '../../users/infrastructure/users.sql.repository';
 const jwt = require('jsonwebtoken');
 @Injectable()
 export class AuthService {
@@ -23,10 +24,11 @@ export class AuthService {
     protected usersQueryRepository: UsersQueryRepository,
     protected usersSqlQueryRepository: UsersSqlQueryRepository,
     protected usersRepository: UsersRepository,
+    protected usersSqlRepository: UsersSqlRepository,
     protected emailService: EmailService,
   ) {}
   async confirmEmail(code: string) {
-    const user = await this.usersQueryRepository.getUserByCode(code);
+    const user = await this.usersSqlQueryRepository.getUserByCode(code);
     if (!user) throw new BadRequestException('invalid code', 'code');
     if (user?.emailConfirmation.isConfirmed)
       throw new BadRequestException('code is already confirm', 'code');
@@ -36,7 +38,7 @@ export class AuthService {
         field: 'expirationDate',
       });
     }
-    const confirmEmail = await this.usersRepository.confirmEmail(user._id);
+    const confirmEmail = await this.usersSqlRepository.confirmEmail(user._id);
     return confirmEmail;
   }
   async sendRecovery(email: string) {

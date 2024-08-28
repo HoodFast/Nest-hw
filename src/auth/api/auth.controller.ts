@@ -107,8 +107,7 @@ export class AuthController {
   @HttpCode(204)
   @Post('new-password')
   async newPassword(@Body() data: recoveryPassInputDto) {
-    const changePass = await this.usersService.changePass(data);
-    return;
+    return await this.usersService.changePass(data);
   }
 
   @HttpCode(200)

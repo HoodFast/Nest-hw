@@ -1,7 +1,6 @@
 import { UserEntity } from '../user.entity';
 
 export const userMapper = (data: any): UserEntity => {
-  debugger;
   return {
     _id: data.id,
     accountData: {

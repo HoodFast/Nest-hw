@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { PostDocument } from '../../posts/domain/post.schema';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../domain/user.schema';
 import { userMapper } from './users.mapper';
@@ -10,16 +9,14 @@ import { ObjectId } from 'mongodb';
 @Injectable()
 export class UsersRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
-  async doesExistByLoginOrEmail(login: string, email: string) {
-    const emailCheck = await this.userModel.findOne({
-      'accountData.email': email,
+  async doesExistByLoginOrEmail(
+    login: string,
+    email: string,
+  ): Promise<boolean> {
+    const existCheck = await this.userModel.findOne({
+      $or: [{ 'accountData.email': email }, { 'accountData.login': login }],
     });
-    if (emailCheck) return 'email';
-    const loginCheck = await this.userModel.findOne({
-      'accountData.login': login,
-    });
-    if (loginCheck) return 'login';
-    return null;
+    return !!existCheck;
   }
 
   async createUser(userData: User): Promise<OutputUsersType | null> {

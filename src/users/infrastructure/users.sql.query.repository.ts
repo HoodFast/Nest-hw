@@ -4,10 +4,9 @@ import { DataSource } from 'typeorm';
 import { UsersSortData } from '../../base/sortData/sortData.model';
 import { Pagination } from '../../base/paginationInputDto/paginationOutput';
 import { OutputUsersType } from '../api/output/users.output.dto';
-import { UserDocument } from '../domain/user.schema';
 import { userMapper } from '../domain/mapper/user.mapper.for.sql';
 import { UserEntity } from '../domain/user.entity';
-import { ObjectId } from 'mongodb';
+import { UserDocument } from '../domain/user.schema';
 
 @Injectable()
 export class UsersSqlQueryRepository {
@@ -102,7 +101,7 @@ export class UsersSqlQueryRepository {
     };
   }
   async getUserById(id: string): Promise<UserEntity | null> {
-    const res = this.dataSource.query(
+    const res = await this.dataSource.query(
       `
     SELECT u."id",
       u."login",
@@ -116,11 +115,52 @@ export class UsersSqlQueryRepository {
         FROM public."Users" u
         LEFT JOIN public."emailConfirmation" e
         ON u."id" = e."userId"
-        WHERE u."id" like $1
+        WHERE u."id" = $1
     `,
       [id],
     );
-    if (!res) return null;
-    return userMapper(res);
+    const tokensBlackList = await this.dataSource.query(
+      `
+        SELECT  ARRAY_AGG(token)
+            FROM public."tokensBlackList" t
+            WHERE t."userId" = $1
+`,
+      [id],
+    );
+
+    if (!res[0]) return null;
+    return userMapper({ ...res[0], tokensBlackList });
+  }
+  async getUserByCode(code: string): Promise<UserEntity | null> {
+    debugger;
+    const res = await this.dataSource.query(
+      `
+    SELECT u."id",
+      u."login",
+      u."email",
+      u."_passwordHash",
+      u."recoveryCode",
+      u."createdAt",
+      e."expirationDate",
+      e."isConfirmed",
+      e."confirmationCode"
+        FROM public."Users" u
+        LEFT JOIN public."emailConfirmation" e
+        ON u."id" = e."userId"
+        WHERE e."confirmationCode" = $1
+    `,
+      [code],
+    );
+    if (!res[0]) return null;
+    const tokensBlackList = await this.dataSource.query(
+      `
+        SELECT  ARRAY_AGG(token)
+            FROM public."tokensBlackList" t
+            WHERE t."userId" = $1
+`,
+      [res[0].id],
+    );
+
+    return userMapper({ ...res[0], tokensBlackList });
   }
 }

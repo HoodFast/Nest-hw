@@ -83,4 +83,33 @@ export class UsersSqlRepository {
 
     return check;
   }
+  async doesExistByLoginOrEmail(
+    login: string,
+    email: string,
+  ): Promise<boolean> {
+    const existCheck = await this.dataSource.query(
+      `
+    SELECT id
+        FROM public."Users" u
+        WHERE u."login" = $1 OR u."email" = $2
+    `,
+      [login, email],
+    );
+    return !!existCheck[0];
+  }
+  async confirmEmail(userId: string) {
+    try {
+      await this.dataSource.query(
+        `
+        UPDATE public."emailConfirmation" e
+            SET  "isConfirmed"=true
+            WHERE e."userId" = $1;
+    `,
+        [userId],
+      );
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

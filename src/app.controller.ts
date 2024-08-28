@@ -1,7 +1,8 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import { UsersSqlQueryRepository } from './users/infrastructure/users.sql.query.repository';
 import { UsersSqlRepository } from './users/infrastructure/users.sql.repository';
+import { UsersRepository } from './users/infrastructure/users.repository';
 
 @Controller()
 export class AppController {
@@ -9,17 +10,15 @@ export class AppController {
     private readonly appService: AppService,
     protected userSqlQueryRepository: UsersSqlQueryRepository,
     protected userSqlRepository: UsersSqlRepository,
+    protected userRepository: UsersRepository,
   ) {}
 
-  @Get()
-  async getHello() {
-    return await this.appService.getHello();
+  @Get('getUser/:id')
+  async getHello(@Param('id') id: string) {
+    return await this.userSqlQueryRepository.getUserByCode(id);
   }
   @Get('try')
   async getTestingManual(@Query() input: { loginOrEmail: string }) {
-    return await this.userSqlRepository.blackListCheck(
-      input.loginOrEmail,
-      'blablabla',
-    );
+    return await this.userSqlRepository.confirmEmail(input.loginOrEmail);
   }
 }

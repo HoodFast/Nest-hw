@@ -6,7 +6,6 @@ import { add } from 'date-fns/add';
 import { UsersRepository } from '../infrastructure/users.repository';
 import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { UsersQueryRepository } from '../infrastructure/users.query.repository';
-import { ObjectId } from 'mongodb';
 import { EmailService } from '../../auth/infrastructure/email.service';
 import { recoveryPassInputDto } from '../../auth/api/input/new.password.input';
 import { JwtService } from '../../auth/infrastructure/jwt.service';
@@ -18,7 +17,7 @@ const saltRounds = 10;
 export class UsersService {
   constructor(
     protected usersRepository: UsersRepository,
-    protected sqlUsersRepository: UsersSqlRepository,
+    protected usersSqlRepository: UsersSqlRepository,
     protected usersQueryRepository: UsersQueryRepository,
     protected usersSqlQueryRepository: UsersSqlQueryRepository,
     protected emailService: EmailService,
@@ -34,16 +33,10 @@ export class UsersService {
     password: string,
     isConfirmed?: boolean,
   ): Promise<OutputUsersType | null> {
-    const checkUserExist = await this.usersRepository.doesExistByLoginOrEmail(
-      login,
-      email,
-    );
+    const checkUserExist =
+      await this.usersSqlRepository.doesExistByLoginOrEmail(login, email);
 
-    if (checkUserExist)
-      throw new BadRequestException(
-        'user is already exist',
-        `${checkUserExist}`,
-      );
+    if (checkUserExist) throw new BadRequestException('user is already exist');
     const createdAt = new Date();
 
     const salt = bcrypt.genSaltSync(saltRounds);
@@ -61,7 +54,7 @@ export class UsersService {
       tokensBlackList: [],
     };
 
-    const createdUser = await this.sqlUsersRepository.createUser(userData);
+    const createdUser = await this.usersSqlRepository.createUser(userData);
     if (!createdUser) {
       return null;
     }
