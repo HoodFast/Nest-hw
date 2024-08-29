@@ -94,7 +94,7 @@ export class UsersService {
     }
   }
   async deleteUser(userId: string) {
-    const deleteUser = await this.usersRepository.deleteUser(userId);
+    const deleteUser = await this.usersSqlRepository.deleteUser(userId);
     return deleteUser;
   }
   async changePass(data: recoveryPassInputDto) {
@@ -104,7 +104,7 @@ export class UsersService {
       );
       const salt = bcrypt.genSaltSync(saltRounds);
       const hash = bcrypt.hashSync(data.newPassword, salt);
-      const changePassword = await this.usersRepository.changePass(
+      const changePassword = await this.usersSqlRepository.changePass(
         userId,
         hash,
       );

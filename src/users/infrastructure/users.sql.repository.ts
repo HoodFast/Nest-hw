@@ -112,4 +112,36 @@ export class UsersSqlRepository {
       return false;
     }
   }
+  async deleteUser(userId: string) {
+    const deleted = await this.dataSource.query(
+      `
+    DELETE FROM public."Users" u
+    WHERE u."id" = $1
+    `,
+      [userId],
+    );
+    return !!deleted[1];
+  }
+  async changePass(userId: string, hash: string): Promise<boolean> {
+    const res = await this.dataSource.query(
+      `
+        UPDATE public."Users" u
+            SET  "_passwordHash"= $2
+            WHERE u."id" = $1;
+    `,
+      [userId, hash],
+    );
+    return !!res[1];
+  }
+  async updateNewConfirmCode(userId: string, code: string): Promise<boolean> {
+    const res = await this.dataSource.query(
+      `
+        UPDATE public."emailConfirmation" e
+            SET  "confirmationCode"= $2
+            WHERE e."userId" = $1;
+    `,
+      [userId, code],
+    );
+    return !!res[1];
+  }
 }

@@ -26,6 +26,7 @@ import { confirmDto } from '../../users/api/input/conf.code.dto';
 import { UserInputDto } from '../../users/api/input/userInput.dto';
 import { emailResendingDto } from './input/email.resending.input';
 import { RefreshTokenGuard } from '../../guards/refresh-token.guards';
+import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.query.repository';
 
 @Controller('auth')
 export class AuthController {
@@ -34,6 +35,7 @@ export class AuthController {
     private usersService: UsersService,
     private jwtService: JwtService,
     private usersQueryRepository: UsersQueryRepository,
+    private usersSqlQueryRepository: UsersSqlQueryRepository,
   ) {}
   @HttpCode(200)
   @UseGuards(Limiter)
@@ -147,7 +149,7 @@ export class AuthController {
   @UseGuards(AccessTokenAuthGuard)
   @Get('me')
   async getMe(@UserId() userId: string) {
-    const my = await this.usersQueryRepository.getMe(userId);
+    const my = await this.usersSqlQueryRepository.getMe(userId);
     if (!my) throw new UnauthorizedException('getMe error');
     return {
       userId: my._id,

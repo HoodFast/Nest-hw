@@ -7,6 +7,7 @@ import { OutputUsersType } from '../api/output/users.output.dto';
 import { userMapper } from '../domain/mapper/user.mapper.for.sql';
 import { UserEntity } from '../domain/user.entity';
 import { UserDocument } from '../domain/user.schema';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UsersSqlQueryRepository {
@@ -162,5 +163,18 @@ export class UsersSqlQueryRepository {
     );
 
     return userMapper({ ...res[0], tokensBlackList });
+  }
+  async getMe(userId: string): Promise<UserDocument | null> {
+    const user = await this.dataSource.query(
+      `
+    SELECT u."id", u."login", u."email"
+    FROM public."Users" u
+      WHERE u."id" = $1
+    `,
+      [userId],
+    );
+    debugger;
+    if (!user[1]) return null;
+    return user[0];
   }
 }

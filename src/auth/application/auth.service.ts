@@ -141,10 +141,11 @@ export class AuthService {
     if (user?.emailConfirmation.isConfirmed)
       throw new BadRequestException('code is already confirm', 'email');
     const newConfirmCode = randomUUID();
-    const updateConfirmCode = await this.usersRepository.updateNewConfirmCode(
-      user?._id,
-      newConfirmCode,
-    );
+    const updateConfirmCode =
+      await this.usersSqlRepository.updateNewConfirmCode(
+        user?._id,
+        newConfirmCode,
+      );
     if (!updateConfirmCode) return false;
     const subject = 'Email Confirmation';
     const message = `<h1>Thank for your registration</h1>
