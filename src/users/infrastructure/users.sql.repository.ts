@@ -4,7 +4,7 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from '../domain/user.schema';
 import { OutputUsersType } from '../api/output/users.output.dto';
 import { randomUUID } from 'crypto';
-import { Users } from '../domain/user.sql.entity';
+import { EmailConfirmation, Users } from '../domain/user.sql.entity';
 
 @Injectable()
 export class UsersSqlRepository {
@@ -12,6 +12,8 @@ export class UsersSqlRepository {
     @InjectDataSource() protected dataSource: DataSource,
     @InjectRepository(Users)
     private userRepository: Repository<Users>,
+    @InjectRepository(EmailConfirmation)
+    private emailRepository: Repository<EmailConfirmation>,
   ) {}
 
   async getAll(): Promise<any> {
@@ -40,7 +42,7 @@ export class UsersSqlRepository {
         accountData.createdAt,
       ]);
       const queryEmail = `
-        INSERT INTO public."emailConfirmation"(
+        INSERT INTO public."email_confirmation"(
         "id", "confirmationCode", "expirationDate", "isConfirmed", "userId")
         VALUES ($1, $2, $3, $4, $5);
     `;
@@ -51,7 +53,6 @@ export class UsersSqlRepository {
         emailConfirmation.isConfirmed,
         userId,
       ]);
-      a;
     } catch (e) {
       console.log(e);
       return e;
@@ -106,7 +107,7 @@ export class UsersSqlRepository {
     try {
       await this.dataSource.query(
         `
-        UPDATE public."emailConfirmation" e
+        UPDATE public."email_confirmation" e
             SET  "isConfirmed"=true
             WHERE e."userId" = $1;
     `,
@@ -141,7 +142,7 @@ export class UsersSqlRepository {
   async updateNewConfirmCode(userId: string, code: string): Promise<boolean> {
     const res = await this.dataSource.query(
       `
-        UPDATE public."emailConfirmation" e
+        UPDATE public."email_confirmation" e
             SET  "confirmationCode"= $2
             WHERE e."userId" = $1;
     `,

@@ -6,7 +6,6 @@ import { Pagination } from '../../base/paginationInputDto/paginationOutput';
 import { OutputUsersType } from '../api/output/users.output.dto';
 import { userMapper } from '../domain/mapper/user.mapper.for.sql';
 import { UserEntity } from '../domain/user.entity';
-import { UserDocument } from '../domain/user.schema';
 import { MyEntity } from '../../auth/api/output/me.entity';
 
 @Injectable()
@@ -33,7 +32,7 @@ export class UsersSqlQueryRepository {
       e."isConfirmed",
       e."confirmationCode"
         FROM public."users" u
-        LEFT JOIN public."emailConfirmation" e
+        LEFT JOIN public."email_confirmation" e
         ON u."id" = e."userId"
         WHERE u."login" like $1 OR u."email" like $1
     `,
@@ -119,7 +118,7 @@ export class UsersSqlQueryRepository {
       e."isConfirmed",
       e."confirmationCode"
         FROM public."users" u
-        LEFT JOIN public."emailConfirmation" e
+        LEFT JOIN public."email_confirmation" e
         ON u."id" = e."userId"
         WHERE u."id" = $1
     `,
@@ -151,7 +150,7 @@ export class UsersSqlQueryRepository {
       e."isConfirmed",
       e."confirmationCode"
         FROM public."users" u
-        LEFT JOIN public."emailConfirmation" e
+        LEFT JOIN public."email_confirmation" e
         ON u."id" = e."userId"
         WHERE e."confirmationCode" = $1
     `,
