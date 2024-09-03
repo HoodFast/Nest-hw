@@ -4,16 +4,15 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from '../domain/user.schema';
 import { OutputUsersType } from '../api/output/users.output.dto';
 import { randomUUID } from 'crypto';
-import { EmailConfirmation, Users } from '../domain/user.sql.entity';
 
 @Injectable()
 export class UsersSqlRepository {
   constructor(
     @InjectDataSource() protected dataSource: DataSource,
-    @InjectRepository(Users)
-    private userRepository: Repository<Users>,
-    @InjectRepository(EmailConfirmation)
-    private emailRepository: Repository<EmailConfirmation>,
+    // @InjectRepository(Users)
+    // private userRepository: Repository<Users>,
+    // @InjectRepository(EmailConfirmation)
+    // private emailRepository: Repository<EmailConfirmation>,
   ) {}
 
   async getAll(): Promise<any> {
