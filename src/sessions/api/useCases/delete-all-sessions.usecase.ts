@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InterlayerNotice } from '../../../base/models/Interlayer';
 import { UpdateOutputData } from '../../../base/models/updateOutput';
-import { SessionRepository } from '../../infrastructure/session.repository';
+import { SessionSqlRepository } from '../../infrastructure/session.sql.repository';
 
 export class DeleteAllSessionsCommand {
   constructor(
@@ -17,12 +17,12 @@ export class DeleteAllSessionsUseCase
       InterlayerNotice<UpdateOutputData>
     >
 {
-  constructor(private sessionRepository: SessionRepository) {}
+  constructor(private sessionSqlRepository: SessionSqlRepository) {}
   async execute(
     command: DeleteAllSessionsCommand,
   ): Promise<InterlayerNotice<UpdateOutputData>> {
     const notice = new InterlayerNotice<UpdateOutputData>();
-    await this.sessionRepository.deleteAllSession(
+    await this.sessionSqlRepository.deleteAllSession(
       command.userId,
       command.deviceId,
     );

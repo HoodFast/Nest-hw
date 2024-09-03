@@ -54,6 +54,7 @@ export class AuthController {
       ip,
       title,
     );
+
     if (!tokens) throw new UnauthorizedException('get tokens pair error');
     const { accessToken, refreshToken } = tokens;
     res.cookie('refreshToken', refreshToken, {
@@ -152,7 +153,7 @@ export class AuthController {
     const my = await this.usersSqlQueryRepository.getMe(userId);
     if (!my) throw new UnauthorizedException('getMe error');
     return {
-      userId: my._id,
+      userId: my.id,
       login: my.accountData.login,
       email: my.accountData.email,
     };

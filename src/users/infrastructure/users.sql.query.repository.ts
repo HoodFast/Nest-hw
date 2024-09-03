@@ -7,7 +7,7 @@ import { OutputUsersType } from '../api/output/users.output.dto';
 import { userMapper } from '../domain/mapper/user.mapper.for.sql';
 import { UserEntity } from '../domain/user.entity';
 import { UserDocument } from '../domain/user.schema';
-import { ObjectId } from 'mongodb';
+import { MyEntity } from '../../auth/api/output/me.entity';
 
 @Injectable()
 export class UsersSqlQueryRepository {
@@ -16,12 +16,13 @@ export class UsersSqlQueryRepository {
   async getAll(): Promise<any> {
     const result = await this.dataSource.query(`
     SELECT id, "login"
-        FROM public."Users";`);
+        FROM public."users";`);
     return result;
   }
   async findUser(loginOrEmail: string): Promise<UserEntity | null> {
-    const res = await this.dataSource.query(
-      `
+    try {
+      const res = await this.dataSource.query(
+        `
     SELECT u."id",
       u."login",
       u."email",
@@ -31,25 +32,29 @@ export class UsersSqlQueryRepository {
       e."expirationDate",
       e."isConfirmed",
       e."confirmationCode"
-        FROM public."Users" u
+        FROM public."users" u
         LEFT JOIN public."emailConfirmation" e
         ON u."id" = e."userId"
-        WHERE u."login" like $1 AND u."email" like $1
+        WHERE u."login" like $1 OR u."email" like $1
     `,
-      [`%${loginOrEmail}%`],
-    );
+        [loginOrEmail],
+      );
 
-    const tokensBlackList = await this.dataSource.query(
-      `
+      const tokensBlackList = await this.dataSource.query(
+        `
         SELECT  ARRAY_AGG(token)
             FROM public."tokensBlackList" t
             WHERE t."userId" = $1
 `,
-      [res[0].id],
-    );
-    if (!res) return null;
+        [res[0].id],
+      );
+      if (!res) return null;
 
-    return userMapper({ ...res[0], tokensBlackList });
+      return userMapper({ ...res[0], tokensBlackList });
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
   }
   async getAllUsers(
     sortData: UsersSortData,
@@ -69,7 +74,7 @@ export class UsersSqlQueryRepository {
       res = await this.dataSource.query(
         `
     SELECT u."id", u."login", u."email" , u."createdAt" 
-    FROM public."Users" u
+    FROM public."users" u
     WHERE u."login" like $1 AND u."email" like $2
     ORDER BY u."${sortBy}" ${sortDirection}
     LIMIT $3 OFFSET $4
@@ -86,7 +91,7 @@ export class UsersSqlQueryRepository {
     const totalCount = await this.dataSource.query(
       `
     SELECT COUNT("id")
-    FROM public."Users" u
+    FROM public."users" u
     WHERE u."login" like $1 OR u."email" like $2
 `,
       ['%' + searchLoginTerm + '%', '%' + searchEmailTerm + '%'],
@@ -113,7 +118,7 @@ export class UsersSqlQueryRepository {
       e."expirationDate",
       e."isConfirmed",
       e."confirmationCode"
-        FROM public."Users" u
+        FROM public."users" u
         LEFT JOIN public."emailConfirmation" e
         ON u."id" = e."userId"
         WHERE u."id" = $1
@@ -145,7 +150,7 @@ export class UsersSqlQueryRepository {
       e."expirationDate",
       e."isConfirmed",
       e."confirmationCode"
-        FROM public."Users" u
+        FROM public."users" u
         LEFT JOIN public."emailConfirmation" e
         ON u."id" = e."userId"
         WHERE e."confirmationCode" = $1
@@ -164,17 +169,23 @@ export class UsersSqlQueryRepository {
 
     return userMapper({ ...res[0], tokensBlackList });
   }
-  async getMe(userId: string): Promise<UserDocument | null> {
+  async getMe(userId: string): Promise<MyEntity | null> {
     const user = await this.dataSource.query(
       `
     SELECT u."id", u."login", u."email"
-    FROM public."Users" u
+    FROM public."users" u
       WHERE u."id" = $1
     `,
       [userId],
     );
-    debugger;
-    if (!user[1]) return null;
-    return user[0];
+
+    if (!user[0]) return null;
+    return {
+      id: user.id,
+      accountData: {
+        login: user.login,
+        email: user.email,
+      },
+    };
   }
 }

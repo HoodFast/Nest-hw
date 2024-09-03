@@ -56,6 +56,9 @@ import { DeleteSessionByIdUseCase } from './sessions/api/useCases/delete-session
 import { GetAllSessionUseCase } from './sessions/api/useCases/get-all-sessions.usecase';
 import { UsersSqlRepository } from './users/infrastructure/users.sql.repository';
 import { UsersSqlQueryRepository } from './users/infrastructure/users.sql.query.repository';
+import { SessionSqlQueryRepository } from './sessions/infrastructure/session.sql.query.repository';
+import { SessionSqlRepository } from './sessions/infrastructure/session.sql.repository';
+import { Users } from './users/domain/user.sql.entity';
 
 const useCases = [
   CreateBlogUseCase,
@@ -130,14 +133,16 @@ const useCases = [
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5433,
-      username: 'nodejs',
-      password: 'nodejs',
-      database: 'postgres',
-      autoLoadEntities: false,
-      synchronize: false,
+      host: 'ep-dark-dust-a212znws.eu-central-1.aws.neon.tech',
+      // port: 5433,
+      username: 'superbase_owner',
+      password: 'oT0gGjPzOY3F',
+      database: 'superbase',
+      ssl: true,
+      autoLoadEntities: true,
+      synchronize: true,
     }),
+    TypeOrmModule.forFeature([Users]),
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
     MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
@@ -157,6 +162,8 @@ const useCases = [
   providers: [
     UsersSqlRepository,
     UsersSqlQueryRepository,
+    SessionSqlQueryRepository,
+    SessionSqlRepository,
     AppService,
     PostService,
     PostsRepository,

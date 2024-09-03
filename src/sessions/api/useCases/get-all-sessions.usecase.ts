@@ -1,8 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { InterlayerNotice } from '../../../base/models/Interlayer';
-
-import { SessionQueryRepository } from '../../infrastructure/session.query.repository';
 import { SessionsOutputType } from '../output/session.output';
+import { SessionSqlQueryRepository } from '../../infrastructure/session.sql.query.repository';
 
 export class GetAllSessionCommand {
   constructor(public userId: string) {}
@@ -12,12 +11,12 @@ export class GetAllSessionUseCase
   implements
     IQueryHandler<GetAllSessionCommand, InterlayerNotice<SessionsOutputType[]>>
 {
-  constructor(private sessionQueryRepository: SessionQueryRepository) {}
+  constructor(private sessionSqlQueryRepository: SessionSqlQueryRepository) {}
   async execute(
     command: GetAllSessionCommand,
   ): Promise<InterlayerNotice<SessionsOutputType[]>> {
     const notice = new InterlayerNotice<SessionsOutputType[]>();
-    const sessions = await this.sessionQueryRepository.getAllSessions(
+    const sessions = await this.sessionSqlQueryRepository.getAllSessions(
       command.userId,
     );
 

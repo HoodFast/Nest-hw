@@ -1,8 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InterlayerNotice } from '../../../base/models/Interlayer';
 import { UpdateOutputData } from '../../../base/models/updateOutput';
-import { SessionRepository } from '../../infrastructure/session.repository';
-import { ObjectId } from 'mongodb';
+import { SessionSqlRepository } from '../../infrastructure/session.sql.repository';
 
 export class DeleteSessionByIdCommand {
   constructor(
@@ -18,13 +17,13 @@ export class DeleteSessionByIdUseCase
       InterlayerNotice<UpdateOutputData>
     >
 {
-  constructor(private sessionRepository: SessionRepository) {}
+  constructor(private sessionSqlRepository: SessionSqlRepository) {}
   async execute(
     command: DeleteSessionByIdCommand,
   ): Promise<InterlayerNotice<UpdateOutputData>> {
     const notice = new InterlayerNotice<UpdateOutputData>();
     const sessionsByDeviceId =
-      await this.sessionRepository.getSessionByDeviceId(command.deviceId);
+      await this.sessionSqlRepository.getSessionByDeviceId(command.deviceId);
 
     if (!sessionsByDeviceId) {
       notice.addError('invalid meta data', '1');
@@ -34,7 +33,7 @@ export class DeleteSessionByIdUseCase
       notice.addError('forbidden', '2');
       return notice;
     }
-    await this.sessionRepository.deleteByDeviceId(command.deviceId);
+    await this.sessionSqlRepository.deleteByDeviceId(command.deviceId);
     notice.addData({ updated: true });
     return notice;
   }

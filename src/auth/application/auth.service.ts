@@ -10,16 +10,17 @@ import { randomUUID } from 'crypto';
 import { UsersQueryRepository } from '../../users/infrastructure/users.query.repository';
 import { UsersRepository } from '../../users/infrastructure/users.repository';
 import { EmailService } from '../infrastructure/email.service';
-import { UserDocument } from '../../users/domain/user.schema';
 import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.query.repository';
 import { UserEntity } from '../../users/domain/user.entity';
 import { UsersSqlRepository } from '../../users/infrastructure/users.sql.repository';
+import { SessionSqlRepository } from '../../sessions/infrastructure/session.sql.repository';
 const jwt = require('jsonwebtoken');
 @Injectable()
 export class AuthService {
   constructor(
     protected usersService: UsersService,
     protected sessionRepository: SessionRepository,
+    protected sessionSqlRepository: SessionSqlRepository,
     protected jwtService: JwtService,
     protected usersQueryRepository: UsersQueryRepository,
     protected usersSqlQueryRepository: UsersSqlQueryRepository,
@@ -68,14 +69,15 @@ export class AuthService {
     );
 
     if (!userId) return null;
-    const oldSession = await this.sessionRepository.getSessionForUserId(
+    const oldSession = await this.sessionSqlRepository.getSessionForUserId(
       userId.toString(),
       title,
     );
+
     const deviceId = oldSession?.deviceId || randomUUID();
 
     if (oldSession) {
-      await this.sessionRepository.deleteById(oldSession._id);
+      await this.sessionSqlRepository.deleteById(oldSession.id);
     }
 
     const accessToken = await this.jwtService.createJWT(userId);
@@ -115,14 +117,14 @@ export class AuthService {
       throw new UnauthorizedException('couldn`t get the data session');
 
     const oldSession =
-      await this.sessionRepository.getSessionForRefreshDecodeToken(
+      await this.sessionSqlRepository.getSessionForRefreshDecodeToken(
         session.iat.toISOString(),
         session.deviceId,
       );
 
     const deviceId = oldSession?.deviceId;
     if (oldSession) {
-      await this.sessionRepository.deleteById(oldSession._id);
+      await this.sessionSqlRepository.deleteById(oldSession.id);
     } else {
       throw new UnauthorizedException('The old session is gone');
     }
@@ -159,12 +161,12 @@ export class AuthService {
     const dataSession = await this.jwtService.getSessionDataByToken(token);
     if (!dataSession) return false;
     const oldSession =
-      await this.sessionRepository.getSessionForRefreshDecodeToken(
+      await this.sessionSqlRepository.getSessionForRefreshDecodeToken(
         dataSession.iat.toISOString(),
         dataSession.deviceId,
       );
     if (oldSession) {
-      return await this.sessionRepository.deleteById(oldSession.id);
+      return await this.sessionSqlRepository.deleteById(oldSession.id);
     } else {
       return false;
     }
@@ -173,13 +175,13 @@ export class AuthService {
     userId: string,
     title: string,
   ): Promise<boolean> {
-    const dataSession = await this.sessionRepository.getSessionForUserId(
+    const dataSession = await this.sessionSqlRepository.getSessionForUserId(
       userId,
       title,
     );
     if (!dataSession) return false;
 
-    await this.sessionRepository.deleteById(dataSession.id);
+    await this.sessionSqlRepository.deleteById(dataSession.id);
 
     return true;
   }

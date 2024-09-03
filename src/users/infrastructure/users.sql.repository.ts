@@ -1,19 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { User } from '../domain/user.schema';
 import { OutputUsersType } from '../api/output/users.output.dto';
 import { randomUUID } from 'crypto';
-import { ObjectId } from 'mongodb';
+import { Users } from '../domain/user.sql.entity';
 
 @Injectable()
 export class UsersSqlRepository {
-  constructor(@InjectDataSource() protected dataSource: DataSource) {}
+  constructor(
+    @InjectDataSource() protected dataSource: DataSource,
+    @InjectRepository(Users)
+    private userRepository: Repository<Users>,
+  ) {}
 
   async getAll(): Promise<any> {
     const result = await this.dataSource.query(`
     SELECT id, "login"
-        FROM public."Users";`);
+        FROM public."users";`);
     return result;
   }
   async createUser(userData: User): Promise<OutputUsersType | null> {
@@ -23,11 +27,11 @@ export class UsersSqlRepository {
 
     try {
       const query = `
-        INSERT INTO public."Users"(
+        INSERT INTO public."users"(
         "id", "_passwordHash", "login", "email", "createdAt")
         VALUES ($1, $2, $3, $4, $5);
     `;
-      debugger;
+
       const insertUserTable = await this.dataSource.query(query, [
         userId,
         accountData._passwordHash,
@@ -47,6 +51,7 @@ export class UsersSqlRepository {
         emailConfirmation.isConfirmed,
         userId,
       ]);
+      a;
     } catch (e) {
       console.log(e);
       return e;
@@ -54,7 +59,7 @@ export class UsersSqlRepository {
     const result = await this.dataSource.query(
       `
         SELECT "id", "_passwordHash", "login", "email", "createdAt"
-        FROM public."Users" as u
+        FROM public."users" as u
         WHERE u."id" = $1
     `,
       [userId],
@@ -77,11 +82,11 @@ export class UsersSqlRepository {
       [userId],
     );
     if (!res) return false;
-    debugger;
+
     const blackList = res[0].array_agg;
     const check = blackList?.includes(token);
 
-    return check;
+    return !!check;
   }
   async doesExistByLoginOrEmail(
     login: string,
@@ -90,7 +95,7 @@ export class UsersSqlRepository {
     const existCheck = await this.dataSource.query(
       `
     SELECT id
-        FROM public."Users" u
+        FROM public."users" u
         WHERE u."login" = $1 OR u."email" = $2
     `,
       [login, email],
@@ -115,7 +120,7 @@ export class UsersSqlRepository {
   async deleteUser(userId: string) {
     const deleted = await this.dataSource.query(
       `
-    DELETE FROM public."Users" u
+    DELETE FROM public."users" u
     WHERE u."id" = $1
     `,
       [userId],
@@ -125,7 +130,7 @@ export class UsersSqlRepository {
   async changePass(userId: string, hash: string): Promise<boolean> {
     const res = await this.dataSource.query(
       `
-        UPDATE public."Users" u
+        UPDATE public."users" u
             SET  "_passwordHash"= $2
             WHERE u."id" = $1;
     `,

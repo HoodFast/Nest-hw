@@ -10,6 +10,8 @@ import { ConfigurationType } from '../../settings/configuration';
 import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.query.repository';
 import { ObjectId } from 'mongodb';
 import { UsersSqlRepository } from '../../users/infrastructure/users.sql.repository';
+import { SessionSqlRepository } from '../../sessions/infrastructure/session.sql.repository';
+import { SessionEntity } from '../../sessions/domain/session.entity';
 const jwt = require('jsonwebtoken');
 
 @Injectable()
@@ -21,6 +23,7 @@ export class JwtService {
     private usersSqlRepository: UsersSqlRepository,
     private usersRepository: UsersRepository,
     private configService: ConfigService<ConfigurationType, true>,
+    private sessionSqlRepository: SessionSqlRepository,
   ) {}
   private jwtSettings = this.configService.get('jwtSettings', { infer: true });
   private AC_SECRET = this.jwtSettings.AC_SECRET;
@@ -46,19 +49,22 @@ export class JwtService {
     const token = jwt.sign({ userId, deviceId }, this.RT_SECRET, {
       expiresIn: this.RT_TIME,
     });
+
     const decoded = jwt.decode(token, { complete: true });
     const iat = new Date(decoded.payload.iat * 1000);
-
-    const tokenMetaData: Session = {
+    const sessionId = randomUUID();
+    const tokenMetaData: SessionEntity = {
+      id: sessionId,
       iat,
       deviceId,
       expireDate: new Date(decoded.payload.exp * 1000),
-      userId: new ObjectId(userId),
+      userId: userId,
       ip,
       title,
     };
+
     const setTokenMetaData =
-      await this.sessionRepository.createNewSession(tokenMetaData);
+      await this.sessionSqlRepository.createNewSession(tokenMetaData);
     if (!setTokenMetaData) return null;
     return token;
   }
@@ -101,7 +107,7 @@ export class JwtService {
       const result = jwt.verify(token, this.RT_SECRET);
       const date = new Date(result.iat * 1000);
       const blackListCheck =
-        await this.sessionRepository.getSessionForRefreshDecodeToken(
+        await this.sessionSqlRepository.getSessionForRefreshDecodeToken(
           date.toISOString(),
           result.deviceId,
         );
