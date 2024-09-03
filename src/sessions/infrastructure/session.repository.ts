@@ -24,7 +24,7 @@ export class SessionRepository {
     }
   }
   async getSessionByDeviceId(deviceId: string) {
-    const session = await this.sessionModel.findOne({ deviceId }).lean();
+    const session = await this.sessionModel.findOne({ deviceId });
     if (!session) return null;
     return session;
   }
