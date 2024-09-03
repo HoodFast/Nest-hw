@@ -162,7 +162,7 @@ const useCases = [
     AppController,
     PostsController,
     BlogsController,
-    UsersController,
+    // UsersController,
     TestingController,
     AuthController,
     CommentsController,
