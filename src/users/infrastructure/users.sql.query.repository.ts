@@ -180,10 +180,10 @@ export class UsersSqlQueryRepository {
 
     if (!user[0]) return null;
     return {
-      id: user.id,
+      id: user[0].id,
       accountData: {
-        login: user.login,
-        email: user.email,
+        login: user[0].login,
+        email: user[0].email,
       },
     };
   }
