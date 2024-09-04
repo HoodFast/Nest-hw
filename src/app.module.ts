@@ -105,97 +105,97 @@ const useCases = [
 // const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
   imports: [
-    // CqrsModule,
-    // ConfigModule.forRoot({
-    //   isGlobal: true,
-    //   load: [configuration],
-    //   validate: validate,
-    //   // ignoreEnvFile:
-    //   //   process.env.ENV !== Environments.DEVELOPMENT &&
-    //   //   process.env.ENV !== Environments.TEST,
-    //   envFilePath: ['.env'],
-    // }),
-    // MongooseModule.forRootAsync({
-    //   useFactory: (configService: ConfigServiceType) => {
-    //     const databaseSettings = configService.get('databaseSettings', {
-    //       infer: true,
-    //     });
-    //     const environmentSettings = configService.get('environmentSettings', {
-    //       infer: true,
-    //     });
-    //     const uri = environmentSettings?.isTesting
-    //       ? databaseSettings?.MONGO_CONNECTION_URI_FOR_TESTS
-    //       : databaseSettings?.MONGO_CONNECTION_URI;
-    //     return { uri: uri };
-    //   },
-    //
-    //   inject: [ConfigService],
-    // }),
-    // TypeOrmModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   inject: [ConfigService],
-    //   useFactory: (configService: ConfigServiceType) => {
-    //     const sqlDataBaseSettings = configService.get('sqlDataBaseSettings', {
-    //       infer: true,
-    //     });
-    //     return {
-    //       type: 'postgres',
-    //       host: sqlDataBaseSettings?.SQL_HOST,
-    //       username: sqlDataBaseSettings?.SQL_USERNAME,
-    //       password: sqlDataBaseSettings?.SQL_PASS,
-    //       database: 'superbase',
-    //       ssl: true,
-    //       autoLoadEntities: true,
-    //       synchronize: true,
-    //     };
-    //   },
-    // }),
-    // TypeOrmModule.forFeature([Users]),
-    // TypeOrmModule.forFeature([EmailConfirmation]),
-    // MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
-    // MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
-    // MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
-    // MongooseModule.forFeature([{ name: User.name, schema: UsersSchema }]),
-    // MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
+    CqrsModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+      validate: validate,
+      // ignoreEnvFile:
+      //   process.env.ENV !== Environments.DEVELOPMENT &&
+      //   process.env.ENV !== Environments.TEST,
+      envFilePath: ['.env'],
+    }),
+    MongooseModule.forRootAsync({
+      useFactory: (configService: ConfigServiceType) => {
+        const databaseSettings = configService.get('databaseSettings', {
+          infer: true,
+        });
+        const environmentSettings = configService.get('environmentSettings', {
+          infer: true,
+        });
+        const uri = environmentSettings?.isTesting
+          ? databaseSettings?.MONGO_CONNECTION_URI_FOR_TESTS
+          : databaseSettings?.MONGO_CONNECTION_URI;
+        return { uri: uri };
+      },
+
+      inject: [ConfigService],
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigServiceType) => {
+        const sqlDataBaseSettings = configService.get('sqlDataBaseSettings', {
+          infer: true,
+        });
+        return {
+          type: 'postgres',
+          host: sqlDataBaseSettings?.SQL_HOST,
+          username: sqlDataBaseSettings?.SQL_USERNAME,
+          password: sqlDataBaseSettings?.SQL_PASS,
+          database: 'superbase',
+          ssl: true,
+          autoLoadEntities: true,
+          synchronize: true,
+        };
+      },
+    }),
+    TypeOrmModule.forFeature([Users]),
+    TypeOrmModule.forFeature([EmailConfirmation]),
+    MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
+    MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
+    MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
+    MongooseModule.forFeature([{ name: User.name, schema: UsersSchema }]),
+    MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
   ],
   controllers: [
-    // AppController,
-    // PostsController,
-    // BlogsController,
-    // UsersController,
-    // TestingController,
-    // AuthController,
-    // CommentsController,
-    // SecurityController,
+    AppController,
+    PostsController,
+    BlogsController,
+    UsersController,
+    TestingController,
+    AuthController,
+    CommentsController,
+    SecurityController,
   ],
   providers: [
-    // UsersSqlRepository,
-    // UsersSqlQueryRepository,
-    // SessionSqlQueryRepository,
-    // SessionSqlRepository,
-    // AppService,
-    // PostService,
-    // PostsRepository,
-    // PostsQueryRepository,
-    // BlogService,
-    // BlogsRepository,
-    // BlogsQueryRepository,
-    // UsersService,
-    // UsersRepository,
-    // UsersQueryRepository,
-    // TestingQueryRepository,
-    // CommentsQueryRepository,
-    // CommentsRepository,
-    // AuthService,
-    // JwtService,
-    // SessionRepository,
-    // SessionQueryRepository,
-    // AuthService,
-    // EmailService,
-    // UsersService,
-    // ConfigService,
-    // BlogExistsValidator,
-    // ...useCases,
+    UsersSqlRepository,
+    UsersSqlQueryRepository,
+    SessionSqlQueryRepository,
+    SessionSqlRepository,
+    AppService,
+    PostService,
+    PostsRepository,
+    PostsQueryRepository,
+    BlogService,
+    BlogsRepository,
+    BlogsQueryRepository,
+    UsersService,
+    UsersRepository,
+    UsersQueryRepository,
+    TestingQueryRepository,
+    CommentsQueryRepository,
+    CommentsRepository,
+    AuthService,
+    JwtService,
+    SessionRepository,
+    SessionQueryRepository,
+    AuthService,
+    EmailService,
+    UsersService,
+    ConfigService,
+    BlogExistsValidator,
+    ...useCases,
   ],
 })
 export class AppModule {}
