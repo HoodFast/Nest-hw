@@ -90,18 +90,18 @@ const useCases = [
 //   SessionRepository,
 //   SessionQueryRepository,
 // ];
-// const services = [
-//   AppService,
-//   PostService,
-//   BlogService,
-//   UsersService,
-//   AuthService,
-//   JwtService,
-//   AuthService,
-//   EmailService,
-//   UsersService,
-//   ConfigService,
-// ];
+const services = [
+  AppService,
+  PostService,
+  BlogService,
+  UsersService,
+  AuthService,
+  JwtService,
+  AuthService,
+  EmailService,
+  UsersService,
+  ConfigService,
+];
 // const MONGO_URL = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nest';
 @Module({
   imports: [
