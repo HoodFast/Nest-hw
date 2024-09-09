@@ -1,4 +1,11 @@
-import { BaseEntity, Column, Entity, OneToOne, PrimaryColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 
 @Entity()
 export class Users extends BaseEntity {
@@ -14,6 +21,13 @@ export class Users extends BaseEntity {
   createdAt: Date;
   @Column({ nullable: true })
   recoveryCode: string;
+  @OneToOne(
+    () => EmailConfirmation,
+    (EmailConfirmation) => EmailConfirmation.userId,
+    { onDelete: 'CASCADE' },
+  )
+  @JoinColumn()
+  emailConfirmation: EmailConfirmation;
 }
 
 @Entity()
@@ -27,8 +41,6 @@ export class EmailConfirmation extends BaseEntity {
   @Column('boolean')
   isConfirmed: boolean;
   @Column()
-  @OneToOne(() => Users, (Users) => Users.id, {
-    onDelete: 'CASCADE',
-  })
+  @OneToOne(() => Users, (Users) => Users.id, { cascade: true })
   userId: string;
 }
