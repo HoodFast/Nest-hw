@@ -31,7 +31,7 @@ import { UsersSqlQueryRepository } from '../infrastructure/users.sql.query.repos
 //   }
 // };
 @UseGuards(AuthGuard)
-@Controller('users')
+@Controller('sa/users')
 export class UsersController {
   constructor(
     protected userService: UsersService,

@@ -1,7 +1,7 @@
-import { Column, Entity, OneToOne, PrimaryColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, OneToOne, PrimaryColumn } from 'typeorm';
 
 @Entity()
-export class Users {
+export class Users extends BaseEntity {
   @PrimaryColumn('uuid')
   id: string;
   @Column()
@@ -17,7 +17,7 @@ export class Users {
 }
 
 @Entity()
-export class EmailConfirmation {
+export class EmailConfirmation extends BaseEntity {
   @PrimaryColumn('uuid')
   id: string;
   @Column()
@@ -27,6 +27,8 @@ export class EmailConfirmation {
   @Column('boolean')
   isConfirmed: boolean;
   @Column()
-  @OneToOne((type) => Users, (Users) => Users.id)
+  @OneToOne(() => Users, (Users) => Users.id, {
+    onDelete: 'CASCADE',
+  })
   userId: string;
 }
