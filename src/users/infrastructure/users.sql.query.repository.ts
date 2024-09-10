@@ -42,7 +42,7 @@ export class UsersSqlQueryRepository {
       const tokensBlackList = await this.dataSource.query(
         `
         SELECT  ARRAY_AGG(token)
-            FROM public."tokensBlackList" t
+            FROM public."tokens_black_list" t
             WHERE t."userId" = $1
 `,
         [res[0].id],
@@ -127,7 +127,7 @@ export class UsersSqlQueryRepository {
     const tokensBlackList = await this.dataSource.query(
       `
         SELECT  ARRAY_AGG(token)
-            FROM public."tokensBlackList" t
+            FROM public."tokens_black_list" t
             WHERE t."userId" = $1
 `,
       [id],
@@ -160,7 +160,7 @@ export class UsersSqlQueryRepository {
     const tokensBlackList = await this.dataSource.query(
       `
         SELECT  ARRAY_AGG(token)
-            FROM public."tokensBlackList" t
+            FROM public."tokens_black_list" t
             WHERE t."userId" = $1
 `,
       [res[0].id],

@@ -1,12 +1,7 @@
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryColumn,
-} from 'typeorm';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { EmailConfirmation } from './email.confirmation.entity';
+import { Sessions } from '../../sessions/domain/session.sql.entity';
+import { TokensBlackList } from './tokens.black.list.sql.entity';
 
 @Entity()
 export class Users extends BaseEntity {
@@ -22,11 +17,20 @@ export class Users extends BaseEntity {
   createdAt: Date;
   @Column({ nullable: true })
   recoveryCode: string;
-  @OneToOne(
+  @OneToMany(
     () => EmailConfirmation,
-    (EmailConfirmation) => EmailConfirmation.userId,
-    { onDelete: 'CASCADE' },
+    (EmailConfirmation) => EmailConfirmation.user,
+    { cascade: true },
   )
-  @JoinColumn()
-  emailConfirmation: EmailConfirmation;
+  emailConfirmation: EmailConfirmation[];
+  @OneToMany(() => Sessions, (Sessions) => Sessions.user, {
+    cascade: true,
+    nullable: true,
+  })
+  sessions: Sessions[];
+  @OneToMany(() => TokensBlackList, (TokensBlackList) => TokensBlackList.user, {
+    cascade: true,
+    nullable: true,
+  })
+  tokensBlackList: EmailConfirmation[];
 }

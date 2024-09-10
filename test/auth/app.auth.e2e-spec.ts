@@ -61,6 +61,7 @@ describe('AuthController (e2e)', () => {
     const { createUserData } = expect.getState();
     const userTestManager = new UserTestManager(app);
     await userTestManager.createUser(createUserData, 201);
+
     const res = await request(httpServer)
       .post('/auth/login')
       .send({
@@ -68,6 +69,7 @@ describe('AuthController (e2e)', () => {
         password: createUserData.password,
       })
       .expect(200);
+
     expect(typeof res.headers['set-cookie'][0]).toBe('string');
     expect(res.body).toEqual({ accessToken: expect.any(String) });
   });

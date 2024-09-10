@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import { UsersSqlQueryRepository } from './users/infrastructure/users.sql.query.repository';
 import { UsersSqlRepository } from './users/infrastructure/users.sql.repository';
@@ -18,11 +18,8 @@ export class AppController {
     const res = await this.userSqlQueryRepository.getMe(id);
     return res;
   }
-  @Get('try')
-  async getTestingManual(@Query() input: { loginOrEmail: string }) {
-    return await this.userSqlRepository.updateNewConfirmCode(
-      input.loginOrEmail,
-      '123123123',
-    );
+  @Post('try')
+  async getTestingManual(@Body() input: { loginOrEmail: string }) {
+    return await this.userSqlRepository.deleteUser(input.loginOrEmail);
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import { User } from '../domain/user.schema';
 import { OutputUsersType } from '../api/output/users.output.dto';
 import { randomUUID } from 'crypto';
@@ -77,7 +77,7 @@ export class UsersSqlRepository {
     const res = await this.dataSource.query(
       `
         SELECT  ARRAY_AGG(token)
-            FROM public."tokensBlackList" t
+            FROM public."tokens_black_list" t
             WHERE t."userId" = $1`,
       [userId],
     );
@@ -118,14 +118,19 @@ export class UsersSqlRepository {
     }
   }
   async deleteUser(userId: string) {
-    const deleted = await this.dataSource.query(
-      `
+    try {
+      const deleted = await this.dataSource.query(
+        `
     DELETE FROM public."users" u
     WHERE u."id" = $1
     `,
-      [userId],
-    );
-    return !!deleted[1];
+        [userId],
+      );
+
+      return !!deleted[1];
+    } catch (e) {
+      console.log(e);
+    }
   }
   async changePass(userId: string, hash: string): Promise<boolean> {
     const res = await this.dataSource.query(

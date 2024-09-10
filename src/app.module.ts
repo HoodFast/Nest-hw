@@ -58,7 +58,10 @@ import { UsersSqlRepository } from './users/infrastructure/users.sql.repository'
 import { UsersSqlQueryRepository } from './users/infrastructure/users.sql.query.repository';
 import { SessionSqlQueryRepository } from './sessions/infrastructure/session.sql.query.repository';
 import { SessionSqlRepository } from './sessions/infrastructure/session.sql.repository';
-import { EmailConfirmation, Users } from './users/domain/user.sql.entity';
+import { Users } from './users/domain/user.sql.entity';
+import { EmailConfirmation } from './users/domain/email.confirmation.entity';
+import { Sessions } from './sessions/domain/session.sql.entity';
+import { TokensBlackList } from './users/domain/tokens.black.list.sql.entity';
 
 const useCases = [
   CreateBlogUseCase,
@@ -152,6 +155,8 @@ const services = [
     }),
     TypeOrmModule.forFeature([Users]),
     TypeOrmModule.forFeature([EmailConfirmation]),
+    TypeOrmModule.forFeature([Sessions]),
+    TypeOrmModule.forFeature([TokensBlackList]),
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
     MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),

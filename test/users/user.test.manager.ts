@@ -18,7 +18,7 @@ export class UserTestManager {
   }
   async createUser(createUserData: UserInputDto, expectStatus: number) {
     const response = await request(this.app.getHttpServer())
-      .post('/users')
+      .post('/sa/users')
       .auth('admin', 'qwerty')
       .send({ ...createUserData })
       .expect(expectStatus);

@@ -58,7 +58,7 @@ describe('UsersController (e2e)', () => {
   it('user don`t create because unauthorised, status 401', async () => {
     const { createUserData } = expect.getState();
     const response = await request(httpServer)
-      .post('/users')
+      .post('/sa/users')
       .send(createUserData)
       .expect(401);
     return response;
