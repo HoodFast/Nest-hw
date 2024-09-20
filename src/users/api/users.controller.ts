@@ -46,7 +46,7 @@ export class UsersController {
       searchLoginTerm: input.searchLoginTerm ?? '',
       searchEmailTerm: input.searchEmailTerm ?? '',
       sortBy: input.sortBy ?? 'createdAt',
-      sortDirection: input.sortDirection ?? sortDirection.asc,
+      sortDirection: input.sortDirection ?? sortDirection.desc,
       pageNumber: input.pageNumber ? +input.pageNumber : 1,
       pageSize: input.pageSize ? +input.pageSize : 10,
     };
