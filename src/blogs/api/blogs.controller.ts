@@ -88,7 +88,6 @@ export class BlogsController {
   async getPostsForBlog(
     @Param('id') blogId: string,
     @Query() query: queryBlogsInputType,
-    @Res({ passthrough: true }) res: Response,
     @Req() req: Request,
   ) {
     const sortData = {
@@ -104,7 +103,7 @@ export class BlogsController {
       blogId,
       sortData,
     );
-    if (!posts) return res.sendStatus(404);
+    if (!posts) throw new NotFoundException();
     return posts;
   }
   @UseGuards(AuthGuard)
