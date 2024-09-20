@@ -46,22 +46,28 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const title = req.get('User-Agent') || 'none title';
+    try {
+      const title = req.get('User-Agent') || 'none title';
+      if (!body.loginOrEmail || !body.password) {
+        throw new BadRequestException('Missing login or password');
+      }
+      const tokens = await this.authService.loginTokensPair(
+        body.loginOrEmail,
+        body.password,
+        ip,
+        title,
+      );
 
-    const tokens = await this.authService.loginTokensPair(
-      body.loginOrEmail,
-      body.password,
-      ip,
-      title,
-    );
-
-    if (!tokens) throw new UnauthorizedException('get tokens pair error');
-    const { accessToken, refreshToken } = tokens;
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: true,
-    });
-    return { accessToken };
+      if (!tokens) throw new UnauthorizedException('get tokens pair error');
+      const { accessToken, refreshToken } = tokens;
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: true,
+      });
+      return { accessToken };
+    } catch (e) {
+      throw e;
+    }
   }
   @UseGuards(RefreshTokenGuard)
   @HttpCode(204)

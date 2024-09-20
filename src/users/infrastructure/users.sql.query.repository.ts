@@ -38,7 +38,9 @@ export class UsersSqlQueryRepository {
     `,
         [loginOrEmail],
       );
-
+      if (!res || res.length === 0) {
+        return null; // Пользователь не найден
+      }
       const tokensBlackList = await this.dataSource.query(
         `
         SELECT  ARRAY_AGG(token)
