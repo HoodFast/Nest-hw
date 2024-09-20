@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  NotFoundException,
   Param,
   Post,
   Query,
@@ -69,14 +71,12 @@ export class UsersController {
 
     return createdUser;
   }
+  @HttpCode(204)
   @UseGuards(AuthGuard)
   @Delete(':id')
-  async deleteUser(
-    @Param('id') id: string,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async deleteUser(@Param('id') id: string) {
     const deleteUser = await this.userService.deleteUser(id);
-    if (!deleteUser) return res.sendStatus(404);
-    return res.sendStatus(204);
+    if (!deleteUser) throw new NotFoundException();
+    return;
   }
 }

@@ -57,7 +57,7 @@ export class UsersSqlQueryRepository {
   }
   async getAllUsers(
     sortData: UsersSortData,
-  ): Promise<Pagination<OutputUsersType>> {
+  ): Promise<Pagination<OutputUsersType> | null> {
     const {
       searchLoginTerm,
       searchEmailTerm,
@@ -85,7 +85,9 @@ export class UsersSqlQueryRepository {
           offset,
         ],
       );
-    } catch (e) {}
+    } catch (e) {
+      return null;
+    }
 
     const totalCount = await this.dataSource.query(
       `
@@ -95,6 +97,7 @@ export class UsersSqlQueryRepository {
 `,
       ['%' + searchLoginTerm + '%', '%' + searchEmailTerm + '%'],
     );
+
     const pagesCount = Math.ceil(+totalCount[0].count / pageSize);
 
     return {
