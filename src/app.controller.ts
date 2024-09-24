@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 import { UsersSqlQueryRepository } from './users/infrastructure/users.sql.query.repository';
 import { UsersSqlRepository } from './users/infrastructure/users.sql.repository';

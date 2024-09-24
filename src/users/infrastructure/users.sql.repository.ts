@@ -89,8 +89,8 @@ export class UsersSqlRepository {
     return !!check;
   }
   async doesExistByLoginOrEmail(
-    login: string,
-    email: string,
+    login: string = '',
+    email: string = '',
   ): Promise<boolean> {
     const existCheck = await this.dataSource.query(
       `

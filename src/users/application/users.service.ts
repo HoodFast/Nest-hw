@@ -33,11 +33,18 @@ export class UsersService {
     password: string,
     isConfirmed?: boolean,
   ): Promise<OutputUsersType | null> {
-    const checkUserExist =
-      await this.usersSqlRepository.doesExistByLoginOrEmail(login, email);
+    const checkUserExistLogin =
+      await this.usersSqlRepository.doesExistByLoginOrEmail(login);
 
-    if (checkUserExist)
+    if (checkUserExistLogin)
+      throw new BadRequestException('user is already exist', 'login');
+
+    const checkUserExistEmail =
+      await this.usersSqlRepository.doesExistByLoginOrEmail(email);
+
+    if (checkUserExistEmail)
       throw new BadRequestException('user is already exist', 'email');
+
     const createdAt = new Date();
 
     const salt = bcrypt.genSaltSync(saltRounds);

@@ -76,7 +76,7 @@ export class UsersSqlQueryRepository {
         `
     SELECT u."id", u."login", u."email" , u."createdAt" 
     FROM public."users" u
-    WHERE u."login" ILIKE $1 AND u."email" ILIKE $2
+    WHERE u."login" ILIKE $1 OR u."email" ILIKE $2
     ORDER BY u."${sortBy}" ${sortDirection}
     LIMIT $3 OFFSET $4
 `,
