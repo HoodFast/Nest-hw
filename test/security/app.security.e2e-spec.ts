@@ -48,7 +48,7 @@ describe('security Controller (e2e)', () => {
     const user2 = await request(httpServer)
       .get('/security/devices')
       .send({ refreshToken: refreshTokenUser2 });
-    debugger;
+
     return true;
   });
 });

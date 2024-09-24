@@ -7,8 +7,8 @@ export class EmailConfirmation extends BaseEntity {
   id: string;
   @Column()
   confirmationCode: string;
-  @Column('date')
-  expirationDate: string;
+  @Column()
+  expirationDate: Date;
   @Column('boolean')
   isConfirmed: boolean;
 

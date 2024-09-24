@@ -15,7 +15,7 @@ export class AppController {
 
   @Get('getUser/:id')
   async getHello(@Param('id') id: string) {
-    const res = await this.userSqlQueryRepository.getMe(id);
+    const res = await this.userSqlQueryRepository.getUserByCode(id);
     return res;
   }
   @Post('try')

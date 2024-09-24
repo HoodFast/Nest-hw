@@ -66,7 +66,7 @@ export class SessionSqlRepository {
       return session;
     } catch (e) {
       console.log(e);
-      debugger;
+
       return null;
     }
   }

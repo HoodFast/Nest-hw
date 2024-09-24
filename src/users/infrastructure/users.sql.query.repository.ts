@@ -76,7 +76,7 @@ export class UsersSqlQueryRepository {
         `
     SELECT u."id", u."login", u."email" , u."createdAt" 
     FROM public."users" u
-    WHERE u."login" like $1 AND u."email" like $2
+    WHERE u."login" ILIKE $1 AND u."email" ILIKE $2
     ORDER BY u."${sortBy}" ${sortDirection}
     LIMIT $3 OFFSET $4
 `,
@@ -142,7 +142,6 @@ export class UsersSqlQueryRepository {
     return userMapper({ ...res[0], tokensBlackList });
   }
   async getUserByCode(code: string): Promise<UserEntity | null> {
-    debugger;
     const res = await this.dataSource.query(
       `
     SELECT u."id",
