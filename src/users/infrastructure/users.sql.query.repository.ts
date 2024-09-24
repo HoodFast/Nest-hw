@@ -95,9 +95,7 @@ export class UsersSqlQueryRepository {
       `
     SELECT COUNT("id")
     FROM public."users" u
-    WHERE u."login" like $1 OR u."email" like $2
 `,
-      ['%' + searchLoginTerm + '%', '%' + searchEmailTerm + '%'],
     );
 
     const pagesCount = Math.ceil(+totalCount[0].count / pageSize);

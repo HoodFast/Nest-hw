@@ -88,17 +88,25 @@ export class UsersSqlRepository {
 
     return !!check;
   }
-  async doesExistByLoginOrEmail(
-    login: string = '',
-    email: string = '',
-  ): Promise<boolean> {
+  async doesExistByLogin(login: string): Promise<boolean> {
     const existCheck = await this.dataSource.query(
       `
     SELECT id
         FROM public."users" u
-        WHERE u."login" = $1 OR u."email" = $2
+        WHERE u."login" = $1 
     `,
-      [login, email],
+      [login],
+    );
+    return !!existCheck[0];
+  }
+  async doesExistByEmail(email: string): Promise<boolean> {
+    const existCheck = await this.dataSource.query(
+      `
+    SELECT id
+        FROM public."users" u
+        WHERE  u."email" = $1
+    `,
+      [email],
     );
     return !!existCheck[0];
   }

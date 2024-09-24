@@ -34,13 +34,13 @@ export class UsersService {
     isConfirmed?: boolean,
   ): Promise<OutputUsersType | null> {
     const checkUserExistLogin =
-      await this.usersSqlRepository.doesExistByLoginOrEmail(login);
+      await this.usersSqlRepository.doesExistByLogin(login);
 
     if (checkUserExistLogin)
       throw new BadRequestException('user is already exist', 'login');
 
     const checkUserExistEmail =
-      await this.usersSqlRepository.doesExistByLoginOrEmail(email);
+      await this.usersSqlRepository.doesExistByEmail(email);
 
     if (checkUserExistEmail)
       throw new BadRequestException('user is already exist', 'email');
