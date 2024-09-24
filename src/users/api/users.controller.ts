@@ -43,8 +43,10 @@ export class UsersController {
     @Query() input: UsersSortData,
   ): Promise<Pagination<OutputUsersType>> {
     const sortData: UsersSortData = {
-      searchLoginTerm: input.searchLoginTerm ?? '',
-      searchEmailTerm: input.searchEmailTerm ?? '',
+      // searchLoginTerm: input.searchLoginTerm ?? '',
+      // searchEmailTerm: input.searchEmailTerm ?? '',
+      searchLoginTerm: '',
+      searchEmailTerm: '',
       sortBy: input.sortBy ?? 'createdAt',
       sortDirection: input.sortDirection ?? sortDirection.desc,
       pageNumber: input.pageNumber ? +input.pageNumber : 1,

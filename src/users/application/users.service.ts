@@ -37,10 +37,7 @@ export class UsersService {
       await this.usersSqlRepository.doesExistByLoginOrEmail(login, email);
 
     if (checkUserExist)
-      throw new BadRequestException({
-        message: 'user is already exist',
-        field: 'email',
-      });
+      throw new BadRequestException('user is already exist', 'email');
     const createdAt = new Date();
 
     const salt = bcrypt.genSaltSync(saltRounds);
