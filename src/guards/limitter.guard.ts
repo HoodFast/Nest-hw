@@ -35,8 +35,7 @@ export class Limiter implements CanActivate {
       this.limitListDB.push({ ip, URL, date });
       return true;
     } else {
-      return true;
-      // throw new HttpException('error', HttpStatus.TOO_MANY_REQUESTS);
+      throw new HttpException('error', HttpStatus.TOO_MANY_REQUESTS);
     }
   }
 }
