@@ -78,6 +78,7 @@ export class SessionSqlRepository {
     `,
       [id],
     );
+    debugger;
     return !!deleteSession[1];
   }
   async deleteByDeviceId(deviceId: string): Promise<boolean> {
@@ -90,16 +91,18 @@ export class SessionSqlRepository {
     );
     return !!deletedSession[1];
   }
-  async getSessionForRefreshDecodeToken(iat: string, deviceId: string) {
+  async getSessionForRefreshDecodeToken(iat: Date, deviceId: string) {
     try {
+      const iatString = iat.toISOString();
       const metaData = await this.dataSource.query(
         `
      SELECT id, iat, "expireDate", "deviceId", ip, title, "userId"
         FROM public.sessions s
         WHERE s."iat" = $1 AND s."deviceId" = $2
     `,
-        [iat, deviceId],
+        [iatString, deviceId],
       );
+      debugger;
       return metaData;
     } catch (e) {
       console.log(e);

@@ -113,13 +113,14 @@ export class AuthService {
     title: string,
     token: string,
   ) {
-    const session = await this.jwtService.getSessionDataByToken(token);
+    const session: { iat: Date; deviceId: string; userId: string } | null =
+      await this.jwtService.getSessionDataByToken(token);
     if (!session)
       throw new UnauthorizedException('couldn`t get the data session');
 
     const oldSession =
       await this.sessionSqlRepository.getSessionForRefreshDecodeToken(
-        session.iat.toISOString(),
+        session.iat,
         session.deviceId,
       );
 
@@ -164,9 +165,10 @@ export class AuthService {
     if (!dataSession) return false;
     const oldSession =
       await this.sessionSqlRepository.getSessionForRefreshDecodeToken(
-        dataSession.iat.toISOString(),
+        dataSession.iat,
         dataSession.deviceId,
       );
+
     if (oldSession) {
       return await this.sessionSqlRepository.deleteById(oldSession.id);
     } else {

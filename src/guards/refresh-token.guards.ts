@@ -5,13 +5,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '../auth/infrastructure/jwt.service';
-import { UsersQueryRepository } from '../users/infrastructure/users.query.repository';
+import { UsersSqlQueryRepository } from '../users/infrastructure/users.sql.query.repository';
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly usersQueryRepository: UsersQueryRepository,
+    private readonly usersQueryRepository: UsersSqlQueryRepository,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -30,9 +30,10 @@ export class RefreshTokenGuard implements CanActivate {
         `RefreshTokenGuard - token dont verify ${refreshToken}`,
       );
     const user = await this.usersQueryRepository.getUserById(jwtPayload.userId);
-    if (!user)
+    if (!user) {
       throw new UnauthorizedException('RefreshTokenGuard - user not found');
-    request.userId = user.id;
+    }
+    request.userId = user._id;
     request.tokenPayload = jwtPayload;
     return true;
   }

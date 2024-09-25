@@ -3,6 +3,7 @@ import { AppService } from './app.service';
 import { UsersSqlQueryRepository } from './users/infrastructure/users.sql.query.repository';
 import { UsersSqlRepository } from './users/infrastructure/users.sql.repository';
 import { UsersRepository } from './users/infrastructure/users.repository';
+import { UsersService } from './users/application/users.service';
 
 @Controller()
 export class AppController {

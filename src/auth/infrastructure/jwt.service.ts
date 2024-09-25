@@ -106,7 +106,7 @@ export class JwtService {
       const date = new Date(result.iat * 1000);
       const blackListCheck =
         await this.sessionSqlRepository.getSessionForRefreshDecodeToken(
-          date.toISOString(),
+          date,
           result.deviceId,
         );
 
