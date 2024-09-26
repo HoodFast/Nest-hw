@@ -6,7 +6,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { SessionEntity } from '../domain/session.entity';
-import { randomUUID } from 'crypto';
 @Injectable()
 export class SessionSqlRepository {
   constructor(
@@ -78,7 +77,7 @@ export class SessionSqlRepository {
     `,
       [id],
     );
-    debugger;
+
     return !!deleteSession[1];
   }
   async deleteByDeviceId(deviceId: string): Promise<boolean> {
@@ -93,17 +92,18 @@ export class SessionSqlRepository {
   }
   async getSessionForRefreshDecodeToken(iat: Date, deviceId: string) {
     try {
-      const iatString = iat.toISOString();
+      const updatedIat = new Date(iat.getTime() + 3 * 60 * 60 * 1000);
+      const iatString = updatedIat.toISOString();
       const metaData = await this.dataSource.query(
         `
      SELECT id, iat, "expireDate", "deviceId", ip, title, "userId"
-        FROM public.sessions s
-        WHERE s."iat" = $1 AND s."deviceId" = $2
+        FROM public.sessions 
+        WHERE "iat" = $1 AND "deviceId" = $2;
     `,
         [iatString, deviceId],
       );
-      debugger;
-      return metaData;
+
+      return metaData[0];
     } catch (e) {
       console.log(e);
       return null;
