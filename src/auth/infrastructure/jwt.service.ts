@@ -118,6 +118,7 @@ export class JwtService {
   }
   async getSessionDataByToken(token: string) {
     try {
+      debugger;
       const result = jwt.verify(token, this.RT_SECRET);
       const decoded = jwt.decode(token, { complete: true });
       const userId = decoded.payload.userId;
@@ -125,6 +126,7 @@ export class JwtService {
       const deviceId = result.deviceId;
       return { iat, deviceId, userId };
     } catch (e) {
+      console.log(`refresh token: ${e}`);
       return null;
     }
   }
