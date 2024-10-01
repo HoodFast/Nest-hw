@@ -92,8 +92,8 @@ export class SessionSqlRepository {
   }
   async getSessionForRefreshDecodeToken(iat: Date, deviceId: string) {
     try {
-      const updatedIat = new Date(iat.getTime() + 3 * 60 * 60 * 1000);
-      const iatString = updatedIat.toISOString();
+      // const updatedIat = new Date(iat.getTime() + 3 * 60 * 60 * 1000);
+      const iatString = iat.toISOString();
       const metaData = await this.dataSource.query(
         `
      SELECT id, iat, "expireDate", "deviceId", ip, title, "userId"
