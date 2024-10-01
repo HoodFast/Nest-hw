@@ -115,6 +115,7 @@ export class AuthService {
   ) {
     const session: { iat: Date; deviceId: string; userId: string } | null =
       await this.jwtService.getSessionDataByToken(token);
+    console.log(`session result:${session}`);
     if (!session)
       throw new UnauthorizedException('couldn`t get the data session');
 
