@@ -169,7 +169,6 @@ export class AuthService {
         dataSession.iat,
         dataSession.deviceId,
       );
-    debugger;
     if (oldSession) {
       return await this.sessionSqlRepository.deleteById(oldSession.id);
     } else {

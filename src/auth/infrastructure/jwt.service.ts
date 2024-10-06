@@ -109,8 +109,8 @@ export class JwtService {
           date,
           result.deviceId,
         );
-
-      if (blackListCheck) return null;
+      debugger;
+      if (!blackListCheck) return null;
       return result;
     } catch (e) {
       return null;

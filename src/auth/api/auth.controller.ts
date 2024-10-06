@@ -75,6 +75,8 @@ export class AuthController {
   @Post('logout')
   async logout(@Req() req: Request) {
     const token = req.cookies.refreshToken;
+    const user = await this.jwtService.checkRefreshToken(token);
+    if (!user) throw new UnauthorizedException('check refresh token error');
     await this.authService.deleteSession(token);
     // const title = req.get('User-Agent') || 'none title';
     // const token = req.cookies.refreshToken;
