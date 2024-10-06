@@ -109,7 +109,7 @@ export class JwtService {
           date,
           result.deviceId,
         );
-      debugger;
+
       if (!blackListCheck) return null;
       return result;
     } catch (e) {
@@ -118,7 +118,6 @@ export class JwtService {
   }
   async getSessionDataByToken(token: string) {
     try {
-      debugger;
       const result = jwt.verify(token, this.RT_SECRET);
       const decoded = jwt.decode(token, { complete: true });
       const userId = decoded.payload.userId;

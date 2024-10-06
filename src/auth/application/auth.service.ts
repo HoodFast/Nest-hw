@@ -124,7 +124,7 @@ export class AuthService {
         session.iat,
         session.deviceId,
       );
-    debugger;
+
     const deviceId = oldSession?.deviceId;
     if (oldSession) {
       await this.sessionSqlRepository.deleteById(oldSession.id);

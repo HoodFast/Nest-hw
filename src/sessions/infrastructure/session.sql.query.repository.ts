@@ -20,7 +20,8 @@ export class SessionSqlQueryRepository {
     `,
       [userId],
     );
-    if (!sessions[1]) return null;
-    return sessions[0];
+    debugger;
+    if (!sessions[0]) return null;
+    return sessions;
   }
 }

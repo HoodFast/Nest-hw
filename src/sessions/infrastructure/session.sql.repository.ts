@@ -101,7 +101,7 @@ export class SessionSqlRepository {
     `,
         [iat, updatedIat, deviceId],
       );
-      debugger;
+
       return metaData[0];
     } catch (e) {
       console.log(e);
