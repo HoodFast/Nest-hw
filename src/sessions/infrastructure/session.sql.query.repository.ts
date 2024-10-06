@@ -14,7 +14,7 @@ export class SessionSqlQueryRepository {
   async getAllSessions(userId: string): Promise<SessionsOutputType[] | null> {
     const sessions = await this.dataSource.query(
       `
-    SELECT  ip, title, iat as "lastActiveDate", "deviceId",
+    SELECT  ip, title, iat as "lastActiveDate", "deviceId"
         FROM public.sessions s
         WHERE s."userId" = $1
     `,
