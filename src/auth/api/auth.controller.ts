@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   Ip,
+  NotFoundException,
   Post,
   Req,
   Res,
@@ -139,6 +140,9 @@ export class AuthController {
       title,
       token,
     );
+    const addToBlackList =
+      await this.usersSqlQueryRepository.addTokenToBlackList(user._id, token);
+    if (!addToBlackList) throw new NotFoundException();
     const { accessToken, refreshToken } = tokens;
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,

@@ -7,6 +7,7 @@ import { OutputUsersType } from '../api/output/users.output.dto';
 import { userMapper } from '../domain/mapper/user.mapper.for.sql';
 import { UserEntity } from '../domain/user.entity';
 import { MyEntity } from '../../auth/api/output/me.entity';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class UsersSqlQueryRepository {
@@ -190,5 +191,22 @@ export class UsersSqlQueryRepository {
         email: user[0].email,
       },
     };
+  }
+  async addTokenToBlackList(userId: string, token: string) {
+    try {
+      const tokenId = randomUUID();
+      await this.dataSource.query(
+        `
+            INSERT INTO public."tokens_black_list"(
+            "id","token","userId")
+            VALUES($1,$2,$3);
+    `,
+        [tokenId, token, userId],
+      );
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
   }
 }
