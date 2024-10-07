@@ -2,6 +2,7 @@ import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { EmailConfirmation } from './email.confirmation.entity';
 import { Sessions } from '../../sessions/domain/session.sql.entity';
 import { TokensBlackList } from './tokens.black.list.sql.entity';
+import { LikePost, Post } from '../../posts/domain/post.sql.entity';
 
 @Entity()
 export class Users extends BaseEntity {
@@ -33,4 +34,14 @@ export class Users extends BaseEntity {
     nullable: true,
   })
   tokensBlackList: EmailConfirmation[];
+  @OneToMany(() => Post, (Post) => Post.user, {
+    cascade: true,
+    nullable: true,
+  })
+  posts: Post[];
+  @OneToMany(() => LikePost, (LikePost) => LikePost.user, {
+    cascade: true,
+    nullable: true,
+  })
+  likePost: LikePost[];
 }
