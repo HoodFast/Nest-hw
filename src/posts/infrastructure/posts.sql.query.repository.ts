@@ -7,15 +7,14 @@ import { postMapper, PostType } from './post.mapper';
 import { ObjectId } from 'mongodb';
 import { Pagination } from '../../base/paginationInputDto/paginationOutput';
 import { SortData } from '../../base/sortData/sortData.model';
-import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.query.repository';
 import { DataSource } from 'typeorm';
-import { LikePost } from '../domain/post.sql.entity';
+import { BlogsSqlQueryRepository } from '../../blogs/infrastructure/blogs.sql.query.repository';
 
 @Injectable()
-export class PostsQueryRepository {
+export class PostsSqlQueryRepository {
   constructor(
     @InjectModel(Post.name) private postModel: Model<PostDocument>,
-    protected blogsQueryRepository: BlogsQueryRepository,
+    protected blogsQueryRepository: BlogsSqlQueryRepository,
     protected dataSource: DataSource,
   ) {}
 
@@ -27,49 +26,69 @@ export class PostsQueryRepository {
       const { sortBy, sortDirection, pageSize, pageNumber } = data;
       const offset = (pageNumber - 1) * pageSize;
 
-      const allPosts = await this.dataSource.query(
+      const posts = await this.dataSource.query(
         `
-      SELECT post."id", post."title",post."shortDescription",post."content",post."blogId",post."blogName",post."createdAt", post."like_post".likesStatus as "myStatus"
-      FROM public."post"
-      LEFT JOIN public."like_post" ON post."id" = "like_post".post AND "like_post"."userId" = $5
-      ORDER BY $1 $2
-      LIMIT $3 OFFSET $4
+      SELECT p."id",
+       p."title",
+       p."shortDescription",
+       p."content",p."blogId",
+       p."blogName",
+       p."createdAt", 
+       l."likesStatus" as "myStatus",
+       likes."likesCount",
+       likes."dislikesCount"
+      FROM "posts" p
+      LEFT JOIN "like_post" l
+      ON  p."id" = l."postId"  AND l."userId" = $3
+      LEFT JOIN (
+      SELECT "postId",
+      COUNT(CASE WHEN "likesStatus" = 'Like' THEN 1 END) as "likesCount",
+      COUNT(CASE WHEN "likesStatus" = 'Dislike' THEN 1 END) as "dislikesCount"
+      FROM public."like_post" lp
+      GROUP BY "postId"
+      ) as "likes" ON likes."postId" = p."id"
+      ORDER BY p."${sortBy}" ${sortDirection}
+      LIMIT $1 OFFSET $2
       `,
-        [sortBy, sortDirection, pageSize, offset, userId],
+        [pageSize, offset, userId],
       );
 
-      const posts = await this.postModel
-        .find({})
-        .sort({ [sortBy]: sortDirection })
-        .skip((pageNumber - 1) * pageSize)
-        .limit(pageSize);
-
-      const totalCount = await this.postModel.countDocuments({});
-      const pagesCount = Math.ceil(totalCount / pageSize);
-      const items = allPosts.map();
+      const totalCount = await this.dataSource.query(`
+      SELECT COUNT("id")
+        FROM public."posts" 
+      `);
+      const pagesCount = Math.ceil(+totalCount[0].count / pageSize);
+      const likes = await this.dataSource.query(`
+SELECT l."updatedAt" as "addedAt", u."id" as "userId", l."login",l."postId"
+FROM public."like_post" l
+LEFT JOIN public."users" u ON u."id" = l."userId"
+WHERE l."likesStatus" = 'Like'
+`);
+      debugger;
       return {
         pagesCount,
         page: pageNumber,
         pageSize,
-        totalCount,
-        items: posts.map((i) => postMapper(i, userId)),
+        totalCount: +totalCount[0].count,
+        items: posts.map((i) => postMapper(i, likes)),
       };
     } catch (e) {
+      console.log(e);
       throw new Error();
     }
   }
   async getPostById(
     postId: string,
-    userId: string = '',
+    userId: any = '',
   ): Promise<PostType | null> {
-    const res = await this.postModel.find({
+    const res: any = await this.postModel.find({
       _id: new ObjectId(postId),
     });
     if (!res.length) return null;
     return postMapper(res[0], userId);
   }
   async getAllPostsForBlog(
-    userId: string,
+    userId: any,
     blogId: string,
     data: SortData,
   ): Promise<Pagination<PostType> | null> {
@@ -91,7 +110,7 @@ export class PostsQueryRepository {
       page: pageNumber,
       pageSize,
       totalCount,
-      items: posts.map((i) => postMapper(i, userId)),
+      items: posts.map((i: any) => postMapper(i, userId)),
     };
   }
 }

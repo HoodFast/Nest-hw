@@ -1,12 +1,12 @@
 import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
-export class Blog extends BaseEntity {
+export class Blogs extends BaseEntity {
   @PrimaryColumn('uuid')
   id: string;
   @Column()
   name: string;
-  @Column({ length: 10, collation: 'C' })
+  @Column()
   description: string;
   @Column()
   websiteUrl: string;

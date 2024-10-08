@@ -4,6 +4,8 @@ import { InterlayerNotice } from '../../../base/models/Interlayer';
 import { BlogsRepository } from '../../infrastructure/blogs.repository';
 
 import { BlogsQueryRepository } from '../../infrastructure/blogs.query.repository';
+import { BlogsSqlRepository } from '../../infrastructure/blogs.sql.repository';
+import { BlogsSqlQueryRepository } from '../../infrastructure/blogs.sql.query.repository';
 
 export class CommandUpdateBlogData {
   updated: boolean;
@@ -23,8 +25,8 @@ export class UpdateBlogUseCase
     ICommandHandler<UpdateBlogCommand, InterlayerNotice<CommandUpdateBlogData>>
 {
   constructor(
-    private blogsRepository: BlogsRepository,
-    private blogsQueryRepository: BlogsQueryRepository,
+    private blogsRepository: BlogsSqlRepository,
+    private blogsQueryRepository: BlogsSqlQueryRepository,
   ) {}
   async execute(
     command: UpdateBlogCommand,

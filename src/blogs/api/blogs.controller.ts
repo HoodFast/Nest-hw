@@ -41,6 +41,7 @@ import {
   DeleteBlogCommand,
 } from './use-cases/delete-blog.usecase';
 import { AccessTokenGetId } from '../../guards/access.token.get.id';
+import { BlogsSqlQueryRepository } from '../infrastructure/blogs.sql.query.repository';
 
 export enum sortDirection {
   asc = 'asc',
@@ -59,7 +60,7 @@ export type queryBlogsInputType = {
 export class BlogsController {
   constructor(
     protected blogService: BlogService,
-    protected blogsQueryRepository: BlogsQueryRepository,
+    protected blogsQueryRepository: BlogsSqlQueryRepository,
     protected postsQueryRepository: PostsQueryRepository,
     private readonly commandBus: CommandBus,
   ) {}

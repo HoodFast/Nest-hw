@@ -1,4 +1,18 @@
-import { Likes, likesStatuses, PostDocument } from '../domain/post.schema';
+import { Likes, likesStatuses } from '../domain/post.schema';
+
+export class PostInputType {
+  id: string;
+  title: string;
+  shortDescription: string;
+  content: string;
+  blogId: string;
+  blogName: string;
+  createdAt: string;
+  likesCount: number;
+  dislikesCount: number;
+  myStatus: likesStatuses;
+  newestLikes: NewestLikesInput[];
+}
 
 export class PostType {
   id: string;
@@ -12,32 +26,42 @@ export class PostType {
     likesCount: number;
     dislikesCount: number;
     myStatus: likesStatuses;
-    newestLikes: NewestLikes[];
+    newestLikes: NewestLikesOutput[];
   };
 }
-export class NewestLikes {
+export class NewestLikesInput {
+  addedAt: string;
+  userId: string;
+  login: string;
+  postId: string;
+}
+export class NewestLikesOutput {
   addedAt: string;
   userId: string;
   login: string;
 }
-export const newestLikesMapper = (like: Likes): NewestLikes => {
+export const newestLikesMapper = (
+  like: NewestLikesInput,
+): NewestLikesOutput => {
   return {
-    addedAt: like.updatedAt.toString(),
+    addedAt: like.addedAt,
     userId: like.userId,
     login: like.login,
   };
 };
 
-export const postMapper = (post: PostDocument, userId: string): PostType => {
-  const getNewestLikes = post.getNewestLikes();
-  const newestLikes = getNewestLikes.map(newestLikesMapper);
-  let myStatus = post.getMyStatus(userId);
-  if (userId) {
-    myStatus = post.getMyStatus(userId);
-  }
+export const postMapper = (
+  post: PostInputType,
+  likes: NewestLikesInput[],
+): PostType => {
+  const newestLikes = likes
+    .filter((i) => i.postId === post.id)
+    .sort((a, b) => (a.addedAt < b.addedAt ? 1 : -1))
+    .slice(0, 3)
+    .map(newestLikesMapper);
 
   return {
-    id: post._id.toString(),
+    id: post.id.toString(),
     title: post.title,
     shortDescription: post.shortDescription,
     content: post.content,
@@ -47,7 +71,7 @@ export const postMapper = (post: PostDocument, userId: string): PostType => {
     extendedLikesInfo: {
       likesCount: post.likesCount,
       dislikesCount: post.dislikesCount,
-      myStatus,
+      myStatus: post.myStatus,
       newestLikes,
     },
   };

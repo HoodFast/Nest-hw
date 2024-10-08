@@ -8,10 +8,8 @@ import { PostsRepository } from './posts/infrastructure/posts.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BlogsController } from './blogs/api/blogs.controller';
 import { BlogsRepository } from './blogs/infrastructure/blogs.repository';
-import { Blog, BlogSchema } from './blogs/domain/blog.schema';
 import { BlogsQueryRepository } from './blogs/infrastructure/blogs.query.repository';
 import { BlogService } from './blogs/application/blogs.service';
-import { Post, PostSchema } from './posts/domain/post.schema';
 import { PostsQueryRepository } from './posts/infrastructure/posts.query.repository';
 import { Comment, CommentSchema } from './comments/domain/comment.schema';
 import { User, UsersSchema } from './users/domain/user.schema';
@@ -62,6 +60,14 @@ import { Users } from './users/domain/user.sql.entity';
 import { EmailConfirmation } from './users/domain/email.confirmation.entity';
 import { Sessions } from './sessions/domain/session.sql.entity';
 import { TokensBlackList } from './users/domain/tokens.black.list.sql.entity';
+import { BlogsSqlRepository } from './blogs/infrastructure/blogs.sql.repository';
+import { BlogsSqlQueryRepository } from './blogs/infrastructure/blogs.sql.query.repository';
+import { LikePost } from './posts/domain/likePost.sql.entity';
+import { Blogs } from './blogs/domain/blog.sql.entity';
+import { Posts } from './posts/domain/post.sql.entity';
+import { Post, PostSchema } from './posts/domain/post.schema';
+import { Blog, BlogSchema } from './blogs/domain/blog.schema';
+import { PostsSqlQueryRepository } from './posts/infrastructure/posts.sql.query.repository';
 
 const useCases = [
   CreateBlogUseCase,
@@ -157,8 +163,11 @@ const services = [
     TypeOrmModule.forFeature([EmailConfirmation]),
     TypeOrmModule.forFeature([Sessions]),
     TypeOrmModule.forFeature([TokensBlackList]),
-    MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
+    TypeOrmModule.forFeature([Blogs]),
+    TypeOrmModule.forFeature([LikePost]),
+    TypeOrmModule.forFeature([Posts]),
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
+    MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
     MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
     MongooseModule.forFeature([{ name: User.name, schema: UsersSchema }]),
     MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
@@ -174,6 +183,9 @@ const services = [
     SecurityController,
   ],
   providers: [
+    BlogsSqlRepository,
+    BlogsSqlQueryRepository,
+    PostsSqlQueryRepository,
     UsersSqlRepository,
     UsersSqlQueryRepository,
     SessionSqlQueryRepository,

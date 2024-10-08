@@ -5,7 +5,7 @@ import { BlogSortData } from '../../base/sortData/sortData.model';
 import { blogMapper } from '../domain/blog.mapper';
 
 @Injectable()
-export class UsersSqlQueryRepository {
+export class BlogsSqlQueryRepository {
   constructor(@InjectDataSource() protected dataSource: DataSource) {}
 
   async getAllBlogs(sortData: BlogSortData) {
@@ -20,18 +20,15 @@ export class UsersSqlQueryRepository {
       b."description",
       b."websiteUrl",
       b."createdAt",
-      b."isMembership",
-      
+      b."isMembership"
         FROM public."blogs" b
-        WHERE u."name" like $1 
-        ORDER BY u."${sortBy}" ${sortDirection}
+        WHERE b."name" like $1 
+        ORDER BY b."${sortBy}" ${sortDirection}
         LIMIT $2 OFFSET $3
     `,
         ['%' + searchNameTerm + '%', pageSize, offset],
       );
-      if (!res || res.length === 0) {
-        return null;
-      }
+
       const totalCount = await this.dataSource.query(
         `
         SELECT COUNT("id")
@@ -41,16 +38,35 @@ export class UsersSqlQueryRepository {
         ['%' + searchNameTerm + '%'],
       );
       const pagesCount = Math.ceil(+totalCount[0].count / pageSize);
+
       return {
         pagesCount,
         page: pageNumber,
         pageSize,
-        totalCount,
+        totalCount: +totalCount[0].count,
         items: res.map(blogMapper),
       };
     } catch (e) {
       console.log(e);
-      return null;
+      throw new Error();
     }
+  }
+  async getBlogById(id: string) {
+    const blog = await this.dataSource.query(
+      `
+    SELECT b."id",
+      b."name",
+      b."description",
+      b."websiteUrl",
+      b."createdAt",
+      b."isMembership"
+        FROM public."blogs" b
+        WHERE b."id" = $1 
+    `,
+      [id],
+    );
+
+    if (!blog[0]) return null;
+    return blogMapper(blog[0]);
   }
 }

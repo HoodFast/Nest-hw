@@ -6,12 +6,13 @@ import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.query.rep
 import { ObjectId } from 'mongodb';
 import { InputPostCreate, PostCreateData } from '../api/input/PostsCreate.dto';
 import { PostsQueryRepository } from './posts.query.repository';
+import { BlogsSqlQueryRepository } from '../../blogs/infrastructure/blogs.sql.query.repository';
 
 @Injectable()
 export class PostsRepository {
   constructor(
     @InjectModel(Post.name) private postModel: Model<PostDocument>,
-    protected blogsQueryRepository: BlogsQueryRepository,
+    protected blogsQueryRepository: BlogsSqlQueryRepository,
     protected postsQueryRepository: PostsQueryRepository,
   ) {}
 

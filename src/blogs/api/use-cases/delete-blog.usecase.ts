@@ -4,6 +4,8 @@ import { InterlayerNotice } from '../../../base/models/Interlayer';
 import { BlogsRepository } from '../../infrastructure/blogs.repository';
 
 import { BlogsQueryRepository } from '../../infrastructure/blogs.query.repository';
+import { BlogsSqlQueryRepository } from '../../infrastructure/blogs.sql.query.repository';
+import { BlogsSqlRepository } from '../../infrastructure/blogs.sql.repository';
 
 export class CommandDeleteBlogOutputData {
   deleted: boolean;
@@ -21,8 +23,8 @@ export class DeleteBlogUseCase
     >
 {
   constructor(
-    private blogsRepository: BlogsRepository,
-    private blogsQueryRepository: BlogsQueryRepository,
+    private blogsRepository: BlogsSqlRepository,
+    private blogsQueryRepository: BlogsSqlQueryRepository,
   ) {}
   async execute(
     command: DeleteBlogCommand,

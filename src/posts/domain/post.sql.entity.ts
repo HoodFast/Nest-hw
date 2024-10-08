@@ -1,19 +1,12 @@
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryColumn,
-} from 'typeorm';
-import { Users } from '../../users/domain/user.sql.entity';
+import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { LikePost } from './likePost.sql.entity';
 export enum likesStatuses {
   none = 'None',
   like = 'Like',
   dislike = 'Dislike',
 }
 @Entity()
-export class Post extends BaseEntity {
+export class Posts extends BaseEntity {
   @PrimaryColumn('uuid')
   id: string;
   @Column()
@@ -26,37 +19,11 @@ export class Post extends BaseEntity {
   blogId: string;
   @Column()
   blogName: string;
-  @ManyToOne(() => Users, (Users) => Users.id, {
-    onDelete: 'CASCADE',
-  })
-  user: string;
-  @OneToMany(() => LikePost, (LikePost) => LikePost.user, {
+  @OneToMany(() => LikePost, (LikePost) => LikePost.post, {
     cascade: true,
     nullable: true,
   })
-  likePost: LikePost[];
+  postLikes: LikePost[];
   @Column()
   createdAt: Date;
-}
-
-@Entity()
-export class LikePost extends BaseEntity {
-  @PrimaryColumn('uuid')
-  id: string;
-  @Column()
-  createdAt: Date;
-  @Column()
-  updatedAt: Date;
-  @Column()
-  login: string;
-  @ManyToOne(() => Users, (Users) => Users.id, {
-    onDelete: 'CASCADE',
-  })
-  user: string;
-  @ManyToOne(() => Post, (Post) => Post.id, {
-    onDelete: 'CASCADE',
-  })
-  post: string;
-  @Column({ type: 'enum', enum: likesStatuses, default: likesStatuses.none })
-  likesStatus: likesStatuses;
 }

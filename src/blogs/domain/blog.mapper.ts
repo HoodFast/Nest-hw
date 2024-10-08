@@ -1,14 +1,14 @@
-import { BlogDocument } from '../domain/blog.schema';
 import { OutputBlogMapData } from '../api/model/output/outputBlog.model';
+import { Blogs } from './blog.sql.entity';
 
-export const blogMapper = (blog: BlogDocument): OutputBlogMapData => {
+export const blogMapper = (blog: Blogs): OutputBlogMapData => {
   return {
-    id: blog._id.toString(),
+    id: blog.id.toString(),
     name: blog.name,
     description: blog.description,
     websiteUrl: blog.websiteUrl,
     isMembership: blog.isMembership,
-    createdAt: blog.createdAt,
+    createdAt: blog.createdAt.toISOString(),
   };
 };
 
