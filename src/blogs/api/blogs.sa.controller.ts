@@ -97,7 +97,10 @@ export class BlogsSaController {
   @Delete(':blogId/posts/:postId')
   async deleteSaPost(@Param() data: { blogId: string; postId: string }) {
     const command = new DeleteSaPostCommand(data.postId, data.blogId);
-
+    const blog = await this.blogsQueryRepository.getBlogById(data.blogId);
+    if (!blog) throw new NotFoundException();
+    const post = await this.postsQueryRepository.getPostById(data.postId);
+    if (!post) throw new NotFoundException();
     const updatedBlog = await this.commandBus.execute<
       DeleteSaPostCommand,
       InterlayerNotice<CommandUpdatePostOutputData>
