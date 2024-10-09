@@ -1,6 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InterlayerNotice } from '../../../base/models/Interlayer';
 import { PostsRepository } from '../../infrastructure/posts.repository';
+import { PostsSqlRepository } from '../../infrastructure/posts.sql.repository';
 
 export class CommandUpdatePostOutputData {
   updated: boolean;
@@ -23,7 +24,7 @@ export class UpdatePostUseCase
       InterlayerNotice<CommandUpdatePostOutputData>
     >
 {
-  constructor(private postsRepository: PostsRepository) {}
+  constructor(private postsRepository: PostsSqlRepository) {}
   async execute(
     command: UpdatePostCommand,
   ): Promise<InterlayerNotice<CommandUpdatePostOutputData>> {

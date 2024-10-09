@@ -39,8 +39,8 @@ import { CommentsInput } from '../../comments/api/model/input/comments.input';
 import { CommentsOutputType } from '../../comments/api/model/output/comments.output';
 import { PostsSqlQueryRepository } from '../infrastructure/posts.sql.query.repository';
 
-@Controller('posts')
-export class PostsController {
+@Controller('sa/posts')
+export class PostsSaController {
   constructor(
     protected postService: PostService,
     protected postsQueryRepository: PostsSqlQueryRepository,
@@ -48,7 +48,7 @@ export class PostsController {
     protected commandBus: CommandBus,
   ) {}
   @HttpCode(204)
-  @UseGuards(AccessTokenAuthGuard)
+  @UseGuards(AuthGuard)
   @Put(':id/like-status')
   async updateLikes(
     @Body() body: LikesDto,
@@ -56,7 +56,7 @@ export class PostsController {
     @Req() req: Request,
   ) {
     // @ts-ignore
-    const userId = req.userId;
+    const userId = req.userId ? req.userId : null;
     const command = new UpdateLikesCommand(body.likeStatus, postId, userId);
     const updateLikes = await this.commandBus.execute<
       UpdateLikesCommand,
@@ -65,7 +65,7 @@ export class PostsController {
     if (updateLikes.hasError()) throw new NotFoundException();
     return;
   }
-  @UseGuards(AccessTokenGetId)
+  @UseGuards(AuthGuard)
   @Get()
   async getAllPosts(@Query() query: QueryPostInputModel, @Req() req: Request) {
     const sortData = {
@@ -80,7 +80,7 @@ export class PostsController {
 
     return posts;
   }
-  @UseGuards(AccessTokenGetId)
+  @UseGuards(AuthGuard)
   @Get(':id')
   async getPostById(@Param('id') postId: string, @Req() req: Request) {
     // @ts-ignore
@@ -90,7 +90,7 @@ export class PostsController {
     if (!post) throw new NotFoundException();
     return post;
   }
-  @UseGuards(AccessTokenGetId)
+  @UseGuards(AuthGuard)
   @Get(':id/comments')
   async getCommentsForPost(
     @Param('id') postId: string,
@@ -163,7 +163,7 @@ export class PostsController {
     if (!post) throw new NotFoundException();
     return;
   }
-  @UseGuards(AccessTokenAuthGuard)
+  @UseGuards(AuthGuard)
   @HttpCode(201)
   @Post('/:id/comments')
   async createCommentForPost(

@@ -68,6 +68,9 @@ import { Posts } from './posts/domain/post.sql.entity';
 import { Post, PostSchema } from './posts/domain/post.schema';
 import { Blog, BlogSchema } from './blogs/domain/blog.schema';
 import { PostsSqlQueryRepository } from './posts/infrastructure/posts.sql.query.repository';
+import { PostsSqlRepository } from './posts/infrastructure/posts.sql.repository';
+import { BlogsSaController } from './blogs/api/blogs.sa.controller';
+import { PostsSaController } from './posts/api/posts.sa.controller';
 
 const useCases = [
   CreateBlogUseCase,
@@ -181,11 +184,14 @@ const services = [
     AuthController,
     CommentsController,
     SecurityController,
+    BlogsSaController,
+    PostsSaController,
   ],
   providers: [
     BlogsSqlRepository,
     BlogsSqlQueryRepository,
     PostsSqlQueryRepository,
+    PostsSqlRepository,
     UsersSqlRepository,
     UsersSqlQueryRepository,
     SessionSqlQueryRepository,

@@ -2,6 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InterlayerNotice } from '../../../base/models/Interlayer';
 
 import { PostsRepository } from '../../infrastructure/posts.repository';
+import { PostsSqlRepository } from '../../infrastructure/posts.sql.repository';
 
 export class CommandCreatePostForBlogData {
   title: string;
@@ -18,7 +19,7 @@ export class CreatePostForBlogCommand {
     public content: string,
     public shortDescription: string,
     public blogId: string,
-    public createdAt = new Date().toISOString(),
+    public createdAt = new Date(),
   ) {}
 }
 
@@ -30,7 +31,7 @@ export class CreatePostForBlogUseCase
       InterlayerNotice<CommandCreatePostForBlogOutput>
     >
 {
-  constructor(private postsRepository: PostsRepository) {}
+  constructor(private postsRepository: PostsSqlRepository) {}
   async execute(
     command: CreatePostForBlogCommand,
   ): Promise<InterlayerNotice<CommandCreatePostForBlogOutput>> {

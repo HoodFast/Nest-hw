@@ -6,13 +6,15 @@ import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.query.rep
 import { InputPostCreate, PostCreateData } from '../api/input/PostsCreate.dto';
 import { SortData } from '../../base/sortData/sortData.model';
 import { PostsSqlQueryRepository } from '../infrastructure/posts.sql.query.repository';
+import { BlogsSqlQueryRepository } from '../../blogs/infrastructure/blogs.sql.query.repository';
+import { PostsSqlRepository } from '../infrastructure/posts.sql.repository';
 
 @Injectable()
 export class PostService {
   constructor(
-    protected postsRepository: PostsRepository,
+    protected postsRepository: PostsSqlRepository,
     protected postsQueryRepository: PostsSqlQueryRepository,
-    protected blogsQueryRepository: BlogsQueryRepository,
+    protected blogsQueryRepository: BlogsSqlQueryRepository,
   ) {}
 
   async getAllPosts(userId: string, data: SortData) {
@@ -23,7 +25,10 @@ export class PostService {
     const createdPost = await this.postsRepository.createPost(data, userId);
     return createdPost;
   }
-  async updatePost(postId: string, data: InputPostCreate): Promise<boolean> {
+  async updatePost(
+    postId: string,
+    data: InputPostCreate,
+  ): Promise<boolean | null> {
     return await this.postsRepository.updatePost(postId, data);
   }
 

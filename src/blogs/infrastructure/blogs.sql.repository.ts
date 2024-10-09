@@ -22,9 +22,9 @@ export class BlogsSqlRepository {
       await this.dataSource.query(
         `
             INSERT INTO public."blogs"(
-            "id","name","description","websiteUrl","createdAt"
+            "id","name","description","websiteUrl","createdAt","isMembership"
             )
-            VALUES($1,$2,$3,$4,$5)
+            VALUES($1,$2,$3,$4,$5,true)
             `,
         [blogId, data.name, data.description, data.websiteUrl, createdAt],
       );
@@ -40,8 +40,8 @@ export class BlogsSqlRepository {
       await this.dataSource.query(
         `
     UPDATE public."blogs"
-    SET "name"=$1, "description" = $2, websiteUrl = $3
-    WHERE blog."id" =$4
+    SET "name"=$1, "description" = $2, "websiteUrl" = $3
+    WHERE blogs."id" =$4
     `,
         [
           updateDate.name,

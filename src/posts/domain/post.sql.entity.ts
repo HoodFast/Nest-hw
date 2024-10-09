@@ -1,5 +1,13 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
+} from 'typeorm';
 import { LikePost } from './likePost.sql.entity';
+import { Blogs } from '../../blogs/domain/blog.sql.entity';
 export enum likesStatuses {
   none = 'None',
   like = 'Like',
@@ -24,6 +32,8 @@ export class Posts extends BaseEntity {
     nullable: true,
   })
   postLikes: LikePost[];
+  @ManyToOne(() => Blogs, (Blogs) => Blogs.post, { onDelete: 'CASCADE' })
+  blog: string;
   @Column()
   createdAt: Date;
 }

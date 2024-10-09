@@ -1,10 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InterlayerNotice } from '../../../base/models/Interlayer';
-import { PostsRepository } from '../../infrastructure/posts.repository';
 import { UpdateOutputData } from '../../../base/models/updateOutput';
-import { likesStatuses, PostDocument } from '../../domain/post.schema';
+import { likesStatuses } from '../../domain/post.schema';
 import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import { UsersSqlQueryRepository } from '../../../users/infrastructure/users.sql.query.repository';
+import { PostsSqlRepository } from '../../infrastructure/posts.sql.repository';
+import { PostsSqlQueryRepository } from '../../infrastructure/posts.sql.query.repository';
+import { PostType } from '../../infrastructure/post.mapper';
 
 export class UpdateLikesCommand {
   constructor(
@@ -20,7 +22,8 @@ export class UpdateLikesUseCase
     ICommandHandler<UpdateLikesCommand, InterlayerNotice<UpdateOutputData>>
 {
   constructor(
-    private postsRepository: PostsRepository,
+    private postsRepository: PostsSqlRepository,
+    protected postsQueryRepository: PostsSqlQueryRepository,
     private usersRepository: UsersRepository,
     private usersSqlQueryRepository: UsersSqlQueryRepository,
   ) {}
@@ -28,7 +31,7 @@ export class UpdateLikesUseCase
     command: UpdateLikesCommand,
   ): Promise<InterlayerNotice<UpdateOutputData>> {
     const notice = new InterlayerNotice<UpdateOutputData>();
-    const post: PostDocument | null = await this.postsRepository.getPostById(
+    const post: PostType | null = await this.postsQueryRepository.getPostById(
       command.postId,
     );
     if (!post) {
@@ -41,8 +44,16 @@ export class UpdateLikesUseCase
       notice.addError('user not found');
       return notice;
     }
-    post.addLike(command.userId, command.likesStatuses, user.accountData.login);
-    await post.save();
+    debugger;
+    const addedLike = await this.postsRepository.updateLikeToPost(
+      command.userId,
+      command.likesStatuses,
+      user.accountData.login,
+      command.postId,
+    );
+    //add like
+    // post.addLike(command.userId, command.likesStatuses, user.accountData.login);
+    // await post.save();
     notice.addData({ updated: true });
     return notice;
   }

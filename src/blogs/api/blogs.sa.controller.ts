@@ -10,15 +10,11 @@ import {
   Put,
   Query,
   Req,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { BlogService } from '../application/blogs.service';
-import { BlogsQueryRepository } from '../infrastructure/blogs.query.repository';
 import { PostInput } from '../../posts/api/input/PostsCreate.dto';
 
-import { PostsQueryRepository } from '../../posts/infrastructure/posts.query.repository';
-import { Response } from 'express';
 import { CommandBus } from '@nestjs/cqrs';
 import {
   CommandCreateBlogData,
@@ -57,15 +53,15 @@ export type queryBlogsInputType = {
   pageSize?: number;
 };
 
-@Controller('blogs')
-export class BlogsController {
+@Controller('sa/blogs')
+export class BlogsSaController {
   constructor(
     protected blogService: BlogService,
     protected blogsQueryRepository: BlogsSqlQueryRepository,
     protected postsQueryRepository: PostsSqlQueryRepository,
     private readonly commandBus: CommandBus,
   ) {}
-
+  @UseGuards(AuthGuard)
   @Get()
   async getAllBlogs(@Query() query: queryBlogsInputType) {
     const sortData = {
@@ -79,13 +75,14 @@ export class BlogsController {
     const blogs = await this.blogsQueryRepository.getAllBlogs(sortData);
     return blogs;
   }
-
+  @UseGuards(AuthGuard)
   @Get(':id')
   async getBlogById(@Param('id') blogId: string) {
     const blog = await this.blogsQueryRepository.getBlogById(blogId);
     if (!blog) throw new NotFoundException();
     return blog;
   }
+  @UseGuards(AuthGuard)
   @UseGuards(AccessTokenGetId)
   @Get(':id/posts')
   async getPostsForBlog(

@@ -1,11 +1,11 @@
-import { BlogsRepository } from '../infrastructure/blogs.repository';
 import { Injectable } from '@nestjs/common';
-import { BlogsQueryRepository } from '../infrastructure/blogs.query.repository';
+import { BlogsSqlQueryRepository } from '../infrastructure/blogs.sql.query.repository';
+import { BlogsSqlRepository } from '../infrastructure/blogs.sql.repository';
 
 @Injectable()
 export class BlogService {
   constructor(
-    protected blogsRepository: BlogsRepository,
-    protected blogsQueryRepository: BlogsQueryRepository,
+    protected blogsRepository: BlogsSqlRepository,
+    protected blogsQueryRepository: BlogsSqlQueryRepository,
   ) {}
 }

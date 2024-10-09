@@ -21,6 +21,7 @@ export class TestingQueryRepository {
 
   async deleteAll(): Promise<boolean> {
     await this.dataSource.query(`DELETE FROM public."users"`);
+    await this.dataSource.query(`DELETE FROM public."blogs"`);
     await this.userModel.deleteMany({});
     await this.blogModel.deleteMany({});
     await this.commentModel.deleteMany({});
