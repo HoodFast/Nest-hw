@@ -22,7 +22,7 @@ export class BlogsSqlQueryRepository {
       b."createdAt",
       b."isMembership"
         FROM public."blogs" b
-        WHERE b."name" like $1 
+        WHERE b."name" ILIKE $1 
         ORDER BY b."${sortBy}" ${sortDirection}
         LIMIT $2 OFFSET $3
     `,
