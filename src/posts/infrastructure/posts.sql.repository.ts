@@ -121,7 +121,7 @@ export class PostsSqlRepository {
         );
         return true;
       }
-      debugger;
+
       const updatedLikeStatus = await this.dataSource.query(
         `
       UPDATE public."like_post"

@@ -69,6 +69,42 @@ export class BlogsSaController {
     protected postsQueryRepository: PostsSqlQueryRepository,
     private readonly commandBus: CommandBus,
   ) {}
+
+  @HttpCode(204)
+  @UseGuards(AuthGuard)
+  @Put(':blogId/posts/:postId')
+  async updateSaPost(
+    @Param() data: { blogId: string; postId: string },
+    @Body() body: PostInput,
+  ) {
+    const command = new UpdateSaPostCommand(
+      data.postId,
+      body.title,
+      body.shortDescription,
+      body.content,
+      data.blogId,
+    );
+
+    const updatedBlog = await this.commandBus.execute<
+      UpdateSaPostCommand,
+      InterlayerNotice<CommandUpdatePostOutputData>
+    >(command);
+    if (updatedBlog.hasError()) throw new NotFoundException();
+    return;
+  }
+  @HttpCode(204)
+  @UseGuards(AuthGuard)
+  @Delete(':blogId/posts/:postId')
+  async deleteSaPost(@Param() data: { blogId: string; postId: string }) {
+    const command = new DeleteSaPostCommand(data.postId, data.blogId);
+
+    const updatedBlog = await this.commandBus.execute<
+      DeleteSaPostCommand,
+      InterlayerNotice<CommandUpdatePostOutputData>
+    >(command);
+    if (updatedBlog.hasError()) throw new NotFoundException();
+    return;
+  }
   @UseGuards(AuthGuard)
   @Get()
   async getAllBlogs(@Query() query: queryBlogsInputType) {
@@ -79,7 +115,7 @@ export class BlogsSaController {
       pageNumber: query.pageNumber ? +query.pageNumber : 1,
       pageSize: query.pageSize ? +query.pageSize : 10,
     };
-    debugger;
+
     const blogs = await this.blogsQueryRepository.getAllBlogs(sortData);
     return blogs;
   }
@@ -91,7 +127,6 @@ export class BlogsSaController {
     return blog;
   }
   @UseGuards(AuthGuard)
-  @UseGuards(AccessTokenGetId)
   @Get(':id/posts')
   async getPostsForBlog(
     @Param('id') blogId: string,
@@ -177,41 +212,6 @@ export class BlogsSaController {
     return;
   }
 
-  @HttpCode(204)
-  @UseGuards(AuthGuard)
-  @Put(':blogId/posts/:postId')
-  async updateSaPost(
-    @Param() data: { blogId: string; postId: string },
-    @Body() body: InputPostCreate,
-  ) {
-    const command = new UpdateSaPostCommand(
-      data.postId,
-      body.title,
-      body.shortDescription,
-      body.content,
-      data.blogId,
-    );
-
-    const updatedBlog = await this.commandBus.execute<
-      UpdateSaPostCommand,
-      InterlayerNotice<CommandUpdatePostOutputData>
-    >(command);
-    if (updatedBlog.hasError()) throw new NotFoundException();
-    return;
-  }
-  @HttpCode(204)
-  @UseGuards(AuthGuard)
-  @Delete(':blogId/posts/:postId')
-  async deleteSaPost(@Param() data: { blogId: string; postId: string }) {
-    const command = new DeleteSaPostCommand(data.postId, data.blogId);
-
-    const updatedBlog = await this.commandBus.execute<
-      DeleteSaPostCommand,
-      InterlayerNotice<CommandUpdatePostOutputData>
-    >(command);
-    if (updatedBlog.hasError()) throw new NotFoundException();
-    return;
-  }
   @UseGuards(AuthGuard)
   @Delete(':id')
   @HttpCode(204)

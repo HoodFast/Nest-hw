@@ -75,7 +75,7 @@ export class BlogsController {
       pageNumber: query.pageNumber ? +query.pageNumber : 1,
       pageSize: query.pageSize ? +query.pageSize : 10,
     };
-    debugger;
+
     const blogs = await this.blogsQueryRepository.getAllBlogs(sortData);
     return blogs;
   }
@@ -164,7 +164,7 @@ export class BlogsController {
       body.websiteUrl,
       blogId,
     );
-    debugger;
+
     const updatedBlog = await this.commandBus.execute<
       UpdateBlogCommand,
       InterlayerNotice<CommandUpdateBlogData>

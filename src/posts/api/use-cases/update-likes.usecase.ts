@@ -44,7 +44,7 @@ export class UpdateLikesUseCase
       notice.addError('user not found');
       return notice;
     }
-    debugger;
+
     const addedLike = await this.postsRepository.updateLikeToPost(
       command.userId,
       command.likesStatuses,

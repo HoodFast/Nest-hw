@@ -33,7 +33,7 @@ export class BlogsSqlQueryRepository {
         `
         SELECT COUNT("id")
         FROM public."blogs" b
-        WHERE b."name" like $1 
+        WHERE b."name" ILIKE $1 
         `,
         ['%' + searchNameTerm + '%'],
       );
