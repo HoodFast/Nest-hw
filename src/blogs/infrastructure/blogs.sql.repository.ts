@@ -24,7 +24,7 @@ export class BlogsSqlRepository {
             INSERT INTO public."blogs"(
             "id","name","description","websiteUrl","createdAt","isMembership"
             )
-            VALUES($1,$2,$3,$4,$5,true)
+            VALUES($1,$2,$3,$4,$5,false)
             `,
         [blogId, data.name, data.description, data.websiteUrl, createdAt],
       );
