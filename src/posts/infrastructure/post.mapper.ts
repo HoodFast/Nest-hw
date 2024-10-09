@@ -1,4 +1,4 @@
-import { Likes, likesStatuses } from '../domain/post.schema';
+import { likesStatuses } from '../domain/post.schema';
 
 export class PostInputType {
   id: string;
@@ -72,7 +72,7 @@ export const postMapper = (
       extendedLikesInfo: {
         likesCount: +post.likesCount,
         dislikesCount: +post.dislikesCount,
-        myStatus: post.myStatus ?? 'none',
+        myStatus: post.myStatus ?? likesStatuses.none,
         newestLikes,
       },
     };
