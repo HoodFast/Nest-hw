@@ -71,6 +71,8 @@ import { PostsSqlQueryRepository } from './posts/infrastructure/posts.sql.query.
 import { PostsSqlRepository } from './posts/infrastructure/posts.sql.repository';
 import { BlogsSaController } from './blogs/api/blogs.sa.controller';
 import { PostsSaController } from './posts/api/posts.sa.controller';
+import { UpdateSaPostUseCase } from './posts/api/use-cases/update-sa-post.usecase';
+import { DeleteSaPostUseCase } from './posts/api/use-cases/delete-sa-post.usecase';
 
 const useCases = [
   CreateBlogUseCase,
@@ -88,6 +90,8 @@ const useCases = [
   GetAllSessionUseCase,
   DeleteSessionByIdUseCase,
   DeleteAllSessionsUseCase,
+  UpdateSaPostUseCase,
+  DeleteSaPostUseCase,
 ];
 // const repositories = [
 //   PostsRepository,

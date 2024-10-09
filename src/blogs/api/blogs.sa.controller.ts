@@ -13,7 +13,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { BlogService } from '../application/blogs.service';
-import { PostInput } from '../../posts/api/input/PostsCreate.dto';
+import {
+  InputPostCreate,
+  PostInput,
+} from '../../posts/api/input/PostsCreate.dto';
 
 import { CommandBus } from '@nestjs/cqrs';
 import {
@@ -39,6 +42,11 @@ import {
 import { AccessTokenGetId } from '../../guards/access.token.get.id';
 import { BlogsSqlQueryRepository } from '../infrastructure/blogs.sql.query.repository';
 import { PostsSqlQueryRepository } from '../../posts/infrastructure/posts.sql.query.repository';
+import {
+  CommandUpdatePostOutputData,
+  UpdateSaPostCommand,
+} from '../../posts/api/use-cases/update-sa-post.usecase';
+import { DeleteSaPostCommand } from '../../posts/api/use-cases/delete-sa-post.usecase';
 
 export enum sortDirection {
   asc = 'asc',
@@ -161,7 +169,6 @@ export class BlogsSaController {
       body.websiteUrl,
       blogId,
     );
-    debugger;
     const updatedBlog = await this.commandBus.execute<
       UpdateBlogCommand,
       InterlayerNotice<CommandUpdateBlogData>
@@ -170,6 +177,41 @@ export class BlogsSaController {
     return;
   }
 
+  @HttpCode(204)
+  @UseGuards(AuthGuard)
+  @Put(':blogId/posts/:postId')
+  async updateSaPost(
+    @Param() data: { blogId: string; postId: string },
+    @Body() body: InputPostCreate,
+  ) {
+    const command = new UpdateSaPostCommand(
+      data.postId,
+      body.title,
+      body.shortDescription,
+      body.content,
+      data.blogId,
+    );
+
+    const updatedBlog = await this.commandBus.execute<
+      UpdateSaPostCommand,
+      InterlayerNotice<CommandUpdatePostOutputData>
+    >(command);
+    if (updatedBlog.hasError()) throw new NotFoundException();
+    return;
+  }
+  @HttpCode(204)
+  @UseGuards(AuthGuard)
+  @Delete(':blogId/posts/:postId')
+  async deleteSaPost(@Param() data: { blogId: string; postId: string }) {
+    const command = new DeleteSaPostCommand(data.postId, data.blogId);
+
+    const updatedBlog = await this.commandBus.execute<
+      DeleteSaPostCommand,
+      InterlayerNotice<CommandUpdatePostOutputData>
+    >(command);
+    if (updatedBlog.hasError()) throw new NotFoundException();
+    return;
+  }
   @UseGuards(AuthGuard)
   @Delete(':id')
   @HttpCode(204)
