@@ -1,12 +1,9 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Comment, CommentDocument } from '../domain/comment.schema';
-import { ObjectId } from 'mongodb';
-import { commentMapper } from './mappers/comments.mapper';
 import { SortData } from '../../base/sortData/sortData.model';
 import { Pagination } from '../../base/paginationInputDto/paginationOutput';
 import { CommentsOutputType } from '../api/model/output/comments.output';
-import { PostsQueryRepository } from '../../posts/infrastructure/posts.query.repository';
 import { DataSource } from 'typeorm';
 import { commentSqlMapper } from './mappers/comments.sql.mapper';
 import { PostsSqlQueryRepository } from '../../posts/infrastructure/posts.sql.query.repository';
