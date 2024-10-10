@@ -16,7 +16,6 @@ import { PostService } from '../application/posts.service';
 
 import { InputPostCreate } from './input/PostsCreate.dto';
 import { QueryPostInputModel } from './input/PostsGetInput';
-import { CommentsQueryRepository } from '../../comments/infrastructure/comments.query.repository';
 import { sortDirection } from '../../blogs/api/blogs.controller';
 import { AuthGuard } from '../../guards/auth.guard';
 import {
