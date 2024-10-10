@@ -98,10 +98,14 @@ export class CommentsSqlQueryRepository {
         [userId, pageSize, offset, postId],
       );
 
-      const totalCount = await this.dataSource.query(`
+      const totalCount = await this.dataSource.query(
+        `
         SELECT COUNT("id")
-        FROM public."comments" 
-    `);
+        FROM public."comments"
+        WHERE c."postId" = $1
+    `,
+        [postId],
+      );
       const pagesCount = Math.ceil(+totalCount[0].count / pageSize);
 
       return {
