@@ -7,6 +7,8 @@ import { CommentDbType } from '../../../comments/domain/comment.schema';
 import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import { CommentsOutputType } from '../../../comments/api/model/output/comments.output';
 import { UsersSqlQueryRepository } from '../../../users/infrastructure/users.sql.query.repository';
+import { PostsSqlQueryRepository } from '../../infrastructure/posts.sql.query.repository';
+import { CommentsSqlRepository } from '../../../comments/infrastructure/comments.sql.repository';
 
 export class CommandCreateCommentForPostOutput {
   commentId: string;
@@ -29,10 +31,10 @@ export class CreateCommentForPostUseCase
     >
 {
   constructor(
-    private commentsRepository: CommentsRepository,
+    private commentsRepository: CommentsSqlRepository,
     private userRepository: UsersRepository,
     private usersSqlQueryRepository: UsersSqlQueryRepository,
-    private postQueryRepository: PostsQueryRepository,
+    private postQueryRepository: PostsSqlQueryRepository,
   ) {}
   async execute(
     command: CreateCommentForPostCommand,

@@ -9,12 +9,13 @@ import { CommentsQueryRepository } from './comments.query.repository';
 import { CommentsOutputType } from '../api/model/output/comments.output';
 import { Injectable } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
+import { CommentsSqlQueryRepository } from './comments.sql.query.repository';
 
 @Injectable()
 export class CommentsRepository {
   constructor(
     @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
-    private commentsQueryRepository: CommentsQueryRepository,
+    private commentsQueryRepository: CommentsSqlQueryRepository,
   ) {}
   async createComment(
     createData: CommentDbType,

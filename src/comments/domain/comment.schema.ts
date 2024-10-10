@@ -22,7 +22,7 @@ export class CommentDbType {
 
   commentatorInfo: CommentatorInfo;
 
-  createdAt: string;
+  createdAt: string | Date;
 
   likesCount: number;
 

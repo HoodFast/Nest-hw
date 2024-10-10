@@ -6,7 +6,7 @@ import { UsersRepository } from '../../../users/infrastructure/users.repository'
 import { UsersSqlQueryRepository } from '../../../users/infrastructure/users.sql.query.repository';
 import { PostsSqlRepository } from '../../infrastructure/posts.sql.repository';
 import { PostsSqlQueryRepository } from '../../infrastructure/posts.sql.query.repository';
-import { PostType } from '../../infrastructure/post.mapper';
+import { PostType } from '../../infrastructure/mappers/post.mapper';
 
 export class UpdateLikesCommand {
   constructor(

@@ -1,4 +1,4 @@
-import { likesStatuses } from '../domain/post.schema';
+import { likesStatuses } from '../../domain/post.schema';
 
 export class PostInputType {
   id: string;

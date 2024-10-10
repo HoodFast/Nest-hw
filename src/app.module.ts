@@ -73,6 +73,9 @@ import { BlogsSaController } from './blogs/api/blogs.sa.controller';
 import { PostsSaController } from './posts/api/posts.sa.controller';
 import { UpdateSaPostUseCase } from './posts/api/use-cases/update-sa-post.usecase';
 import { DeleteSaPostUseCase } from './posts/api/use-cases/delete-sa-post.usecase';
+import { Comments, CommentsLikes } from './comments/domain/comment.sql.entity';
+import { CommentsSqlRepository } from './comments/infrastructure/comments.sql.repository';
+import { CommentsSqlQueryRepository } from './comments/infrastructure/comments.sql.query.repository';
 
 const useCases = [
   CreateBlogUseCase,
@@ -173,6 +176,8 @@ const services = [
     TypeOrmModule.forFeature([Blogs]),
     TypeOrmModule.forFeature([LikePost]),
     TypeOrmModule.forFeature([Posts]),
+    TypeOrmModule.forFeature([Comments]),
+    TypeOrmModule.forFeature([CommentsLikes]),
     MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
     MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
@@ -192,6 +197,8 @@ const services = [
     PostsSaController,
   ],
   providers: [
+    CommentsSqlQueryRepository,
+    CommentsSqlRepository,
     BlogsSqlRepository,
     BlogsSqlQueryRepository,
     PostsSqlQueryRepository,

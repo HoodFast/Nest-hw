@@ -1,11 +1,7 @@
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Users } from '../../users/domain/user.sql.entity';
 import { Posts } from './post.sql.entity';
-export enum likesStatuses {
-  none = 'None',
-  like = 'Like',
-  dislike = 'Dislike',
-}
+import { likesStatuses } from './likes.statuses';
 
 @Entity()
 export class LikePost extends BaseEntity {

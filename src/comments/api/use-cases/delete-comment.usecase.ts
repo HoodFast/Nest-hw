@@ -10,6 +10,9 @@ import { CommentsQueryRepository } from '../../infrastructure/comments.query.rep
 import { ForbiddenException } from '@nestjs/common';
 import { CommentsRepository } from '../../infrastructure/comments.repository';
 import { UsersSqlQueryRepository } from '../../../users/infrastructure/users.sql.query.repository';
+import { CommentsSqlRepository } from '../../infrastructure/comments.sql.repository';
+import { CommentsSqlQueryRepository } from '../../infrastructure/comments.sql.query.repository';
+import { CommentsOutputType } from '../model/output/comments.output';
 
 export class DeleteCommentCommand {
   constructor(
@@ -24,8 +27,8 @@ export class DeleteCommentUseCase
     ICommandHandler<DeleteCommentCommand, InterlayerNotice<UpdateOutputData>>
 {
   constructor(
-    private commentsQueryRepository: CommentsQueryRepository,
-    private commentsRepository: CommentsRepository,
+    private commentsQueryRepository: CommentsSqlQueryRepository,
+    private commentsRepository: CommentsSqlRepository,
     private usersRepository: UsersRepository,
     private usersSqlQueryRepository: UsersSqlQueryRepository,
   ) {}
@@ -34,8 +37,8 @@ export class DeleteCommentUseCase
   ): Promise<InterlayerNotice<UpdateOutputData>> {
     const notice = new InterlayerNotice<UpdateOutputData>();
 
-    const comment: CommentDocument | null =
-      await this.commentsQueryRepository.getDBCommentById(command.commentId);
+    const comment: CommentsOutputType | null =
+      await this.commentsQueryRepository.getCommentById(command.commentId);
     if (!comment) {
       notice.addError('comment not found');
       return notice;

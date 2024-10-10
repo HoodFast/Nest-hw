@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Post, PostDocument } from '../domain/post.schema';
 
-import { postMapper, PostType } from './post.mapper';
+import { postMapper, PostType } from './mappers/post.mapper';
 import { ObjectId } from 'mongodb';
 import { Pagination } from '../../base/paginationInputDto/paginationOutput';
 import { SortData } from '../../base/sortData/sortData.model';

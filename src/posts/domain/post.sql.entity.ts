@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { LikePost } from './likePost.sql.entity';
 import { Blogs } from '../../blogs/domain/blog.sql.entity';
+import { Comments } from '../../comments/domain/comment.sql.entity';
 export enum likesStatuses {
   none = 'None',
   like = 'Like',
@@ -36,4 +37,9 @@ export class Posts extends BaseEntity {
   blog: string;
   @Column()
   createdAt: Date;
+  @OneToMany(() => Comments, (Comments) => Comments.post, {
+    cascade: true,
+    nullable: true,
+  })
+  comments: Comments[];
 }

@@ -38,13 +38,14 @@ import { CreateCommentForPostCommand } from './use-cases/create-comment-for-post
 import { CommentsInput } from '../../comments/api/model/input/comments.input';
 import { CommentsOutputType } from '../../comments/api/model/output/comments.output';
 import { PostsSqlQueryRepository } from '../infrastructure/posts.sql.query.repository';
+import { CommentsSqlQueryRepository } from '../../comments/infrastructure/comments.sql.query.repository';
 
 @Controller('posts')
 export class PostsController {
   constructor(
     protected postService: PostService,
     protected postsQueryRepository: PostsSqlQueryRepository,
-    protected commentsQueryRepository: CommentsQueryRepository,
+    protected commentsQueryRepository: CommentsSqlQueryRepository,
     protected commandBus: CommandBus,
   ) {}
   @HttpCode(204)

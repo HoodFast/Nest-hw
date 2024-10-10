@@ -3,6 +3,10 @@ import { EmailConfirmation } from './email.confirmation.entity';
 import { Sessions } from '../../sessions/domain/session.sql.entity';
 import { TokensBlackList } from './tokens.black.list.sql.entity';
 import { LikePost } from '../../posts/domain/likePost.sql.entity';
+import {
+  Comments,
+  CommentsLikes,
+} from '../../comments/domain/comment.sql.entity';
 
 @Entity()
 export class Users extends BaseEntity {
@@ -40,4 +44,14 @@ export class Users extends BaseEntity {
     nullable: true,
   })
   postLikes: LikePost[];
+  @OneToMany(() => Comments, (Comments) => Comments.user, {
+    cascade: true,
+    nullable: true,
+  })
+  comments: Comments[];
+  @OneToMany(() => CommentsLikes, (CommentsLikes) => CommentsLikes.user, {
+    cascade: true,
+    nullable: true,
+  })
+  commentLikes: Comments[];
 }

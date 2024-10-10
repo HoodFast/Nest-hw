@@ -15,7 +15,13 @@ import {
   PostCreateData,
 } from './posts/api/input/PostsCreate.dto';
 import { PostsSqlRepository } from './posts/infrastructure/posts.sql.repository';
-import { likesStatuses } from './posts/domain/post.schema';
+import { Likes, likesStatuses } from './posts/domain/post.schema';
+import { CommentsSqlRepository } from './comments/infrastructure/comments.sql.repository';
+import {
+  CommentatorInfo,
+  CommentDbType,
+} from './comments/domain/comment.schema';
+import { CommentsSqlQueryRepository } from './comments/infrastructure/comments.sql.query.repository';
 
 @Controller()
 export class AppController {
@@ -28,6 +34,8 @@ export class AppController {
     protected blogSqlQueryRepository: BlogsSqlQueryRepository,
     protected postSqlQueryRepository: PostsSqlQueryRepository,
     protected postSqlRepository: PostsSqlRepository,
+    protected commentsSqlRepository: CommentsSqlRepository,
+    protected commentsSqlQueryRepository: CommentsSqlQueryRepository,
   ) {}
   @Get()
   async hello() {
@@ -144,5 +152,68 @@ export class AppController {
       login,
       postId,
     );
+  }
+  @Post('create_comment')
+  async createComment() {
+    const random = randomUUID();
+    const data: CommentDbType = {
+      content: 'test content',
+
+      postId: '29ddb035-8188-4632-9dd9-2bb31b60cd03',
+
+      commentatorInfo: {
+        userId: '0caec048-1700-449a-972d-f93dafc9095f',
+        userLogin: 'lg-332252',
+      },
+
+      createdAt: new Date(),
+
+      likesCount: 0,
+
+      dislikesCount: 0,
+
+      likes: [],
+    };
+    const res = await this.commentsSqlRepository.createComment(data);
+    return res;
+  }
+  @Post('like')
+  async like() {
+    const res = await this.commentsSqlRepository.addLikeToComment(
+      '0caec048-1700-449a-972d-f93dafc9095f',
+      '323aa1e6-80c4-46d8-81cc-2efc68a08ade',
+      likesStatuses.like,
+    );
+    return res;
+  }
+  @Get('get_comments')
+  async getComment() {
+    const data: SortData = {
+      sortBy: 'createdAt',
+      sortDirection: 'desc',
+      pageNumber: 1,
+      pageSize: 10,
+    };
+    const res = await this.commentsSqlQueryRepository.getAllByPostId(
+      'ba246926-563d-4a6f-9032-2215481e397f',
+      'b03b5e57-7d62-4922-97f6-0a48802461a6',
+      data,
+    );
+    return res;
+  }
+  @Post('update_comment')
+  async updateComment() {
+    const res = await this.commentsSqlRepository.updateComment(
+      'c0e2b2f3-4ce8-48e6-90e4-9c0d077b585f',
+      'updated ok',
+    );
+    return res;
+  }
+  @Delete('update_comment')
+  async deleteComment() {
+    const res = await this.commentsSqlRepository.deleteById(
+      'b8613099-f652-4153-8e68-b325f69c371f',
+    );
+    return res;
   }
 }

@@ -2,7 +2,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Comment, CommentDocument } from '../domain/comment.schema';
 import { ObjectId } from 'mongodb';
-import { commentMapper } from './comments.mapper';
+import { commentMapper } from './mappers/comments.mapper';
 import { SortData } from '../../base/sortData/sortData.model';
 import { Pagination } from '../../base/paginationInputDto/paginationOutput';
 import { CommentsOutputType } from '../api/model/output/comments.output';
