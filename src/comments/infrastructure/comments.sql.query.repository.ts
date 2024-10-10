@@ -97,7 +97,6 @@ export class CommentsSqlQueryRepository {
     `,
         [userId, pageSize, offset, postId],
       );
-
       const totalCount = await this.dataSource.query(
         `
         SELECT COUNT("id")
