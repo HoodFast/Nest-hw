@@ -13,7 +13,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PostService } from '../application/posts.service';
-
 import { InputPostCreate } from './input/PostsCreate.dto';
 import { QueryPostInputModel } from './input/PostsGetInput';
 import { sortDirection } from '../../blogs/api/blogs.controller';
