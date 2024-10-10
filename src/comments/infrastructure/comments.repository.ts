@@ -5,7 +5,6 @@ import {
   CommentDocument,
 } from '../domain/comment.schema';
 import { Model } from 'mongoose';
-import { CommentsQueryRepository } from './comments.query.repository';
 import { CommentsOutputType } from '../api/model/output/comments.output';
 import { Injectable } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
