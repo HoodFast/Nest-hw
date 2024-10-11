@@ -1,17 +1,11 @@
 import { ObjectId } from 'mongodb';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Session, SessionDocument } from '../domain/session.schema';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { SessionEntity } from '../domain/session.entity';
 @Injectable()
 export class SessionSqlRepository {
-  constructor(
-    @InjectModel(Session.name) private sessionModel: Model<SessionDocument>,
-    @InjectDataSource() protected dataSource: DataSource,
-  ) {}
+  constructor(@InjectDataSource() protected dataSource: DataSource) {}
   async getSessionForUserId(
     userId: string,
     title: string,
@@ -42,13 +36,7 @@ export class SessionSqlRepository {
     );
     return res[0];
   }
-  async getAllSessionByOnlyUserId(userId: string) {
-    const session = await this.sessionModel.find({
-      userId: new ObjectId(userId),
-    });
-    if (!session) return null;
-    return session;
-  }
+
   async createNewSession(tokenMetaData: SessionEntity) {
     try {
       const { id, iat, title, deviceId, ip, expireDate, userId } =

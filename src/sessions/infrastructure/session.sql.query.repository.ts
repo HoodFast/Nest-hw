@@ -7,10 +7,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 @Injectable()
 export class SessionSqlQueryRepository {
-  constructor(
-    @InjectModel(Session.name) private sessionModel: Model<SessionDocument>,
-    @InjectDataSource() private dataSource: DataSource,
-  ) {}
+  constructor(@InjectDataSource() private dataSource: DataSource) {}
   async getAllSessions(userId: string): Promise<SessionsOutputType[] | null> {
     const sessions = await this.dataSource.query(
       `

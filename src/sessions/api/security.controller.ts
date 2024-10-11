@@ -22,13 +22,10 @@ import { SessionsOutputType } from './output/session.output';
 import { GetAllSessionCommand } from './useCases/get-all-sessions.usecase';
 import { RefreshTokenGuard } from '../../guards/refresh-token.guards';
 import { TokenPayload } from '../../decorators/token-payload';
-import { SessionRepository } from '../infrastructure/session.repository';
 
 @Controller('security')
 export class SecurityController {
   constructor(
-    private sessionQueryRepository: SessionQueryRepository,
-    private sessionRepository: SessionRepository,
     private queryBus: QueryBus,
     private commandBus: CommandBus,
   ) {}

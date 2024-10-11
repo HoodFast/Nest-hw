@@ -19,12 +19,12 @@ const jwt = require('jsonwebtoken');
 export class AuthService {
   constructor(
     protected usersService: UsersService,
-    protected sessionRepository: SessionRepository,
+
     protected sessionSqlRepository: SessionSqlRepository,
     protected jwtService: JwtService,
-    protected usersQueryRepository: UsersQueryRepository,
+
     protected usersSqlQueryRepository: UsersSqlQueryRepository,
-    protected usersRepository: UsersRepository,
+
     protected usersSqlRepository: UsersSqlRepository,
     protected emailService: EmailService,
   ) {}

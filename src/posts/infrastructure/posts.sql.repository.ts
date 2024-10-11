@@ -7,14 +7,14 @@ import { BlogsSqlQueryRepository } from '../../blogs/infrastructure/blogs.sql.qu
 import { PostsSqlQueryRepository } from './posts.sql.query.repository';
 import { DataSource } from 'typeorm';
 import { randomUUID } from 'crypto';
+import { InjectDataSource } from '@nestjs/typeorm';
 
 @Injectable()
 export class PostsSqlRepository {
   constructor(
-    @InjectModel(Post.name) private postModel: Model<PostDocument>,
     protected blogsQueryRepository: BlogsSqlQueryRepository,
     protected postsQueryRepository: PostsSqlQueryRepository,
-    protected dataSource: DataSource,
+    @InjectDataSource() protected dataSource: DataSource,
   ) {}
 
   async createPost(data: PostCreateData, userId?: string) {

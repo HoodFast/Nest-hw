@@ -35,7 +35,6 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
     private jwtService: JwtService,
-    private usersQueryRepository: UsersQueryRepository,
     private usersSqlQueryRepository: UsersSqlQueryRepository,
   ) {}
   @HttpCode(200)

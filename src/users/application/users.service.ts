@@ -3,9 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import { User } from '../domain/user.schema';
 import { add } from 'date-fns/add';
-import { UsersRepository } from '../infrastructure/users.repository';
 import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
-import { UsersQueryRepository } from '../infrastructure/users.query.repository';
 import { EmailService } from '../../auth/infrastructure/email.service';
 import { recoveryPassInputDto } from '../../auth/api/input/new.password.input';
 import { JwtService } from '../../auth/infrastructure/jwt.service';
@@ -16,9 +14,7 @@ const saltRounds = 10;
 @Injectable()
 export class UsersService {
   constructor(
-    protected usersRepository: UsersRepository,
     protected usersSqlRepository: UsersSqlRepository,
-    protected usersQueryRepository: UsersQueryRepository,
     protected usersSqlQueryRepository: UsersSqlQueryRepository,
     protected emailService: EmailService,
     protected jwtService: JwtService,

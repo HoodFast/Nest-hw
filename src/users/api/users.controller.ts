@@ -35,7 +35,7 @@ import { UsersSqlQueryRepository } from '../infrastructure/users.sql.query.repos
 export class UsersController {
   constructor(
     protected userService: UsersService,
-    protected usersQueryRepository: UsersQueryRepository,
+
     protected usersSqlQueryRepository: UsersSqlQueryRepository,
   ) {}
   @Get()

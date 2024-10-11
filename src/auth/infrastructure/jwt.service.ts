@@ -15,11 +15,9 @@ const jwt = require('jsonwebtoken');
 @Injectable()
 export class JwtService {
   constructor(
-    private sessionRepository: SessionRepository,
-    private usersQueryRepository: UsersQueryRepository,
     private usersSqlQueryRepository: UsersSqlQueryRepository,
     private usersSqlRepository: UsersSqlRepository,
-    private usersRepository: UsersRepository,
+
     private configService: ConfigService<ConfigurationType, true>,
     private sessionSqlRepository: SessionSqlRepository,
   ) {}

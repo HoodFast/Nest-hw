@@ -24,7 +24,6 @@ export class UpdateLikesUseCase
   constructor(
     private postsRepository: PostsSqlRepository,
     protected postsQueryRepository: PostsSqlQueryRepository,
-    private usersRepository: UsersRepository,
     private usersSqlQueryRepository: UsersSqlQueryRepository,
   ) {}
   async execute(

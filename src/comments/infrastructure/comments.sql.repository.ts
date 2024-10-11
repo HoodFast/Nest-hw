@@ -10,13 +10,11 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { randomUUID } from 'crypto';
 import { CommentsSqlQueryRepository } from './comments.sql.query.repository';
-import { UsersSqlRepository } from '../../users/infrastructure/users.sql.repository';
 import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.query.repository';
 
 @Injectable()
 export class CommentsSqlRepository {
   constructor(
-    @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
     private commentsQueryRepository: CommentsSqlQueryRepository,
     private usersQueryRepository: UsersSqlQueryRepository,
     private dataSource: DataSource,

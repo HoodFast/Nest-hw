@@ -16,7 +16,7 @@ import { User, UsersSchema } from './users/domain/user.schema';
 import { UsersService } from './users/application/users.service';
 import { UsersRepository } from './users/infrastructure/users.repository';
 import { UsersQueryRepository } from './users/infrastructure/users.query.repository';
-import { TestingQueryRepository } from './testing/infrastructure/testing.query.repository';
+import { TestingSqlQueryRepository } from './testing/infrastructure/testing.query.repository';
 import { UsersController } from './users/api/users.controller';
 import { TestingController } from './testing/api/testing.controller';
 import { CommentsQueryRepository } from './comments/infrastructure/comments.query.repository';
@@ -134,22 +134,22 @@ const services = [
       //   process.env.ENV !== Environments.TEST,
       envFilePath: ['.env'],
     }),
-    MongooseModule.forRootAsync({
-      useFactory: (configService: ConfigServiceType) => {
-        const databaseSettings = configService.get('databaseSettings', {
-          infer: true,
-        });
-        const environmentSettings = configService.get('environmentSettings', {
-          infer: true,
-        });
-        const uri = environmentSettings?.isTesting
-          ? databaseSettings?.MONGO_CONNECTION_URI_FOR_TESTS
-          : databaseSettings?.MONGO_CONNECTION_URI;
-        return { uri: uri };
-      },
-
-      inject: [ConfigService],
-    }),
+    // MongooseModule.forRootAsync({
+    //   useFactory: (configService: ConfigServiceType) => {
+    //     const databaseSettings = configService.get('databaseSettings', {
+    //       infer: true,
+    //     });
+    //     const environmentSettings = configService.get('environmentSettings', {
+    //       infer: true,
+    //     });
+    //     const uri = environmentSettings?.isTesting
+    //       ? databaseSettings?.MONGO_CONNECTION_URI_FOR_TESTS
+    //       : databaseSettings?.MONGO_CONNECTION_URI;
+    //     return { uri: uri };
+    //   },
+    //
+    //   inject: [ConfigService],
+    // }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -178,11 +178,11 @@ const services = [
     TypeOrmModule.forFeature([Posts]),
     TypeOrmModule.forFeature([Comments]),
     TypeOrmModule.forFeature([CommentsLikes]),
-    MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
-    MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
-    MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
-    MongooseModule.forFeature([{ name: User.name, schema: UsersSchema }]),
-    MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
+    // MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
+    // MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
+    // MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
+    // MongooseModule.forFeature([{ name: User.name, schema: UsersSchema }]),
+    // MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
   ],
   controllers: [
     AppController,
@@ -209,21 +209,21 @@ const services = [
     SessionSqlRepository,
     AppService,
     PostService,
-    PostsRepository,
-    PostsQueryRepository,
+    // PostsRepository,
+    // PostsQueryRepository,
     BlogService,
-    BlogsRepository,
-    BlogsQueryRepository,
+    // BlogsRepository,
+    // BlogsQueryRepository,
     UsersService,
-    UsersRepository,
-    UsersQueryRepository,
-    TestingQueryRepository,
-    CommentsQueryRepository,
-    CommentsRepository,
+    // UsersRepository,
+    // UsersQueryRepository,
+    TestingSqlQueryRepository,
+    // CommentsQueryRepository,
+    // CommentsRepository,
     AuthService,
     JwtService,
-    SessionRepository,
-    SessionQueryRepository,
+    // SessionRepository,
+    // SessionQueryRepository,
     AuthService,
     EmailService,
     UsersService,

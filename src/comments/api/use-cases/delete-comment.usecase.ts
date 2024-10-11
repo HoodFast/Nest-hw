@@ -29,7 +29,7 @@ export class DeleteCommentUseCase
   constructor(
     private commentsQueryRepository: CommentsSqlQueryRepository,
     private commentsRepository: CommentsSqlRepository,
-    private usersRepository: UsersRepository,
+
     private usersSqlQueryRepository: UsersSqlQueryRepository,
   ) {}
   async execute(

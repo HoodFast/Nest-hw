@@ -15,7 +15,7 @@ export class Configuration {
   @ValidateNested()
   apiSettings: ApiSettings;
   @ValidateNested()
-  databaseSettings: DataBaseSettings;
+  // databaseSettings: DataBaseSettings;
   @ValidateNested()
   sqlDataBaseSettings: SqlDataBaseSettings;
   @ValidateNested()
@@ -30,7 +30,7 @@ export class Configuration {
   ): Configuration {
     return new this({
       apiSettings: new ApiSettings(environmentVariables),
-      databaseSettings: new DataBaseSettings(environmentVariables),
+      // databaseSettings: new DataBaseSettings(environmentVariables),
       sqlDataBaseSettings: new SqlDataBaseSettings(environmentVariables),
       environmentSettings: new EnvironmentSettings(environmentVariables),
       jwtSettings: new JwtSettings(environmentVariables),

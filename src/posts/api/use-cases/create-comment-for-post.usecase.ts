@@ -32,7 +32,7 @@ export class CreateCommentForPostUseCase
 {
   constructor(
     private commentsRepository: CommentsSqlRepository,
-    private userRepository: UsersRepository,
+
     private usersSqlQueryRepository: UsersSqlQueryRepository,
     private postQueryRepository: PostsSqlQueryRepository,
   ) {}

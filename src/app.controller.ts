@@ -29,7 +29,7 @@ export class AppController {
     private readonly appService: AppService,
     protected userSqlQueryRepository: UsersSqlQueryRepository,
     protected userSqlRepository: UsersSqlRepository,
-    protected userRepository: UsersRepository,
+
     protected blogSqlRepository: BlogsSqlRepository,
     protected blogSqlQueryRepository: BlogsSqlQueryRepository,
     protected postSqlQueryRepository: PostsSqlQueryRepository,

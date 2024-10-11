@@ -8,13 +8,13 @@ import { Pagination } from '../../base/paginationInputDto/paginationOutput';
 import { SortData } from '../../base/sortData/sortData.model';
 import { DataSource } from 'typeorm';
 import { BlogsSqlQueryRepository } from '../../blogs/infrastructure/blogs.sql.query.repository';
+import { InjectDataSource } from '@nestjs/typeorm';
 
 @Injectable()
 export class PostsSqlQueryRepository {
   constructor(
-    @InjectModel(Post.name) private postModel: Model<PostDocument>,
     protected blogsQueryRepository: BlogsSqlQueryRepository,
-    protected dataSource: DataSource,
+    @InjectDataSource() protected dataSource: DataSource,
   ) {}
 
   async getAllPosts(

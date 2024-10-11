@@ -1,18 +1,15 @@
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
-import { Comment, CommentDocument } from '../domain/comment.schema';
 import { SortData } from '../../base/sortData/sortData.model';
 import { Pagination } from '../../base/paginationInputDto/paginationOutput';
 import { CommentsOutputType } from '../api/model/output/comments.output';
 import { DataSource } from 'typeorm';
 import { commentSqlMapper } from './mappers/comments.sql.mapper';
 import { PostsSqlQueryRepository } from '../../posts/infrastructure/posts.sql.query.repository';
+import { InjectDataSource } from '@nestjs/typeorm';
 
 export class CommentsSqlQueryRepository {
   constructor(
-    @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
     protected postQueryRepository: PostsSqlQueryRepository,
-    protected dataSource: DataSource,
+    @InjectDataSource() protected dataSource: DataSource,
   ) {}
   async getCommentById(
     commentId: string,
