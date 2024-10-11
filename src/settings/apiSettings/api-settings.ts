@@ -3,6 +3,7 @@ import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class ApiSettings {
   constructor(private environmentVariables: EnvironmentVariable) {}
+  @IsOptional()
   @IsNumber()
   PORT: number = Number(this.environmentVariables.PORT);
   @IsOptional()
